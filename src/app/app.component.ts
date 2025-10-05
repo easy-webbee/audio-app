@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { NgIf } from '@angular/common';
@@ -23,13 +23,17 @@ export class AppComponent {
     // });
   }
 
+  @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
+
   ngOnInit() {
     const megaFileUrl = encodeURIComponent(
       'https://mega.nz/file/oTgiCKib#M2TyXr8cBTJzUI1oFyyZ9L92Of0hRv5VxbDvOBncGbs'
     );
-
-    // Your backend endpoint
     this.videoUrl = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
-    console.log(this.videoUrl)
+  }
+
+  playAudio() {
+    this.audioRef.nativeElement.src = this.videoUrl;
+    this.audioRef.nativeElement.play();
   }
 }

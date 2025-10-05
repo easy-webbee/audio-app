@@ -2,18 +2,6 @@
 <div>
   <h1>Hello audior</h1>
 </div>
-<div class="container">
-    <div *ngIf="!videoUrl" class="loading">
-      Loading audio...
-    </div>
-  
-    <video
-    [src]="videoUrl"
-    controls
-    autoplay
-    playsinline
-    style="width:100%;max-height:80vh;"
-  ></video>
-  
-  </div>
-  
+<button (click)="playAudio()">Play</button>
+<audio #audio controls></audio>
+
