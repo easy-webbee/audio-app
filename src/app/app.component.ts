@@ -30,5 +30,6 @@ export class AppComponent {
 
     // Your backend endpoint
     this.videoUrl = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
+    console.log(this.videoUrl)
   }
 }
