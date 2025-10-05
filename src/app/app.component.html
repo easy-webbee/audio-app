@@ -3,6 +3,13 @@
       Loading audio...
     </div>
   
-    <audio *ngIf="videoUrl" [src]="videoUrl" controls class="audio-player"></audio>
+    <video
+    [src]="videoUrl"
+    controls
+    autoplay
+    playsinline
+    style="width:100%;max-height:80vh;"
+  ></video>
+  
   </div>
   
