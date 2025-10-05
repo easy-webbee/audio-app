@@ -1,1 +1,2 @@
-<iframe width="711" height="144" frameborder="0" src="https://mega.nz/embed/ZbpD3LjC#-6YA65wD8Ez5qv7MTFoJ8A99146vl3h1v5BvcylNZFs!1v"  ></iframe>
+<div *ngIf="!videoUrl">Loading...</div>
+<video *ngIf="videoUrl" [src]="videoUrl" controls width="100%"></video>
