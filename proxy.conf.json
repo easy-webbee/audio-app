@@ -1,0 +1,9 @@
+{
+    "/api": {
+      "target": "https://nestjs-api.koyeb.app",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": { "^/api": "" }
+    }
+  }
+  

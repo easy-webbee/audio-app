@@ -30,11 +30,9 @@
   "dataGroups": [
     {
       "name": "api-stream",
-      "urls": [
-        "https://nestjs-api.koyeb.app/mega/stream/*"
-      ],
+      "urls": [ "https://nestjs-api.koyeb.app/mega/stream/**"],
       "cacheConfig": {
-        "maxSize": 0,
+        "maxSize": 1,
         "maxAge": "0u",
         "strategy": "performance",
         "timeout": "0u"
