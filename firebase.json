@@ -1,7 +1,7 @@
 {
     "hosting": [
       {
-        "target": "audio-app",
+        "site": "audio-for-you",
         "source": ".",
         "frameworksBackend": {
          "region": "us-east1"
