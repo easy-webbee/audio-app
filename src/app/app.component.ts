@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
 import { NgIf } from '@angular/common';
 import { environment } from '../environments/environment.development';
 @Component({
@@ -14,7 +13,7 @@ export class AppComponent {
   title = 'audio-app';
   videoUrl?: any;
   constructor(
-    private swUpdate: SwUpdate,
+
   ) {
     // this.swUpdate.versionUpdates.subscribe((event) => {
     //   if (confirm('New version available. Load new version?')) {
