@@ -1,0 +1,13 @@
+{
+  "targets": {
+    "mymusicplayers": {
+      "hosting": {
+        "site": "audio-for-you",
+        "public": "public"
+      }
+    }
+  },
+  "projects": {
+    "default": "mymusicplayers"
+  }
+}
