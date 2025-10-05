@@ -1,2 +1,8 @@
-<div *ngIf="!videoUrl">Loading...</div>
-<video *ngIf="videoUrl" [src]="videoUrl" controls width="100%"></video>
+<div class="container">
+    <div *ngIf="!videoUrl" class="loading">
+      Loading audio...
+    </div>
+  
+    <audio *ngIf="videoUrl" [src]="videoUrl" controls class="audio-player"></audio>
+  </div>
+  

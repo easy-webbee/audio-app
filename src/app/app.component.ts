@@ -12,7 +12,7 @@ import { NgIf } from '@angular/common';
 })
 export class AppComponent {
   title = 'audio-app';
-  videoUrl?: string;
+  videoUrl?: any;
   constructor(
     private swUpdate: SwUpdate,
     private mega: MegaPlayerService
@@ -30,5 +30,7 @@ export class AppComponent {
     );
     console.log(132)
     console.log(this.videoUrl)
+    console.log('Blob size in bytes:', this.videoUrl.size);
+console.log('Blob size in MB:', (this.videoUrl.size / (1024 * 1024)).toFixed(2), 'MB');
   }
 }
