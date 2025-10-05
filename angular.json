@@ -73,8 +73,7 @@
               "buildTarget": "audio-app:build:production"
             },
             "development": {
-              "buildTarget": "audio-app:build:development",
-                    "proxyConfig": "proxy.conf.json"
+              "buildTarget": "audio-app:build:development"
             }
           },
           "defaultConfiguration": "development"
