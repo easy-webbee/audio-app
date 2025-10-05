@@ -21,6 +21,7 @@ jobs:
             repoToken: '${{ secrets.GITHUB_TOKEN }}'
             firebaseServiceAccount: '${{ secrets.FIREBASE_AUDIO_TOKEN}}'
             channelId: live
-            projectId: yupmusicdaily
+            projectId: mymusicplayers
+            target: audio-for-you
         env:
             FIREBASE_CLI_EXPERIMENTS: webframeworks
