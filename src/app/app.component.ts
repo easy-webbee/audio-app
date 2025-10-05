@@ -16,11 +16,11 @@ export class AppComponent {
   constructor(
     private swUpdate: SwUpdate,
   ) {
-    this.swUpdate.versionUpdates.subscribe((event) => {
-      if (confirm('New version available. Load new version?')) {
-        window.location.reload();
-      }
-    });
+    // this.swUpdate.versionUpdates.subscribe((event) => {
+    //   if (confirm('New version available. Load new version?')) {
+    //     window.location.reload();
+    //   }
+    // });
   }
 
   ngOnInit() {
