@@ -1,8 +1,9 @@
 
 <div>
-  <h1>Hello ds;jlfjasjfa</h1>
+  <h1>Hello Listener</h1>
+
 </div>
-<button (click)="playAudio()">Play</button>
+<!-- <button (click)="playAudio()">Play</button>
 <audio #audio controls></audio>
 
 <video
@@ -12,4 +13,43 @@
   playsinline
   preload="metadata"
   style="width: 100%; max-height: 80vh;"
-></video>
+></video> -->
+
+<div class="expander" [attr.aria-expanded]="expanded">
+  <button class="expander__header" (click)="toggleExpand()">
+    <div class="expander__title">
+      <div>
+        <h2>Atomic Habits by James Clear</h2>
+        <p class="expander__subtitle">Have 5 part</p>
+      </div>
+    </div>
+    <div class="chev">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9" [attr.transform]="expanded ? 'rotate(180,12,12)' : ''"></polyline>
+      </svg>
+    </div>
+  </button>
+
+  <div class="expander__content" [class.show]="expanded">
+    <ul class="sub-list">
+      <li class="sub-item" *ngFor="let sub of subtitles; let i = index" (click)="onSubClick(sub, i)">
+        <button type="button" >
+          <span class="dot"></span>
+          <span class="label">{{ sub.label }}</span>
+          @if(activeIndex === i){
+            <audio
+            *ngIf="videoUrl"
+            [src]="videoUrl"
+            controls
+            playsinline
+            preload="metadata"
+            style="width: 100%; max-height: 80vh;"
+          ></audio>
+          }
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
