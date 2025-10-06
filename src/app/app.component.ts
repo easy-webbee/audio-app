@@ -17,6 +17,10 @@ export class AppComponent {
   @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
 
   ngOnInit() {
+    const megaFileUrl = encodeURIComponent(
+      'https://mega.nz/file/oTgiCKib#M2TyXr8cBTJzUI1oFyyZ9L92Of0hRv5VxbDvOBncGbs'
+    );
+    this.videoUrl2 = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
   }
 
   // playAudio() {
@@ -25,6 +29,7 @@ export class AppComponent {
   // }
   activeIndex: { [bookIndex: number]: number | null } = {};
   videoUrl = signal('');
+  videoUrl2 :any;
   subtitles = [
     { label: 'part1', detail: 'Iag3UTqJ#zUMa0uCvhQLDk3Ean18oys2yClHgQ9tkcjvg5K4myPU' },
     { label: 'part2', detail: '9bZmzaRT#IQbIAunaqsO9SzytNj1ZhjeMjL7wOYA5SQM3N88y_84' },
@@ -69,5 +74,6 @@ export class AppComponent {
   loadAudio(megastr:string){
     const megaFileUrl = encodeURIComponent(`https://mega.nz/file/${megastr}`);
     this.videoUrl.set(`${environment.keyobUrl}mega/stream?url=${megaFileUrl}`)
+    console.log(`${environment.keyobUrl}mega/stream?url=${megaFileUrl}`)
   }
 }
