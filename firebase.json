@@ -1,7 +1,7 @@
 {
     "hosting": [
       {
-        "site": "audio-for-you",
+        "site": "my-audio-list",
         "source": ".",
         "frameworksBackend": {
          "region": "us-east1"

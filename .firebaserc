@@ -2,7 +2,7 @@
   "targets": {
     "mymusicplayers": {
       "hosting": {
-        "site": "audio-for-you",
+        "site": "my-audio-list",
         "public": "public"
       }
     }
