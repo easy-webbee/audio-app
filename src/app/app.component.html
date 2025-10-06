@@ -14,42 +14,43 @@
   preload="metadata"
   style="width: 100%; max-height: 80vh;"
 ></video> -->
-
-<div class="expander" [attr.aria-expanded]="expanded">
-  <button class="expander__header" (click)="toggleExpand()">
-    <div class="expander__title">
-      <div>
-        <h2>Atomic Habits by James Clear</h2>
-        <p class="expander__subtitle">Have 5 part</p>
+<div class="book-container" *ngFor="let book of books; let bookIndex = index">
+  <div class="expander" [attr.aria-expanded]="book.expanded">
+    <button class="expander__header" (click)="toggleExpand(book)">
+      <div class="expander__title">
+        <h2>{{ book.title }}</h2>
+        <p class="expander__subtitle">{{ book.subtitle }}</p>
       </div>
-    </div>
-    <div class="chev">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9" [attr.transform]="expanded ? 'rotate(180,12,12)' : ''"></polyline>
-      </svg>
-    </div>
-  </button>
+      <div class="chev">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"
+                    [attr.transform]="book.expanded ? 'rotate(180,12,12)' : ''">
+          </polyline>
+        </svg>
+      </div>
+    </button>
 
-  <div class="expander__content" [class.show]="expanded">
-    <ul class="sub-list">
-      <li class="sub-item" *ngFor="let sub of subtitles; let i = index" (click)="onSubClick(sub, i)">
-        <button type="button" >
-          <span class="dot"></span>
-          <span class="label">{{ sub.label }}</span>
-          @if(activeIndex === i){
-            <audio
-            *ngIf="videoUrl"
-            [src]="videoUrl"
+    <div class="expander__content" [class.show]="book.expanded">
+      <ul class="sub-list">
+        <li class="sub-item" *ngFor="let sub of book.parts; let i = index">
+          <button type="button" (click)="onSubClick(bookIndex, i, sub)">
+            <span class="dot"></span>
+            <span class="label">{{ sub.label }}</span>
+          </button>
+
+          <audio
+            *ngIf="activeIndex[bookIndex] === i && videoUrl"
+            [src]="videoUrl()"
             controls
-            playsinline
             preload="metadata"
-            style="width: 100%; max-height: 80vh;"
+            style="width: 100%; margin-top: 8px;"
           ></audio>
-          }
-        </button>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
+
+
