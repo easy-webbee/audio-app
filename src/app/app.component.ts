@@ -6,6 +6,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { ReplaceUSPipe } from './replace-us.pipe';
 import { Title } from '@angular/platform-browser';
+import { AudioService } from './audio.service';
 
 @Component({
   selector: 'app-root',
@@ -23,13 +24,16 @@ export class AppComponent {
   title = 'audio-app';
   audioTitles: any;
   selected: any;
-  constructor(private titleService: Title) {}
+  constructor(private titleService: Title, private data: AudioService) {}
 
   @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
   @ViewChildren('audioPlayer') audioPlayers!: QueryList<ElementRef<HTMLAudioElement>>;
 
   ngOnInit() {
-    this.audioTitles = Object.keys(dataAudio);
+    this.data.getData().subscribe(data=>{
+      this.audioTitles = Object.keys(data);
+    })
+    // this.audioTitles = Object.keys(dataAudio);
     // const megaFileUrl = encodeURIComponent(
     //   'https://mega.nz/file/oTgiCKib#M2TyXr8cBTJzUI1oFyyZ9L92Of0hRv5VxbDvOBncGbs'
     // );
