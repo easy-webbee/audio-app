@@ -77,7 +77,6 @@ export class AppComponent {
     this.activeIndex = {};
     const filteredTitles: { [key: string]: any } = {};
     Object.keys(dataAudio).forEach((title) => {
-      console.log(title);
       if (
         title
           .replace(/-/g, '')
@@ -110,6 +109,13 @@ export class AppComponent {
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
     this.loadAudio(part.detail);
+     // Wait for DOM to update, then play audio
+    setTimeout(() => {
+      const audioElement = document.querySelector('audio');
+      if (audioElement) {
+        audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+      }
+    });
   }
 
   // Auto next when audio ends
