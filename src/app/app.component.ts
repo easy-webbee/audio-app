@@ -6,12 +6,13 @@ import { signal } from '@angular/core';
 import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
+import { ReplaceUSPipe } from './replace-us.pipe';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TypeaheadModule, FormsModule],
+  imports: [RouterOutlet, CommonModule, TypeaheadModule, FormsModule, ReplaceUSPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -66,6 +67,7 @@ export class AppComponent {
     this.filterTitles(input.value);
   }
   filterTitles(input: string) {
+    this.show = false
     this.videoUrl.set('')
     this.activeIndex ={}
     const filteredTitles: { [key: string]: any } = {};
@@ -79,5 +81,12 @@ export class AppComponent {
   }
   clearInput(){
     this.selected =''
+    this.show = true
+    this.subtitles = []
+  }
+  show:boolean = true
+  getBook(book:string){
+    this.selected =book
+    this.filterTitles(book);
   }
 }

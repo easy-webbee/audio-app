@@ -73,19 +73,18 @@ export const dataAudio: Record<string, any> = {
       },
     ],
   },
-  'The 10 Dollars Investor Growing Wealth on a shoestring budget Kenneth Scott':
-    {
-      title:
-        'The 10 Dollars Investor Growing Wealth on a shoestring budget Kenneth Scott',
-      subtitle: 'only',
-      expanded: false,
-      parts: [
-        {
-          label: 'part 1',
-          detail: '8KZhhKJZ#oKuh6_ACYkQoNhVmXu9FSMTlPJtadX3SX-nH0jN26CU',
-        },
-      ],
-    },
+  The_10_Dollars_Investor_Growing_Wealth_on_a_shoestring_budget_Kenneth_Scott: {
+    title:
+      'The 10 Dollars Investor Growing Wealth on a shoestring budget Kenneth Scott',
+    subtitle: 'only',
+    expanded: false,
+    parts: [
+      {
+        label: 'part 1',
+        detail: '8KZhhKJZ#oKuh6_ACYkQoNhVmXu9FSMTlPJtadX3SX-nH0jN26CU',
+      },
+    ],
+  },
   The_Gifts_of_Imperfection_by_Brene_Brown: {
     title: 'The Gifts of Imperfection by Brene Brown',
     subtitle: '3 Parts',

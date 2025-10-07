@@ -62,5 +62,19 @@
     </div>
   </div>
 </div>
+@if (show) {
+<div class="book-title">
+    <div  class="book-container" *ngFor="let book of this.audioTitles; let bookIndex = index">
+      <div class="expander" [attr.aria-expanded]="book.expanded">
+        <button class="expander__header" (click)="getBook(book)">
+          <div class="expander__title">
+            <h2>{{ book|replaceUS }}</h2>
+          </div>
+        </button>
+      </div>
+    </div>
+</div>
+}
+
 
 
