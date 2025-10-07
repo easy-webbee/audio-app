@@ -113,8 +113,8 @@ export class AppComponent {
     setTimeout(() => {
       const audioElement = document.querySelector('audio');
       if (audioElement) {
+        this.setupMediaSession(part, audioElement);
         audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
-        // this.setupMediaSession(part, audioElement);
       }
     });
   }
