@@ -1,8 +1,6 @@
 import { Component, ElementRef, ViewChild ,ViewChildren, QueryList} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
-import { signal } from '@angular/core';
 import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +11,6 @@ import { Title } from '@angular/platform-browser';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule,
     TypeaheadModule,
     FormsModule,
@@ -44,7 +41,7 @@ export class AppComponent {
     this.audioRef.nativeElement.play();
   }
   activeIndex: { [bookIndex: number]: number | null } = {};
-  videoUrl = signal('');
+  videoUrl :any;
   videoUrl2: any;
   books = Object.values(dataAudio);
   toggleExpand(book: any) {
@@ -59,11 +56,11 @@ export class AppComponent {
   //   this.loadAudio(part.detail)
   // }
   loadAudio(megastr: any) {
-    this.videoUrl.set('');
+    this.videoUrl= null;
     const currentTitle = this.titleService.getTitle()
     this.titleService.setTitle(currentTitle + ' ' + megastr.label)
     const megaFileUrl = encodeURIComponent(`${megastr.detail}`);
-    this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`);
+    this.videoUrl = `${environment.keyobUrl}stream/audio?url=${megaFileUrl}`
   }
 
   onInputChange(input: any) {
@@ -77,7 +74,7 @@ export class AppComponent {
   filterTitles(input: string) {
     this.titleService.setTitle(this.selected.replace(/-/g, ''));
     this.show = false;
-    this.videoUrl.set('');
+    this.videoUrl = null
     this.activeIndex = {};
     const filteredTitles: { [key: string]: any } = {};
     Object.keys(dataAudio).forEach((title) => {
@@ -188,7 +185,7 @@ export class AppComponent {
       setTimeout(() => {
         const audioElement = document.querySelector('audio') as HTMLAudioElement;
         if (audioElement) {
-          audioElement.src = this.videoUrl();
+          audioElement.src = this.videoUrl;
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
         }
       }, 400);
@@ -209,7 +206,7 @@ export class AppComponent {
       setTimeout(() => {
         const audioElement = document.querySelector('audio') as HTMLAudioElement;
         if (audioElement) {
-          audioElement.src = this.videoUrl();
+          audioElement.src = this.videoUrl;
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
         }
       }, 400);

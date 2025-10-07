@@ -48,7 +48,7 @@
           <audio
           *ngIf="activeIndex[bookIndex] === i && videoUrl"
           #audioPlayer
-          [src]="videoUrl()"
+          [src]="videoUrl"
           controls
           preload="metadata"
           style="width: 100%; margin-top: 8px;"
