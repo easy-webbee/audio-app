@@ -51,12 +51,20 @@
           </button>
 
           <audio
-            *ngIf="activeIndex[bookIndex] === i && videoUrl"
-            [src]="videoUrl()"
-            controls
-            preload="metadata"
-            style="width: 100%; margin-top: 8px;"
-          ></audio>
+          *ngIf="activeIndex[bookIndex] === i && videoUrl"
+          #audioPlayer
+          [src]="videoUrl()"
+          controls
+          preload="metadata"
+          style="width: 100%; margin-top: 8px;"
+          (ended)="onAudioEnded(bookIndex, i)"
+        ></audio>
+        
+        <div class="audio-controls" *ngIf="activeIndex[bookIndex] === i">
+          <button (click)="playPrev(bookIndex)">⏮ Previous</button>
+          <button (click)="playNext(bookIndex)">⏭ Next</button>
+        </div>
+        
         </li>
       </ul>
     </div>

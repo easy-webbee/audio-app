@@ -47,13 +47,13 @@ export class AppComponent {
     book.expanded = !book.expanded;
   }
   subtitles:any
-  onSubClick(bookIndex: number, partIndex: number, part: any) {
-    console.log(`Book #${bookIndex + 1}, Part #${partIndex + 1}: ${part.detail}`);
-    this.activeIndex[bookIndex] =
-      this.activeIndex[bookIndex] === partIndex ? null : partIndex;
-    console.log(part)
-    this.loadAudio(part.detail)
-  }
+  // onSubClick(bookIndex: number, partIndex: number, part: any) {
+  //   console.log(`Book #${bookIndex + 1}, Part #${partIndex + 1}: ${part.detail}`);
+  //   this.activeIndex[bookIndex] =
+  //     this.activeIndex[bookIndex] === partIndex ? null : partIndex;
+  //   console.log(part)
+  //   this.loadAudio(part.detail)
+  // }
   loadAudio(megastr:string){
     const megaFileUrl = encodeURIComponent(`${megastr}`);
     this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`)
@@ -96,4 +96,50 @@ export class AppComponent {
   get displayAudioTitles() {
     return this.audioTitles.map((t: string) => t.replace(/_/g, ' '));
   }
+  currentBookIndex: number | null = null;
+currentPartIndex: number | null = null;
+
+onSubClick(bookIndex: number, partIndex: number, part: any) {
+  this.currentBookIndex = bookIndex;
+  this.currentPartIndex = partIndex;
+  this.activeIndex[bookIndex] = partIndex;
+  this.loadAudio(part.detail);
+}
+
+// Auto next when audio ends
+onAudioEnded(bookIndex: number, partIndex: number) {
+  const book = this.subtitles[bookIndex];
+  if (!book || !book.parts) return;
+
+  const nextIndex = partIndex + 1;
+  if (nextIndex < book.parts.length) {
+    const nextPart = book.parts[nextIndex];
+    this.onSubClick(bookIndex, nextIndex, nextPart);
+  } else {
+    console.log('End of this book reached!');
+  }
+}
+
+// Manual next
+playNext(bookIndex: number) {
+  if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  const book = this.subtitles[this.currentBookIndex];
+  const nextIndex = this.currentPartIndex + 1;
+  if (book && nextIndex < book.parts.length) {
+    const nextPart = book.parts[nextIndex];
+    this.onSubClick(this.currentBookIndex, nextIndex, nextPart);
+  }
+}
+
+// Manual previous
+playPrev(bookIndex: number) {
+  if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  const book = this.subtitles[this.currentBookIndex];
+  const prevIndex = this.currentPartIndex - 1;
+  if (book && prevIndex >= 0) {
+    const prevPart = book.parts[prevIndex];
+    this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+  }
+}
+
 }
