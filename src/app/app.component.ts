@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule, } from '@angular/common';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 import { signal } from '@angular/core';
 import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -53,9 +53,10 @@ export class AppComponent {
     this.loadAudio(part.detail)
   }
   loadAudio(megastr:string){
-    const megaFileUrl = encodeURIComponent(`https://mega.nz/file/${megastr}`);
-    this.videoUrl.set(`${environment.keyobUrl}mega/stream?url=${megaFileUrl}`)
-    console.log(`${environment.keyobUrl}mega/stream?url=${megaFileUrl}`)
+    const megaFileUrl = encodeURIComponent(`${megastr}`);
+    this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`)
+    console.log(megaFileUrl)
+    console.log(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`)
   }
 
   onInputChange(input: any) {
