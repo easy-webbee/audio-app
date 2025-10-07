@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+html, body {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+  }
+
+  * {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-color: #444 !important;
+  }
+
+  img, video {
+    filter: brightness(0.8) contrast(1.2);
+  }
+
+  a {
+    color: #bb86fc !important;
+  }

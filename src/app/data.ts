@@ -8,17 +8,17 @@ export const dataAudio: Record<string, any> = {
       {
         label: 'Part 1',
         detail:
-          'https://mega.nz/file/AfhThSwB#tk3w_JF6yDesQRRljPx7Wz2y3sj-smhEw4VF27-FsTo',
+          'AfhThSwB#tk3w_JF6yDesQRRljPx7Wz2y3sj-smhEw4VF27-FsTo',
       },
       {
         label: 'Part 2',
         detail:
-          'https://mega.nz/file/8T4wHK5L#66j8T4TNfAersttMKeao94qFWmV1L20aKTdGYnZ8l88',
+          '8T4wHK5L#66j8T4TNfAersttMKeao94qFWmV1L20aKTdGYnZ8l88',
       },
       {
         label: 'Part 3',
         detail:
-          'https://mega.nz/file/UWwx1CyA#UyCJ49GTB2Br9KVvJGmafMvNGgPOjZcU944gsuDS7jg',
+          'UWwx1CyA#UyCJ49GTB2Br9KVvJGmafMvNGgPOjZcU944gsuDS7jg',
       },
     ],
   },

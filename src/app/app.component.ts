@@ -55,8 +55,6 @@ export class AppComponent {
   loadAudio(megastr:string){
     const megaFileUrl = encodeURIComponent(`${megastr}`);
     this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`)
-    console.log(megaFileUrl)
-    console.log(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`)
   }
 
   onInputChange(input: any) {
@@ -64,10 +62,12 @@ export class AppComponent {
   }
 
   onSearchSelected(input: any) {
-    console.log(input.value)
+    this.subtitles = []
     this.filterTitles(input.value);
   }
   filterTitles(input: string) {
+    this.videoUrl.set('')
+    this.activeIndex ={}
     const filteredTitles: { [key: string]: any } = {};
     Object.keys(dataAudio).forEach((title) => {
       if (title.replace(/-/g, '').toLowerCase().includes(input.replace(/ /g, '').toLowerCase())) {

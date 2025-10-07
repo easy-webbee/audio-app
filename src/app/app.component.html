@@ -1,10 +1,10 @@
 
 <div>
-  <h1>Hello, listeners! 1</h1>
+  <h1>Hello, listeners!</h1>
 
 </div>
 <div *ngIf="true" class="search_ontop search_container"  [ngClass]="{'search_ontop_bellow': true}">
-  <input [typeahead]="audioTitles" [(ngModel)]="selected" placeholder="Search mangas..."
+  <input [typeahead]="audioTitles" [(ngModel)]="selected" placeholder="Search audio..."
        class="form-control bg-danger search_input" (input)="onInputChange($event)" [typeaheadOptionsLimit]="7" (typeaheadOnSelect)="onSearchSelected($event)">
        <i class="search_icon">🔎</i>
        @if (selected) {
