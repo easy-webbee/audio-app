@@ -8,14 +8,14 @@
 
 
 -->
-<video
+<!-- <video
   *ngIf="videoUrl2"
   [src]="videoUrl2"
   controls
   playsinline
   preload="metadata"
   style="width: 100%; max-height: 80vh;"
-></video> 
+></video>  -->
 <div class="book-container" *ngFor="let book of books; let bookIndex = index">
   <div class="expander" [attr.aria-expanded]="book.expanded">
     <button class="expander__header" (click)="toggleExpand(book)">
