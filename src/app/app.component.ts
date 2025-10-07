@@ -58,9 +58,11 @@ export class AppComponent {
   //   console.log(part)
   //   this.loadAudio(part.detail)
   // }
-  loadAudio(megastr: string) {
+  loadAudio(megastr: any) {
     this.videoUrl.set('');
-    const megaFileUrl = encodeURIComponent(`${megastr}`);
+    const currentTitle = this.titleService.getTitle()
+    this.titleService.setTitle(currentTitle + ' ' + megastr.label)
+    const megaFileUrl = encodeURIComponent(`${megastr.detail}`);
     this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`);
   }
 
@@ -111,7 +113,7 @@ export class AppComponent {
     this.currentBookIndex = bookIndex;
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
-    this.loadAudio(part.detail);
+    this.loadAudio(part);
   
     setTimeout(() => {
       const audioElement = document.querySelector('audio') as HTMLAudioElement;
