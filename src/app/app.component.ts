@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild ,ViewChildren, QueryList} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
@@ -29,6 +29,7 @@ export class AppComponent {
   constructor(private titleService: Title) {}
 
   @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
+  @ViewChildren('audioPlayer') audioPlayers!: QueryList<ElementRef<HTMLAudioElement>>;
 
   ngOnInit() {
     this.audioTitles = Object.keys(dataAudio);
@@ -38,10 +39,10 @@ export class AppComponent {
     // this.videoUrl2 = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
   }
 
-  // playAudio() {
-  //   this.audioRef.nativeElement.src = this.videoUrl;
-  //   this.audioRef.nativeElement.play();
-  // }
+  playAudio() {
+    this.audioRef.nativeElement.src = this.videoUrl();
+    this.audioRef.nativeElement.play();
+  }
   activeIndex: { [bookIndex: number]: number | null } = {};
   videoUrl = signal('');
   videoUrl2: any;
@@ -58,6 +59,7 @@ export class AppComponent {
   //   this.loadAudio(part.detail)
   // }
   loadAudio(megastr: string) {
+    this.videoUrl.set('');
     const megaFileUrl = encodeURIComponent(`${megastr}`);
     this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`);
   }
@@ -92,6 +94,7 @@ export class AppComponent {
     this.selected = '';
     this.show = true;
     this.subtitles = [];
+    this.videoUrl.set('');
   }
   show: boolean = true;
   getBook(book: string) {
@@ -169,28 +172,45 @@ export class AppComponent {
     }
   }
 
-  // Manual next
   playNext(bookIndex: number) {
-    if (this.currentBookIndex === null || this.currentPartIndex === null)
-      return;
+    if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  
     const book = this.subtitles[this.currentBookIndex];
     const nextIndex = this.currentPartIndex + 1;
+  
     if (book && nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
       this.onSubClick(this.currentBookIndex, nextIndex, nextPart);
-    }
-  }
-
-  // Manual previous
-  playPrev(bookIndex: number) {
-    if (this.currentBookIndex === null || this.currentPartIndex === null)
-      return;
-    const book = this.subtitles[this.currentBookIndex];
-    const prevIndex = this.currentPartIndex - 1;
-    if (book && prevIndex >= 0) {
-      const prevPart = book.parts[prevIndex];
-      this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+  
+      // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl();
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
     }
   }
   
+  playPrev(bookIndex: number) {
+    if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  
+    const book = this.subtitles[this.currentBookIndex];
+    const prevIndex = this.currentPartIndex - 1;
+  
+    if (book && prevIndex >= 0) {
+      const prevPart = book.parts[prevIndex];
+      this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+  
+      // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl();
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
+    }
+  }
 }
