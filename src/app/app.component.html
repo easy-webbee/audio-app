@@ -42,13 +42,13 @@
             <span class="label">{{ sub.label }}</span>
           </button>
 
-          <video
+          <audio
             *ngIf="activeIndex[bookIndex] === i && videoUrl"
             [src]="videoUrl()"
             controls
             preload="metadata"
             style="width: 100%; margin-top: 8px;"
-          ></video>
+          ></audio>
         </li>
       </ul>
     </div>
