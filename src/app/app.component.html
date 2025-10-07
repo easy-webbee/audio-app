@@ -3,6 +3,14 @@
   <h1>Hello, listeners! 1</h1>
 
 </div>
+<div *ngIf="true" class="search_ontop search_container"  [ngClass]="{'search_ontop_bellow': true}">
+  <input [typeahead]="audioTitles" [(ngModel)]="selected" placeholder="Search mangas..."
+       class="form-control bg-danger search_input" (input)="onInputChange($event)" [typeaheadOptionsLimit]="7" (typeaheadOnSelect)="onSearchSelected($event)">
+       <i class="search_icon">🔎</i>
+       @if (selected) {
+        <i class="Clear_icon" (click)="clearInput()">X</i>
+       }
+</div>
 <!-- <button (click)="playAudio()">Play</button>
 <audio #audio controls></audio>
 
@@ -16,7 +24,7 @@
   preload="metadata"
   style="width: 100%; max-height: 80vh;"
 ></video>  -->
-<div class="book-container" *ngFor="let book of books; let bookIndex = index">
+<div class="book-container" *ngFor="let book of this.subtitles; let bookIndex = index">
   <div class="expander" [attr.aria-expanded]="book.expanded">
     <button class="expander__header" (click)="toggleExpand(book)">
       <div class="expander__title">

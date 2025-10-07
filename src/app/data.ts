@@ -1,9 +1,9 @@
-export const dataAudio = {
+export const dataAudio: Record<string, any> = {
   Emotional_Intelligence_Why_It_Can_Matter_More_Than_IQ_by_Daniel_Goleman: {
     title:
       'Emotional Intelligence Why It Can Matter More Than IQ by Daniel Goleman',
     subtitle: '3 Parts',
-    expanded: false,
+    expanded: true,
     parts: [
       {
         label: 'Part 1',
@@ -25,7 +25,7 @@ export const dataAudio = {
   Atomic_Habits_by_James_Clear: {
     title: 'Atomic Habits by James Clear',
     subtitle: '5 Parts',
-    expanded: false,
+    expanded: true,
     parts: [
       {
         label: 'part1',
@@ -52,7 +52,7 @@ export const dataAudio = {
   Jim_Rohn_Best_Life_Ever_Training: {
     title: 'Jim Rohn Best Life Ever Training',
     subtitle: '5 Parts',
-    expanded: false,
+    expanded: true,
     parts: [
       {
         label: 'part 1',

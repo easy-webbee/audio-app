@@ -135,4 +135,30 @@
     font-size: 13px;
     color: #94a3b8;
   }
-  
+  .search_ontop{
+    position: sticky;
+    top: 0;
+  }
+  .search_ontop_bellow{
+    top: 55px;
+  }
+  .search_input {
+    padding-left: 45px; /* Adjust according to the icon size */
+    color: white;
+    font-size: 1.35rem;
+  }
+  .search_icon {
+    position: absolute;
+    left: 10px; /* Adjust the position of the icon */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999; /* Adjust the color of the icon */
+  }
+  .Clear_icon{
+    position: absolute;
+    right: 20px; /* Adjust the position of the icon */
+    top: 50%;
+    transform: translateY(-50%);
+    color: white; /* Adjust the color of the icon */
+    cursor: pointer;
+  }
