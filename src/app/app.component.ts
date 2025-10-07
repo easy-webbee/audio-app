@@ -114,10 +114,37 @@ export class AppComponent {
       const audioElement = document.querySelector('audio');
       if (audioElement) {
         audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        this.setupMediaSession(part, audioElement);
       }
     });
   }
-
+  setupMediaSession(part: any, audioElement: HTMLAudioElement) {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: part.label || 'Unknown title',
+        artist: 'Your App Name',
+        album: 'Audio Collection',
+        // artwork: [
+        //   { src: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
+        //   { src: '/assets/icon-512.png', sizes: '512x512', type: 'image/png' },
+        // ],
+      });
+  
+      navigator.mediaSession.setActionHandler('play', () => {
+        audioElement.play();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        audioElement.pause();
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        this.playPrev(this.currentBookIndex!);
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        this.playNext(this.currentBookIndex!);
+      });
+    }
+  }
+  
   // Auto next when audio ends
   onAudioEnded(bookIndex: number, partIndex: number) {
     const book = this.subtitles[bookIndex];
@@ -155,4 +182,5 @@ export class AppComponent {
       this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
     }
   }
+  
 }
