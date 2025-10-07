@@ -45,11 +45,6 @@
     <div class="expander__content" [class.show]="book.expanded">
       <ul class="sub-list">
         <li class="sub-item" *ngFor="let sub of book.parts; let i = index">
-          <button type="button" (click)="onSubClick(bookIndex, i, sub)">
-            <span class="dot"></span>
-            <span class="label">{{ sub.label }}</span>
-          </button>
-
           <audio
           *ngIf="activeIndex[bookIndex] === i && videoUrl"
           #audioPlayer
@@ -59,12 +54,16 @@
           style="width: 100%; margin-top: 8px;"
           (ended)="onAudioEnded(bookIndex, i)"
         ></audio>
-        
-        <div class="audio-controls" *ngIf="activeIndex[bookIndex] === i">
-          <button (click)="playPrev(bookIndex)">⏮ Previous</button>
-          <button (click)="playNext(bookIndex)">⏭ Next</button>
+        <div class="audio-controls" >
+          <button type="button" (click)="onSubClick(bookIndex, i, sub)">
+            <span class="dot"></span>
+            <span class="label">{{ sub.label }}</span>
+          </button>
+          <ng-content *ngIf="activeIndex[bookIndex] === i">
+            <button (click)="playPrev(bookIndex)">⏮ Previous</button>
+            <button (click)="playNext(bookIndex)">⏭ Next</button>
+          </ng-content>
         </div>
-        
         </li>
       </ul>
     </div>
