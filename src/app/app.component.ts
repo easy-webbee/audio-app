@@ -7,6 +7,7 @@ import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { ReplaceUSPipe } from './replace-us.pipe';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -20,12 +21,12 @@ export class AppComponent {
   title = 'audio-app';
   audioTitles:any;
   selected: any;
-  constructor(  ) {}
+  constructor(     private titleService: Title, ) {}
 
   @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
 
   ngOnInit() {
-    // console.log(Object.keys(dataAudio))
+    console.log(Object.keys(dataAudio))
     this.audioTitles = Object.keys(dataAudio)
     console.log(Object.values(dataAudio))
     // const megaFileUrl = encodeURIComponent(
@@ -67,15 +68,18 @@ export class AppComponent {
     this.filterTitles(input.value);
   }
   filterTitles(input: string) {
+    this.titleService.setTitle(this.selected.replace(/-/g, ''))
     this.show = false
     this.videoUrl.set('')
     this.activeIndex ={}
     const filteredTitles: { [key: string]: any } = {};
     Object.keys(dataAudio).forEach((title) => {
+      console.log(title)
       if (title.replace(/-/g, '').toLowerCase().includes(input.replace(/ /g, '').toLowerCase())) {
         filteredTitles[title] = dataAudio[title];
       }
     });
+    console.log(filteredTitles)
     this.subtitles = Object.values(filteredTitles)
     console.log(Object.values(filteredTitles));
   }
@@ -86,7 +90,10 @@ export class AppComponent {
   }
   show:boolean = true
   getBook(book:string){
-    this.selected =book
+    this.selected = book
     this.filterTitles(book);
+  }
+  get displayAudioTitles() {
+    return this.audioTitles.map((t: string) => t.replace(/_/g, ' '));
   }
 }
