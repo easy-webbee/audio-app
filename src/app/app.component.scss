@@ -150,6 +150,10 @@ body {
   /* Adjust according to the icon size */
   color: white;
   font-size: 1.35rem;
+  padding-right: 30px; // make room for the X button
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .search_icon {
@@ -172,10 +176,12 @@ body {
   /* Adjust the color of the icon */
   cursor: pointer;
 }
-.book-title{
+
+.book-title {
   max-height: 80vh;
   overflow: scroll;
 }
+
 .audio-controls {
   display: flex;
   justify-content: center;
@@ -195,4 +201,21 @@ body {
       background: #c93737;
     }
   }
+}
+
+::ng-deep .dropdown-menu {
+  width: 100% !important;
+  /* Match input width */
+  min-width: unset !important;
+  /* Remove default bootstrap min-width */
+  border-radius: 8px;
+  /* Match your input shape */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+::ng-deep .dropdown-item {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
