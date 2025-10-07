@@ -114,7 +114,7 @@ export class AppComponent {
       const audioElement = document.querySelector('audio');
       if (audioElement) {
         audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
-        this.setupMediaSession(part, audioElement);
+        // this.setupMediaSession(part, audioElement);
       }
     });
   }
