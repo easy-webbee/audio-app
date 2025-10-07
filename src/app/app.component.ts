@@ -109,20 +109,30 @@ export class AppComponent {
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
     this.loadAudio(part.detail);
-     // Wait for DOM to update, then play audio
+  
     setTimeout(() => {
-      const audioElement = document.querySelector('audio');
-      if (audioElement) {
-        this.setupMediaSession(part, audioElement);
-        audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
-      }
-    });
+      const audioElement = document.querySelector('audio') as HTMLAudioElement;
+      if (!audioElement) return;
+  
+      // Set up media session metadata
+      this.setupMediaSession(part, audioElement);
+  
+      // Wait until the audio is ready to play
+      audioElement.addEventListener(
+        'canplay',
+        () => {
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        },
+        { once: true } // only fire once
+      );
+    }, 500);
   }
+  
   setupMediaSession(part: any, audioElement: HTMLAudioElement) {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: part.label || 'Unknown title',
-        artist: 'Your App Name',
+        artist: 'audio app',
         album: 'Audio Collection',
         // artwork: [
         //   { src: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
