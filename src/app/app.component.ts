@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild ,ViewChildren, QueryList} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
-import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { ReplaceUSPipe } from './replace-us.pipe';
@@ -23,6 +22,8 @@ import { AudioService } from './audio.service';
 export class AppComponent {
   title = 'audio-app';
   audioTitles: any;
+  dataAudio:any
+  books:any
   selected: any;
   constructor(private titleService: Title, private data: AudioService) {}
 
@@ -31,7 +32,9 @@ export class AppComponent {
 
   ngOnInit() {
     this.data.getData().subscribe(data=>{
+      this.dataAudio = data
       this.audioTitles = Object.keys(data);
+      this.books = Object.values(this.dataAudio);
     })
     // this.audioTitles = Object.keys(dataAudio);
     // const megaFileUrl = encodeURIComponent(
@@ -40,14 +43,14 @@ export class AppComponent {
     // this.videoUrl2 = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
   }
 
-  playAudio() {
-    this.audioRef.nativeElement.src = this.videoUrl();
-    this.audioRef.nativeElement.play();
-  }
+  // playAudio() {
+  //   this.audioRef.nativeElement.src = this.videoUrl;
+  //   this.audioRef.nativeElement.play();
+  // }
   activeIndex: { [bookIndex: number]: number | null } = {};
   videoUrl :any;
   videoUrl2: any;
-  books = Object.values(dataAudio);
+
   toggleExpand(book: any) {
     book.expanded = !book.expanded;
   }
@@ -80,14 +83,14 @@ export class AppComponent {
     this.videoUrl = null
     this.activeIndex = {};
     const filteredTitles: { [key: string]: any } = {};
-    Object.keys(dataAudio).forEach((title) => {
+    Object.keys(this.dataAudio).forEach((title) => {
       if (
         title
           .replace(/-/g, '')
           .toLowerCase()
           .includes(input.replace(/ /g, '').toLowerCase())
       ) {
-        filteredTitles[title] = dataAudio[title];
+        filteredTitles[title] = this.dataAudio[title];
       }
     });
     this.subtitles = Object.values(filteredTitles);
@@ -96,7 +99,7 @@ export class AppComponent {
     this.selected = '';
     this.show = true;
     this.subtitles = [];
-    this.videoUrl.set('');
+    this.videoUrl = null
   }
   show: boolean = true;
   getBook(book: string) {
