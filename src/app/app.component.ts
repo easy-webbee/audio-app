@@ -61,8 +61,7 @@ export class AppComponent {
   // }
   loadAudio(megastr: any) {
     this.videoUrl= null;
-    const currentTitle = this.titleService.getTitle()
-    this.titleService.setTitle(currentTitle + ' ' + megastr.label)
+    this.titleService.setTitle(this.selected.replace(/-/g, '')+ ' ' + megastr.label);
     const megaFileUrl = encodeURIComponent(`${megastr.detail}`);
     this.videoUrl = `${environment.keyobUrl}stream/audio?url=${megaFileUrl}`
   }
