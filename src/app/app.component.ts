@@ -169,6 +169,14 @@ export class AppComponent {
     if (nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
       this.onSubClick(bookIndex, nextIndex, nextPart);
+        // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl;
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
     } else {
       console.log('End of this book reached!');
     }
