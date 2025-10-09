@@ -6,4 +6,8 @@ export const routes: Routes = [
         path: ':book',
         component: AppComponent,
     },
+    {
+        path: ':book/:part',
+        component: AppComponent,
+    },
 ];

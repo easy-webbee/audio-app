@@ -37,8 +37,11 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    const urlbookName = this.locationAngular.path().slice(1)
-    this.data.getData().subscribe(data=>{
+    const urlPath = this.locationAngular.path().slice(1)
+    const urlbookName = this.locationAngular.path().split('/')[1];
+    const urlParkName = this.locationAngular.path().split('/')[2];
+    console.log(urlbookName,urlParkName)
+    this.data.getData().subscribe((data:Record<string, any>)=>{
       this.dataAudio = data
       this.audioTitles = Object.keys(data);
       this.books = Object.values(this.dataAudio);
@@ -46,6 +49,13 @@ export class AppComponent {
       if(matchName){
         this.selected = urlbookName
         this.filterTitles(urlbookName)
+        if(urlParkName){
+          const bookdata = data[`${urlbookName}`]
+          const partDe = bookdata.parts[urlParkName]
+          if(partDe){
+            this.onSubClick(0,+urlParkName,partDe)
+          }
+        }
       }
     })
   }
@@ -71,7 +81,6 @@ export class AppComponent {
   }
   
   filterTitles(input: string) {
-    this.locationAngular.go(`/${input}`);
     this.titleService.setTitle(this.selected.replace(/-/g, ''));
     this.show = false;
     this.videoUrl = null
@@ -101,6 +110,7 @@ export class AppComponent {
   getBook(book: string) {
     this.selected = book;
     this.filterTitles(book);
+    this.locationAngular.go(`/${book}`);
   }
 
   get displayAudioTitles() {
@@ -108,6 +118,8 @@ export class AppComponent {
   }
 
   onSubClick(bookIndex: number, partIndex: number, part: any) {
+    console.log(bookIndex, partIndex, part)
+    this.locationAngular.go(`/${this.selected}/${partIndex}`);
     this.currentBookIndex = bookIndex;
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
@@ -198,6 +210,9 @@ export class AppComponent {
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
         }
       }, 400);
+    }else{
+      console.log(book)
+      console.log(nextIndex)
     }
   }
   
