@@ -78,6 +78,7 @@ export class AppComponent {
   onSearchSelected(input: any) {
     this.subtitles = [];
     this.filterTitles(input.value);
+    this.locationAngular.go(`/${this.selected}`);
   }
   
   filterTitles(input: string) {
@@ -118,7 +119,6 @@ export class AppComponent {
   }
 
   onSubClick(bookIndex: number, partIndex: number, part: any) {
-    console.log(bookIndex, partIndex, part)
     this.locationAngular.go(`/${this.selected}/${partIndex}`);
     this.currentBookIndex = bookIndex;
     this.currentPartIndex = partIndex;

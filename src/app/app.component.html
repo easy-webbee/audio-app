@@ -55,10 +55,13 @@
           (ended)="onAudioEnded(bookIndex, i)"
         ></audio>
         <div class="audio-controls" >
-          <button type="button" (click)="onSubClick(bookIndex, i, sub)">
-            <span class="dot"></span>
-            <span class="label">{{ sub.label }}</span>
-          </button>
+          <button 
+          type="button" 
+          (click)="onSubClick(bookIndex, i, sub)" 
+          [class.active]="activeIndex[bookIndex] === i">
+          <span class="dot"></span>
+          <span class="label">{{ sub.label }}</span>
+        </button>
           <ng-content *ngIf="activeIndex[bookIndex] === i">
             <button (click)="playPrev(bookIndex)">⏮ Previous</button>
             <button (click)="playNext(bookIndex)">Next ⏭</button>
