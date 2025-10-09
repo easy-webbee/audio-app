@@ -219,3 +219,18 @@ body {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+.sub-item button.active {
+  background: linear-gradient(90deg, #7c3aed, #4c1d95); // bright purple gradient
+  color: white;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.6);
+  transform: scale(1.03);
+  transition: all 0.2s ease;
+}
+
+.sub-item button.active .dot {
+  background: linear-gradient(90deg, #facc15, #f97316); // make dot stand out
+}
+.sub-item button {
+  transition: all 0.2s ease;
+}

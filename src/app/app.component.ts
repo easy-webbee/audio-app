@@ -1,19 +1,17 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, ElementRef, ViewChild ,ViewChildren, QueryList} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
-import { signal } from '@angular/core';
-import { dataAudio } from './data';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { ReplaceUSPipe } from './replace-us.pipe';
 import { Title } from '@angular/platform-browser';
+import { AudioService } from './audio.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule,
     TypeaheadModule,
     FormsModule,
@@ -23,43 +21,54 @@ import { Title } from '@angular/platform-browser';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'audio-app';
+  @ViewChildren('audioPlayer') audioPlayers!: QueryList<ElementRef<HTMLAudioElement>>;
+  activeIndex: { [bookIndex: number]: number | null } = {};
+  videoUrl :any;
+  subtitles: any;
   audioTitles: any;
-  selected: any;
-  constructor(private titleService: Title) {}
+  dataAudio:any
+  books:any
+  selected: any ='';
+  show: boolean = true;
+  currentBookIndex: number | null = null;
+  currentPartIndex: number | null = null;
 
-  @ViewChild('audio', { static: true }) audioRef!: ElementRef<HTMLAudioElement>;
-
-  ngOnInit() {
-    this.audioTitles = Object.keys(dataAudio);
-    // const megaFileUrl = encodeURIComponent(
-    //   'https://mega.nz/file/oTgiCKib#M2TyXr8cBTJzUI1oFyyZ9L92Of0hRv5VxbDvOBncGbs'
-    // );
-    // this.videoUrl2 = `${environment.keyobUrl}mega/stream?url=${megaFileUrl}`;
+  constructor(private titleService: Title, private audiodata: AudioService,private locationAngular: Location) {
   }
 
-  // playAudio() {
-  //   this.audioRef.nativeElement.src = this.videoUrl;
-  //   this.audioRef.nativeElement.play();
-  // }
-  activeIndex: { [bookIndex: number]: number | null } = {};
-  videoUrl = signal('');
-  videoUrl2: any;
-  books = Object.values(dataAudio);
+  ngOnInit() {
+    const urlPath = this.locationAngular.path().slice(1)
+    const urlbookName = this.locationAngular.path().split('/')[1];
+    const urlParkName = this.locationAngular.path().split('/')[2];
+    console.log(urlbookName,urlParkName)
+    this.audiodata.getData().subscribe((data:Record<string, any>)=>{
+      this.dataAudio = data
+      this.audioTitles = Object.keys(data);
+      this.books = Object.values(this.dataAudio);
+      const matchName = this.audioTitles.includes(urlbookName)
+      if(matchName){
+        this.selected = urlbookName
+        this.filterTitles(urlbookName)
+        if(urlParkName){
+          const bookdata = data[`${urlbookName}`]
+          const partDe = bookdata.parts[urlParkName]
+          if(partDe){
+            this.onSubClick(0,+urlParkName,partDe)
+          }
+        }
+      }
+    })
+  }
+
   toggleExpand(book: any) {
     book.expanded = !book.expanded;
   }
-  subtitles: any;
-  // onSubClick(bookIndex: number, partIndex: number, part: any) {
-  //   console.log(`Book #${bookIndex + 1}, Part #${partIndex + 1}: ${part.detail}`);
-  //   this.activeIndex[bookIndex] =
-  //     this.activeIndex[bookIndex] === partIndex ? null : partIndex;
-  //   console.log(part)
-  //   this.loadAudio(part.detail)
-  // }
-  loadAudio(megastr: string) {
-    const megaFileUrl = encodeURIComponent(`${megastr}`);
-    this.videoUrl.set(`${environment.keyobUrl}stream/audio?url=${megaFileUrl}`);
+
+  loadAudio(megastr: any) {
+    this.videoUrl= null;
+    this.titleService.setTitle(this.selected.replace(/-/g, '')+ ' ' + megastr.label);
+    const megaFileUrl = encodeURIComponent(`${megastr.detail}`);
+    this.videoUrl = `${environment.keyobUrl}stream/audio?url=${megaFileUrl}`
   }
 
   onInputChange(input: any) {
@@ -69,60 +78,76 @@ export class AppComponent {
   onSearchSelected(input: any) {
     this.subtitles = [];
     this.filterTitles(input.value);
+    this.locationAngular.go(`/${this.selected}`);
   }
+  
   filterTitles(input: string) {
     this.titleService.setTitle(this.selected.replace(/-/g, ''));
     this.show = false;
-    this.videoUrl.set('');
+    this.videoUrl = null
     this.activeIndex = {};
     const filteredTitles: { [key: string]: any } = {};
-    Object.keys(dataAudio).forEach((title) => {
+    Object.keys(this.dataAudio).forEach((title) => {
       if (
         title
           .replace(/-/g, '')
           .toLowerCase()
           .includes(input.replace(/ /g, '').toLowerCase())
       ) {
-        filteredTitles[title] = dataAudio[title];
+        filteredTitles[title] = this.dataAudio[title];
       }
     });
     this.subtitles = Object.values(filteredTitles);
   }
+
   clearInput() {
     this.selected = '';
     this.show = true;
     this.subtitles = [];
+    this.videoUrl = null
+    this.locationAngular.go(`/${this.selected}`);
   }
-  show: boolean = true;
+
   getBook(book: string) {
     this.selected = book;
     this.filterTitles(book);
+    this.locationAngular.go(`/${book}`);
   }
+
   get displayAudioTitles() {
     return this.audioTitles.map((t: string) => t.replace(/_/g, ' '));
   }
-  currentBookIndex: number | null = null;
-  currentPartIndex: number | null = null;
 
   onSubClick(bookIndex: number, partIndex: number, part: any) {
+    this.locationAngular.go(`/${this.selected}/${partIndex}`);
     this.currentBookIndex = bookIndex;
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
-    this.loadAudio(part.detail);
-     // Wait for DOM to update, then play audio
+    this.loadAudio(part);
+  
     setTimeout(() => {
-      const audioElement = document.querySelector('audio');
-      if (audioElement) {
-        this.setupMediaSession(part, audioElement);
-        audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
-      }
-    });
+      const audioElement = document.querySelector('audio') as HTMLAudioElement;
+      if (!audioElement) return;
+  
+      // Set up media session metadata
+      this.setupMediaSession(part, audioElement);
+  
+      // Wait until the audio is ready to play
+      audioElement.addEventListener(
+        'canplay',
+        () => {
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        },
+        { once: true } // only fire once
+      );
+    }, 500);
   }
+
   setupMediaSession(part: any, audioElement: HTMLAudioElement) {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: part.label || 'Unknown title',
-        artist: 'Your App Name',
+        artist: 'audio app',
         album: 'Audio Collection',
         // artwork: [
         //   { src: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
@@ -144,7 +169,7 @@ export class AppComponent {
       });
     }
   }
-  
+
   // Auto next when audio ends
   onAudioEnded(bookIndex: number, partIndex: number) {
     const book = this.subtitles[bookIndex];
@@ -154,33 +179,61 @@ export class AppComponent {
     if (nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
       this.onSubClick(bookIndex, nextIndex, nextPart);
+        // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl;
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
     } else {
       console.log('End of this book reached!');
     }
   }
 
-  // Manual next
   playNext(bookIndex: number) {
-    if (this.currentBookIndex === null || this.currentPartIndex === null)
-      return;
+    if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  
     const book = this.subtitles[this.currentBookIndex];
     const nextIndex = this.currentPartIndex + 1;
+  
     if (book && nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
       this.onSubClick(this.currentBookIndex, nextIndex, nextPart);
-    }
-  }
-
-  // Manual previous
-  playPrev(bookIndex: number) {
-    if (this.currentBookIndex === null || this.currentPartIndex === null)
-      return;
-    const book = this.subtitles[this.currentBookIndex];
-    const prevIndex = this.currentPartIndex - 1;
-    if (book && prevIndex >= 0) {
-      const prevPart = book.parts[prevIndex];
-      this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+  
+      // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl;
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
+    }else{
+      console.log(book)
+      console.log(nextIndex)
     }
   }
   
+  playPrev(bookIndex: number) {
+    if (this.currentBookIndex === null || this.currentPartIndex === null) return;
+  
+    const book = this.subtitles[this.currentBookIndex];
+    const prevIndex = this.currentPartIndex - 1;
+  
+    if (book && prevIndex >= 0) {
+      const prevPart = book.parts[prevIndex];
+      this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+  
+      // auto-play after loading
+      setTimeout(() => {
+        const audioElement = document.querySelector('audio') as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.src = this.videoUrl;
+          audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+        }
+      }, 400);
+    }
+  }
 }
