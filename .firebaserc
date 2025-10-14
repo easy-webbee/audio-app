@@ -2,7 +2,7 @@
   "targets": {
     "mymusicplayers": {
       "hosting": {
-        "site": "audio-for-you",
+        "site": "stock-chart-abc",
         "public": "public"
       }
     }

@@ -1,7 +1,7 @@
 {
     "hosting": [
       {
-        "site": "audio-for-you",
+        "site": "stock-chart-abc",
         "source": ".",
         "frameworksBackend": {
          "region": "us-east1"
