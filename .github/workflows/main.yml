@@ -5,10 +5,10 @@ name: CI/CD Deploy to Firebase Hosting on merge
 on:
   push:
     branches:
-        - my-audio-list
+        - stock-app-chart
   pull_request:
     branches:
-        - my-audio-list
+        - stock-app-chart
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
    build_and_deploy:
@@ -22,6 +22,6 @@ jobs:
             firebaseServiceAccount: '${{ secrets.FIREBASE_AUDIO_TOKEN}}'
             channelId: live
             projectId: mymusicplayers
-            target: my-audio-list
+            target: stock-chart-abc
         env:
             FIREBASE_CLI_EXPERIMENTS: webframeworks
