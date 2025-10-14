@@ -1,13 +1,14 @@
 {
+  "projects": {
+    "default": "mymusicplayers"
+  },
   "targets": {
     "mymusicplayers": {
       "hosting": {
-        "site": "stock-chart-abc",
-        "public": "public"
+        "stock-chart-abc": [
+          "stock-chart-abc"
+        ]
       }
     }
-  },
-  "projects": {
-    "default": "mymusicplayers"
   }
 }

@@ -1,20 +1,17 @@
 {
-    "hosting": [
+  "hosting": {
+    "site": "stock-chart-abc",
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
       {
-        "site": "stock-chart-abc",
-        "source": ".",
-        "frameworksBackend": {
-         "region": "us-east1"
-        },
-        "ignore": [
-          "**/.*"
-        ],
-        "rewrites": [
-          {
-            "source": "**",
-            "destination": "/index.html"
-          }
-        ]
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }
+}
