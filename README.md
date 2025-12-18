@@ -1,27 +1,23 @@
-# AudioApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.16.
+### AudioApp
 
-## Development server
+**Overview**
+This project allows users to listen to a curated list of audio files. The audio is uploaded to Mega, and the generated links (endpoints) are stored for the front-end to retrieve and display.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+**Key Features**
 
-## Code scaffolding
+* Uploads audio to Mega storage
+* Provides audio links for easy retrieval on the front-end
+* Simple and intuitive interface for audio playback
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+### Future Enhancements
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+**Planned Features**
 
-## Running unit tests
+* **Speech-to-Text Integration**: Use large language models (LLMs) to transcribe speech from the audio into text, which will be displayed alongside the audio playback.
+* **Speech and Text Synchronization**: The system will allow both audio and text to play simultaneously, enhancing accessibility and improving user experience.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
