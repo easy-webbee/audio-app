@@ -25,6 +25,7 @@ export class AppComponent {
   activeIndex: { [bookIndex: number]: number | null } = {};
   videoUrl :any;
   pdfUrl!: SafeResourceUrl;
+  pdfRawUrl: string = '';
   subtitles: any;
   audioTitles: any;
   dataAudio:any
@@ -36,7 +37,19 @@ export class AppComponent {
 
   constructor(private titleService: Title, private audiodata: AudioService,private locationAngular: Location, private sanitizer: DomSanitizer) {
   }
-
+  get isMobile(): boolean {
+    return window.innerWidth < 768;
+  }
+  
+  get isIOS(): boolean {
+    return (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    );
+  }
+  shouldOpenPdfInNewTab(): boolean {
+    return this.isIOS || this.isMobile;
+  }
   ngOnInit() {
     const urlPath = this.locationAngular.path().slice(1)
     const urlbookName = this.locationAngular.path().split('/')[1];
@@ -76,11 +89,10 @@ export class AppComponent {
   
     const raw = bookPdf;
   
-    const url =`${environment.keyobUrl}stream/pdf?url=` + encodeURIComponent(raw);
+   this.pdfRawUrl =`${environment.keyobUrl}stream/pdf?url=` + encodeURIComponent(raw);
   
-    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl( this.pdfRawUrl );
   
-    console.log('Loading PDF:', url);
   }
   onInputChange(input: any) {
     console.log(input.target.value);
