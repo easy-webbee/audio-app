@@ -7,7 +7,7 @@ import { ReplaceUSPipe } from './replace-us.pipe';
 import { Title } from '@angular/platform-browser';
 import { AudioService } from './audio.service';
 import { Location } from '@angular/common';
-
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -24,6 +24,7 @@ export class AppComponent {
   @ViewChildren('audioPlayer') audioPlayers!: QueryList<ElementRef<HTMLAudioElement>>;
   activeIndex: { [bookIndex: number]: number | null } = {};
   videoUrl :any;
+  pdfUrl!: SafeResourceUrl;
   subtitles: any;
   audioTitles: any;
   dataAudio:any
@@ -33,7 +34,7 @@ export class AppComponent {
   currentBookIndex: number | null = null;
   currentPartIndex: number | null = null;
 
-  constructor(private titleService: Title, private audiodata: AudioService,private locationAngular: Location) {
+  constructor(private titleService: Title, private audiodata: AudioService,private locationAngular: Location, private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
@@ -70,7 +71,17 @@ export class AppComponent {
     const megaFileUrl = encodeURIComponent(`${megastr.detail}`);
     this.videoUrl = `${environment.keyobUrl}stream/audio?url=${megaFileUrl}`
   }
-
+  loadPdf(bookPdf: string) {
+    if (!bookPdf) return;
+  
+    const raw = bookPdf;
+  
+    const url =`${environment.keyobUrl}stream/pdf?url=` + encodeURIComponent(raw);
+  
+    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  
+    console.log('Loading PDF:', url);
+  }
   onInputChange(input: any) {
     console.log(input.target.value);
   }
@@ -79,6 +90,8 @@ export class AppComponent {
     this.subtitles = [];
     this.filterTitles(input.value);
     this.locationAngular.go(`/${this.selected}`);
+    console.log('Selected search input:', input.value);
+    // this.loadPdf(this.books.find((b: any) => b.title === this.selected)?.bookpdf || '');
   }
   
   filterTitles(input: string) {
@@ -98,6 +111,7 @@ export class AppComponent {
       }
     });
     this.subtitles = Object.values(filteredTitles);
+    this.loadPdf(this.subtitles[0]?.bookpdf);
   }
 
   clearInput() {
@@ -112,6 +126,7 @@ export class AppComponent {
     this.selected = book;
     this.filterTitles(book);
     this.locationAngular.go(`/${book}`);
+    console.log('Selected book:', book);
   }
 
   get displayAudioTitles() {

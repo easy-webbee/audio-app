@@ -21,12 +21,22 @@
 
 :host {
   display: block;
-  max-width: 520px;
+  // max-width: 520px;
   margin: 40px auto;
   font-family: Inter, system-ui, sans-serif;
   color: rgb(28, 27, 27);
 }
-
+.big-container {
+  // max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;     
+}
+.book-container{
+  width: 100%;
+  max-width: 520px;
+  margin-top: 20px;
+}
 body {
   background: #0f172a;
 }
@@ -233,4 +243,16 @@ body {
 }
 .sub-item button {
   transition: all 0.2s ease;
+}
+.pdf-container{
+  min-width: 800px !important;
+  justify-self: center;
+}
+
+@media (max-width: 600px) {
+  .pdf-container {
+    min-width: 100px!important;
+
+    padding: 0 10px;
+  }
 }
