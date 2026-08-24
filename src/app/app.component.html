@@ -93,6 +93,9 @@
         </ul>
       </div>
     </div>
+    <div class="current-subtitle" *ngIf="currentSubtitle">
+      {{ currentSubtitle }}
+    </div>
     <div *ngIf="book.bookpdf" class="pdf-container">
       <!-- iPhone fallback -->
       <ng-container *ngIf="shouldOpenPdfInNewTab(); else pdfViewer">
@@ -128,8 +131,5 @@
   </div>
   }
 
-  <div class="current-subtitle" *ngIf="currentSubtitle">
-    {{ currentSubtitle }}
-  </div>
 </div>
 
