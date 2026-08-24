@@ -35,6 +35,9 @@ export class AppComponent {
   currentBookIndex: number | null = null;
   currentPartIndex: number | null = null;
 
+  currentSubtitle = '';
+  parsedSubtitles: { time: number; text: string }[] = [];
+
   constructor(private titleService: Title, private audiodata: AudioService,private locationAngular: Location, private sanitizer: DomSanitizer) {
   }
   get isMobile(): boolean {
@@ -55,7 +58,7 @@ export class AppComponent {
     const urlbookName = this.locationAngular.path().split('/')[1];
     const urlParkName = this.locationAngular.path().split('/')[2];
     console.log(urlbookName,urlParkName)
-    this.audiodata.getData().subscribe((data:Record<string, any>)=>{
+    this.audiodata.getData().subscribe(async (data:Record<string, any>)=>{
       this.dataAudio = data
       this.audioTitles = Object.keys(data);
       this.books = Object.values(this.dataAudio);
@@ -67,7 +70,7 @@ export class AppComponent {
           const bookdata = data[`${urlbookName}`]
           const partDe = bookdata.parts[urlParkName]
           if(partDe){
-            this.onSubClick(0,+urlParkName,partDe)
+           await this.onSubClick(0,+urlParkName,partDe)
           }
         }
       }
@@ -90,7 +93,7 @@ export class AppComponent {
     const raw = bookPdf;
   
    this.pdfRawUrl =`${environment.keyobUrl}stream/pdf?url=` + encodeURIComponent(raw);
-  
+   console.log(this.pdfRawUrl )
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl( this.pdfRawUrl );
   
   }
@@ -145,19 +148,36 @@ export class AppComponent {
     return this.audioTitles.map((t: string) => t.replace(/_/g, ' '));
   }
 
-  onSubClick(bookIndex: number, partIndex: number, part: any) {
+  async onSubClick(bookIndex: number, partIndex: number, part: any) {
     this.locationAngular.go(`/${this.selected}/${partIndex}`);
     this.currentBookIndex = bookIndex;
     this.currentPartIndex = partIndex;
     this.activeIndex[bookIndex] = partIndex;
-    this.loadAudio(part);
+    this.currentSubtitle = '';
+
+    try {
+      const text = await this.audiodata.getText(part.text);
   
+      console.log('Transcript:', text);
+  
+      this.parseSubtitles(text);
+    } catch (error) {
+      this.parsedSubtitles =[]
+      console.error('Failed to load transcript:', error);
+    }
+  
+    this.loadAudio(part);
+    console.log('Selected part:', part);
     setTimeout(() => {
       const audioElement = document.querySelector('audio') as HTMLAudioElement;
       if (!audioElement) return;
   
       // Set up media session metadata
       this.setupMediaSession(part, audioElement);
+
+      audioElement.ontimeupdate = () => {
+        this.onAudioTimeUpdate(audioElement);
+      };
   
       // Wait until the audio is ready to play
       audioElement.addEventListener(
@@ -198,14 +218,14 @@ export class AppComponent {
   }
 
   // Auto next when audio ends
-  onAudioEnded(bookIndex: number, partIndex: number) {
+  async onAudioEnded(bookIndex: number, partIndex: number) {
     const book = this.subtitles[bookIndex];
     if (!book || !book.parts) return;
 
     const nextIndex = partIndex + 1;
     if (nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
-      this.onSubClick(bookIndex, nextIndex, nextPart);
+      await this.onSubClick(bookIndex, nextIndex, nextPart);
         // auto-play after loading
       setTimeout(() => {
         const audioElement = document.querySelector('audio') as HTMLAudioElement;
@@ -219,7 +239,7 @@ export class AppComponent {
     }
   }
 
-  playNext(bookIndex: number) {
+  async playNext(bookIndex: number) {
     if (this.currentBookIndex === null || this.currentPartIndex === null) return;
   
     const book = this.subtitles[this.currentBookIndex];
@@ -227,7 +247,7 @@ export class AppComponent {
   
     if (book && nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
-      this.onSubClick(this.currentBookIndex, nextIndex, nextPart);
+      await this.onSubClick(this.currentBookIndex, nextIndex, nextPart);
   
       // auto-play after loading
       setTimeout(() => {
@@ -243,7 +263,7 @@ export class AppComponent {
     }
   }
   
-  playPrev(bookIndex: number) {
+  async playPrev(bookIndex: number) {
     if (this.currentBookIndex === null || this.currentPartIndex === null) return;
   
     const book = this.subtitles[this.currentBookIndex];
@@ -251,7 +271,7 @@ export class AppComponent {
   
     if (book && prevIndex >= 0) {
       const prevPart = book.parts[prevIndex];
-      this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
+      await this.onSubClick(this.currentBookIndex, prevIndex, prevPart);
   
       // auto-play after loading
       setTimeout(() => {
@@ -262,5 +282,53 @@ export class AppComponent {
         }
       }, 400);
     }
+  }
+
+  parseSubtitles(text: string) {
+    console.log(text)
+    if (!text) {
+      this.parsedSubtitles = [];
+      return;
+    } 
+    // else{
+    //   return
+    // }
+
+
+    this.parsedSubtitles = text
+      .split('\n')
+      .map(line => {
+        const match = line.match(
+          /^\[(\d{2}):(\d{2}):(\d{2})\]\s*(.*)$/
+        );
+  
+        if (!match) return null;
+  
+        const hours = Number(match[1]);
+        const minutes = Number(match[2]);
+        const seconds = Number(match[3]);
+  
+        return {
+          time: hours * 3600 + minutes * 60 + seconds,
+          text: match[4],
+        };
+      })
+      .filter((item): item is { time: number; text: string } => item !== null);
+  }
+
+  onAudioTimeUpdate(audio: HTMLAudioElement) {
+    const currentTime = audio.currentTime;
+  
+    let current = '';
+  
+    for (let i = 0; i < this.parsedSubtitles.length; i++) {
+      if (this.parsedSubtitles[i].time <= currentTime) {
+        current = this.parsedSubtitles[i].text;
+      } else {
+        break;
+      }
+    }
+  
+    this.currentSubtitle = current;
   }
 }

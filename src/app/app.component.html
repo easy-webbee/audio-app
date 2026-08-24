@@ -1,6 +1,6 @@
 <div class="big-container">
   <div class="book-container">
-    <h1>Hello, listeners! auto</h1>
+    <h1 class="page-title">Hello, listeners! auto</h1>
   </div>
   <div
     *ngIf="true"
@@ -41,8 +41,8 @@
     <div class="expander" [attr.aria-expanded]="book.expanded">
       <button class="expander__header" (click)="toggleExpand(book)">
         <div class="expander__title">
-          <h2>{{ book.title }}</h2>
-          <p class="expander__subtitle">{{ book.subtitle }}</p>
+          <h2>{{ book.title }} {{currentPartIndex?' || Current '+currentPartIndex:''}}</h2>
+          <p class="expander__subtitle">{{ book.subtitle }} </p>
         </div>
         <div class="chev">
           <svg
@@ -127,5 +127,9 @@
     </div>
   </div>
   }
+
+  <div class="current-subtitle" *ngIf="currentSubtitle">
+    {{ currentSubtitle }}
+  </div>
 </div>
 
