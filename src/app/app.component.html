@@ -104,12 +104,15 @@
 
       <!-- Desktop / Android -->
       <ng-template #pdfViewer>
-        <object
-          [data]="pdfUrl"
-          type="application/pdf"
-          width="100%"
-          height="800px"
-        ></object>
+        <details>
+          <summary>Click here to read pdf</summary>
+            <object
+            [data]="pdfUrl"
+            type="application/pdf"
+            width="100%"
+            height="800px"
+          ></object>
+        </details>
       </ng-template>
     </div>
   </div>
