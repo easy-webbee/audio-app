@@ -74,6 +74,8 @@
               preload="metadata"
               style="width: 100%; margin-top: 8px"
               (ended)="onAudioEnded(bookIndex, i)"
+              (play)="onAudioPlay(bookIndex, i)"
+              (pause)="onAudioPause(bookIndex, i)"
             ></audio>
             <div class="audio-controls">
               <button
@@ -92,6 +94,35 @@
           </li>
         </ul>
       </div>
+    </div>
+    <div class="pause-container" *ngIf="!book.expanded && currentPartIndex">
+      <ng-content *ngFor="let sub of book.parts; let i = index">
+        @if(activeIndex[bookIndex] === i) {
+          <button
+            class="nav-button prev-button"
+            (click)="playPrev(bookIndex)"
+            *ngIf="i!==0"
+          >
+            <span class="nav-icon">⏮</span>
+            <span>Previous</span>
+          </button>
+    
+          <button
+            class="pause-button"
+            (click)="toggleAllAudio()"
+          >
+            {{ isAllPaused ? '▶ Play Audio' : '⏸ Pause Audio' }}
+          </button>
+    
+          <button
+            class="nav-button next-button"
+            (click)="playNext(bookIndex)"
+          >
+            <span>Next</span>
+            <span class="nav-icon">⏭</span>
+          </button>
+        }
+      </ng-content>
     </div>
     <div class="current-subtitle" *ngIf="currentSubtitle">
       {{ currentSubtitle }}
