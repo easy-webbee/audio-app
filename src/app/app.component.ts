@@ -151,7 +151,7 @@ export class AppComponent {
   async onSubClick(bookIndex: number, partIndex: number, part: any) {
     this.locationAngular.go(`/${this.selected}/${partIndex}`);
     this.currentBookIndex = bookIndex;
-    this.currentPartIndex = partIndex;
+    this.currentPartIndex = partIndex+1;
     this.activeIndex[bookIndex] = partIndex;
     this.currentSubtitle = '';
 
@@ -184,6 +184,7 @@ export class AppComponent {
         'canplay',
         () => {
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+          this.isAllPaused = false
         },
         { once: true } // only fire once
       );
@@ -201,12 +202,13 @@ export class AppComponent {
         //   { src: '/assets/icon-512.png', sizes: '512x512', type: 'image/png' },
         // ],
       });
-  
       navigator.mediaSession.setActionHandler('play', () => {
+        this.isAllPaused = false
         audioElement.play();
       });
       navigator.mediaSession.setActionHandler('pause', () => {
         audioElement.pause();
+        this.isAllPaused = true
       });
       navigator.mediaSession.setActionHandler('previoustrack', () => {
         this.playPrev(this.currentBookIndex!);
@@ -232,6 +234,7 @@ export class AppComponent {
         if (audioElement) {
           audioElement.src = this.videoUrl;
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+          this.isAllPaused = false
         }
       }, 400);
     } else {
@@ -243,7 +246,7 @@ export class AppComponent {
     if (this.currentBookIndex === null || this.currentPartIndex === null) return;
   
     const book = this.subtitles[this.currentBookIndex];
-    const nextIndex = this.currentPartIndex + 1;
+    const nextIndex = this.currentPartIndex ;
   
     if (book && nextIndex < book.parts.length) {
       const nextPart = book.parts[nextIndex];
@@ -255,6 +258,7 @@ export class AppComponent {
         if (audioElement) {
           audioElement.src = this.videoUrl;
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+          this.isAllPaused = false
         }
       }, 400);
     }else{
@@ -267,7 +271,7 @@ export class AppComponent {
     if (this.currentBookIndex === null || this.currentPartIndex === null) return;
   
     const book = this.subtitles[this.currentBookIndex];
-    const prevIndex = this.currentPartIndex - 1;
+    const prevIndex = this.currentPartIndex - 2;
   
     if (book && prevIndex >= 0) {
       const prevPart = book.parts[prevIndex];
@@ -279,6 +283,7 @@ export class AppComponent {
         if (audioElement) {
           audioElement.src = this.videoUrl;
           audioElement.play().catch(err => console.warn('Auto-play blocked:', err));
+          this.isAllPaused = false
         }
       }, 400);
     }
@@ -330,5 +335,37 @@ export class AppComponent {
     }
   
     this.currentSubtitle = current;
+  }
+
+  isAllPaused = false;
+
+  toggleAllAudio(): void {
+    this.isAllPaused = !this.isAllPaused;
+  
+    this.audioPlayers.forEach((audioPlayer) => {
+      const audioElement = audioPlayer.nativeElement;
+  
+      if (this.isAllPaused) {
+        audioElement.pause();
+      } else {
+        audioElement.play();
+      }
+    });
+  }
+
+  onAudioPlay(bookIndex: number, audioIndex: number): void {
+    console.log('▶️ PLAY', {
+      bookIndex,
+      audioIndex
+    });
+    this.isAllPaused = false
+  }
+  
+  onAudioPause(bookIndex: number, audioIndex: number): void {
+    console.log('⏸️ PAUSE', {
+      bookIndex,
+      audioIndex
+    });
+    this.isAllPaused = true
   }
 }
