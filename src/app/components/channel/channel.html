@@ -1,0 +1,25 @@
+<div class="channel">
+
+    <div class="channel-header">
+  
+      <strong>
+        # {{ channel().name }}
+      </strong>
+  
+      <div class="header-actions">
+        🔔
+        👥
+        🔍
+      </div>
+  
+    </div>
+  
+    <app-message-list
+      [channelId]="channel().id"
+    />
+  
+    <app-message-input
+      [channelId]="channel().id"
+    />
+  
+  </div>

@@ -1,0 +1,29 @@
+.input-container {
+    display: flex;
+    gap: 8px;
+  
+    margin: 0 20px 20px;
+  
+    border: 1px solid #aaa;
+    border-radius: 8px;
+  
+    padding: 8px;
+  }
+  
+  input {
+    flex: 1;
+  
+    border: 0;
+    outline: 0;
+  
+    font-size: 15px;
+  }
+  
+  button {
+    border: 0;
+    background: transparent;
+  
+    font-size: 20px;
+  
+    cursor: pointer;
+  }

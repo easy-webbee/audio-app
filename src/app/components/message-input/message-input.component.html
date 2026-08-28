@@ -1,0 +1,16 @@
+<div class="input-container">
+
+    <input
+      [(ngModel)]="messageText"
+      placeholder="Message #channel"
+      (keyup.enter)="sendMessage()"
+    />
+  
+    <button
+      type="button"
+      (click)="sendMessage()"
+    >
+      ➤
+    </button>
+  
+  </div>

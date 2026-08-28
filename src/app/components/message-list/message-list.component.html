@@ -1,0 +1,27 @@
+<div class="messages">
+
+    @for (message of messages; track message.id) {
+  
+      <div class="message">
+  
+        <div class="avatar">
+          {{ message.userName.charAt(0) }}
+        </div>
+  
+        <div class="content">
+  
+          <div class="header">
+            <strong>{{ message.userName }}</strong>
+          </div>
+  
+          <div class="text">
+            {{ message.text }}
+          </div>
+  
+        </div>
+  
+      </div>
+  
+    }
+  
+  </div>

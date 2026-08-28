@@ -19,9 +19,15 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "firebase": "^10.14.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
+  },
+  "overrides": {
+    "firebase": "^10.14.1",
+    "@firebase/app": "0.10.5",
+    "rxfire": "6.0.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.16",

@@ -1,3 +1,11 @@
-<iframe width="711" height="144" frameborder="0" src="https://mega.nz/embed/ZbpD3LjC#-6YA65wD8Ez5qv7MTFoJ8A99146vl3h1v5BvcylNZFs!1v" allowfullscreen ></iframe>
-<iframe width="711" height="144" frameborder="0" src="https://mega.nz/embed/oTgiCKib#M2TyXr8cBTJzUI1oFyyZ9L92Of0hRv5VxbDvOBncGbs!1v" allowfullscreen ></iframe>
-<iframe width="711" height="144" frameborder="0" src="https://mega.nz/embed/8KZhhKJZ#oKuh6_ACYkQoNhVmXu9FSMTlPJtadX3SX-nH0jN26CU!1v1c" allowfullscreen ></iframe>
+<div class="app">
+
+    <app-sidebar
+      (channelSelected)="selectChannel($event)"
+    />
+  
+    <app-channel
+      [channel]="selectedChannel"
+    />
+  
+  </div>
