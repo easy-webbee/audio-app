@@ -1,25 +1,27 @@
 <div class="channel">
 
-    <div class="channel-header">
-  
-      <strong>
-        # {{ channel().name }}
-      </strong>
-  
-      <div class="header-actions">
-        🔔
-        👥
-        🔍
-      </div>
-  
+  <div class="channel-header">
+
+    <strong>
+      # {{ channel().name }}
+    </strong>
+
+    <div class="header-actions">
+      🔔
+      👥
+      🔍
     </div>
-  
-    <app-message-list
-      [channelId]="channel().id"
-    />
-  
-    <app-message-input
-      [channelId]="channel().id"
-    />
-  
+
   </div>
+
+  <app-message-list
+    [workspaceId]="workspaceId()"
+    [channelId]="channel().id"
+  />
+
+  <app-message-input
+    [workspaceId]="workspaceId()"
+    [channelId]="channel().id"
+  />
+
+</div>

@@ -1,48 +1,68 @@
 <div class="sidebar">
 
-    <div class="workspace">
-      <span>My Workspace</span>
-      <span>⌄</span>
+  <div class="workspace">
+    <span>
+      {{ workspace().name }}
+    </span>
+
+    <span>⌄</span>
+  </div>
+
+  <div class="section">
+
+    <div class="section-title">
+
+      <span>Channels</span>
+
+      <button
+        type="button"
+        (click)="createChannel()"
+      >
+        +
+      </button>
+
     </div>
-  
-    <div class="section">
-  
-      <div class="section-title">
-        <span>Channels</span>
-        <span>+</span>
-      </div>
-  
+
+    @if (channels$ | async; as channels) {
+
       @for (channel of channels; track channel.id) {
-  
+
         <button
           class="channel-item"
           (click)="selectChannel(channel)"
         >
+
           <span>#</span>
-          <span>{{ channel.name }}</span>
+
+          <span>
+            {{ channel.name }}
+          </span>
+
         </button>
-  
+
       }
-  
-    </div>
-  
-    <div class="section">
-  
-      <div class="section-title">
-        <span>Direct Messages</span>
-        <span>+</span>
-      </div>
-  
-      <div class="user-item">
-        <span class="status"></span>
-        Luke
-      </div>
-  
-      <div class="user-item">
-        <span class="status"></span>
-        John
-      </div>
-  
-    </div>
-  
+
+    }
+
   </div>
+
+  <div class="section">
+
+    <div class="section-title">
+      <span>Direct Messages</span>
+      <span>+</span>
+    </div>
+
+    <div class="user-item">
+      <span class="status"></span>
+      Luke
+    </div>
+
+    <div class="user-item">
+      <span class="status"></span>
+      John
+    </div>
+
+  </div>
+
+</div>

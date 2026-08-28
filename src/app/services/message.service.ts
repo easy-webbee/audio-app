@@ -21,11 +21,14 @@ export class MessageService {
 
   private firestore = inject(Firestore);
 
-  getMessages(channelId: string): Observable<Message[]> {
+  getMessages(
+    workspaceId: string,
+    channelId: string
+  ): Observable<Message[]> {
 
     const messagesRef = collection(
       this.firestore,
-      `channels/${channelId}/messages`
+      `workspaces/${workspaceId}/channels/${channelId}/messages`
     );
 
     const messagesQuery = query(
@@ -39,6 +42,7 @@ export class MessageService {
   }
 
   async sendMessage(
+    workspaceId: string,
     channelId: string,
     userId: string,
     userName: string,
@@ -47,7 +51,7 @@ export class MessageService {
 
     const messagesRef = collection(
       this.firestore,
-      `channels/${channelId}/messages`
+      `workspaces/${workspaceId}/channels/${channelId}/messages`
     );
 
     await addDoc(messagesRef, {

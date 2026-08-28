@@ -1,11 +1,21 @@
 <div class="app">
 
-    <app-sidebar
-      (channelSelected)="selectChannel($event)"
-    />
-  
+  <app-workspace-switcher
+    (workspaceSelected)="selectWorkspace($event)"
+  />
+
+  <app-sidebar
+    [workspace]="selectedWorkspace"
+    (channelSelected)="selectChannel($event)"
+  />
+
+  @if (selectedChannel.id) {
+
     <app-channel
+      [workspaceId]="selectedWorkspace.id"
       [channel]="selectedChannel"
     />
-  
-  </div>
+
+  }
+
+</div>

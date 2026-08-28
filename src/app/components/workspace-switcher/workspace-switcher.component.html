@@ -1,0 +1,37 @@
+<div class="workspace-switcher">
+
+    <div class="workspace-title">
+      <strong>Workspaces</strong>
+  
+      <button
+        type="button"
+        (click)="createWorkspace()"
+      >
+        +
+      </button>
+    </div>
+  
+    @if (workspaces$ | async; as workspaces) {
+  
+      @for (workspace of workspaces; track workspace.id) {
+  
+        <button
+          class="workspace-item"
+          (click)="selectWorkspace(workspace)"
+        >
+  
+          <span class="workspace-icon">
+            {{ workspace.name.charAt(0).toUpperCase() }}
+          </span>
+  
+          <span>
+            {{ workspace.name }}
+          </span>
+  
+        </button>
+  
+      }
+  
+    }
+  
+  </div>

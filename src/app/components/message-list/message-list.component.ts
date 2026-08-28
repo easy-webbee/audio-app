@@ -7,6 +7,7 @@ import {
 
 import { MessageService } from '../../services/message.service';
 import { Message } from '../../models/message.model';
+
 @Component({
   selector: 'app-message-list',
   standalone: true,
@@ -18,6 +19,7 @@ export class MessageListComponent {
 
   private messageService = inject(MessageService);
 
+  workspaceId = input.required<string>();
   channelId = input.required<string>();
 
   messages: Message[] = [];
@@ -26,10 +28,11 @@ export class MessageListComponent {
 
     effect(() => {
 
+      const workspaceId = this.workspaceId();
       const channelId = this.channelId();
 
       this.messageService
-        .getMessages(channelId)
+        .getMessages(workspaceId, channelId)
         .subscribe(messages => {
           this.messages = messages;
         });

@@ -7,6 +7,7 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { MessageService } from '../../services/message.service';
+
 @Component({
   selector: 'app-message-input',
   standalone: true,
@@ -18,6 +19,7 @@ export class MessageInputComponent {
 
   private messageService = inject(MessageService);
 
+  workspaceId = input.required<string>();
   channelId = input.required<string>();
 
   messageText = '';
@@ -36,6 +38,7 @@ export class MessageInputComponent {
     }
 
     await this.messageService.sendMessage(
+      this.workspaceId(),
       this.channelId(),
       this.currentUser.id,
       this.currentUser.name,
