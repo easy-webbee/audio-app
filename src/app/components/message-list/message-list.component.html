@@ -17,10 +17,45 @@
             <strong>{{ message.userName }}</strong>
           </div>
 
+          <!-- <div>{{message.text}}</div> -->
           <div class="text">
-            {{ message.text }}
-          </div>
 
+            <ng-container *ngFor="let part of message.text | messageFormat">
+          
+              <!-- Bold -->
+              <strong *ngIf="part.type === 'bold'">
+                {{ part.text }}
+              </strong>
+          
+              <!-- Normal text -->
+              <span *ngIf="part.type === 'text'">
+                {{ part.text }}
+              </span>
+          
+              <!-- Discord link -->
+              <a
+                *ngIf="part.type === 'link'"
+                [href]="part.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ part.text }}
+              </a>
+          
+              <!-- Stock iframe -->
+              <div
+                *ngIf="part.type === 'iframe'"
+                class="iframe-container"
+              >
+                <iframe
+                  [src]="part.safeUrl"
+                  class="stock-iframe"
+                ></iframe>
+              </div>
+          
+            </ng-container>
+          
+          </div>
         </div>
 
       </div>

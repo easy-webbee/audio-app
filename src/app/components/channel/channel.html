@@ -1,3 +1,4 @@
+
 <div class="channel">
 
   <div class="channel-header">
@@ -6,18 +7,16 @@
       # {{ channel().name }}
     </strong>
 
-    <div class="header-actions">
-      🔔
-      👥
-      🔍
-    </div>
-
   </div>
 
-  <app-message-list
-    [workspaceId]="workspaceId()"
-    [channelId]="channel().id"
-  />
+  <div class="channel-messages">
+
+    <app-message-list
+      [workspaceId]="workspaceId()"
+      [channelId]="channel().id"
+    />
+
+  </div>
 
   <app-message-input
     [workspaceId]="workspaceId()"
@@ -25,3 +24,4 @@
   />
 
 </div>
+
