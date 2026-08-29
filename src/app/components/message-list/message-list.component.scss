@@ -1,22 +1,19 @@
+
 .messages {
   display: flex;
   flex-direction: column;
-
-  gap: 16px;
+  gap: 8px;
 }
 
 .message {
   display: flex;
-
   gap: 10px;
-
   padding: 4px 0;
 }
 
 .avatar {
   width: 36px;
   height: 36px;
-
   flex-shrink: 0;
 
   display: flex;
@@ -43,30 +40,40 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-  
-  .text strong {
-    font-weight: 700;
-  }
-  
-  .text a {
-    color: #1264a3;
-    text-decoration: none;
-  }
-  
-  .text a:hover {
-    text-decoration: underline;
-  }
 
-  .iframe-container {
-    width: 900px;
-    height: 1000px;
-    overflow: hidden;
-  }
-  
-  .stock-iframe {
-    width: 1920px;
-    height: 900px;
-    border: 0;
-    transform: scale(0.46875);
-    transform-origin: top left;
-  }
+.text strong {
+  font-weight: 700;
+}
+
+.text a {
+  color: #1264a3;
+  text-decoration: none;
+}
+
+.text a:hover {
+  text-decoration: underline;
+}
+
+/* iframe wrapper */
+.iframe-container {
+  width: 900px;
+
+  /* 900px × 0.46875 */
+  height: 422px;
+
+  overflow: hidden;
+}
+
+/* actual iframe */
+.stock-iframe {
+  width: 1920px;
+  height: 900px;
+
+  border: 0;
+
+  transform: scale(0.46875);
+  transform-origin: top left;
+
+  display: block;
+}
+
