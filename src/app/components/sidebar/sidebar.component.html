@@ -26,19 +26,27 @@
     @if (channels$ | async; as channels) {
 
       @for (channel of channels; track channel.id) {
-
         <button
-          class="channel-item"
-          (click)="selectChannel(channel)"
-        >
+        class="channel-item"
+        [class.active]="selectedChannel()?.id === channel.id"
+        (click)="selectChannel(channel)"
+      >
+      
+        <span>#</span>
+      
+        <span class="channel-name">
+          {{ channel.name }}
+        </span>
+      
+        @if (unreadCounts()[channel.id] > 0) {
 
-          <span>#</span>
-
-          <span>
-            {{ channel.name }}
+          <span class="unread-badge">
+            {{ unreadCounts()[channel.id] }}
           </span>
-
-        </button>
+        
+        }
+      
+      </button>
 
       }
 

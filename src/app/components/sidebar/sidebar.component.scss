@@ -72,3 +72,36 @@
     border-radius: 50%;
     background: #2bac76;
   }
+
+  .channel-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+
+  .channel-item {
+    position: relative;
+  }
+  
+  .channel-name {
+    flex: 1;
+  }
+  
+
+  .unread-badge {
+    min-width: 20px;
+    height: 20px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    padding: 0 5px;
+  
+    border-radius: 10px;
+  
+    background: white;
+    color: #3f0e40;
+  
+    font-size: 11px;
+    font-weight: 700;
+  }

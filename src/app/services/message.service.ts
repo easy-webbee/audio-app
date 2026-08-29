@@ -4,6 +4,7 @@ import {
   Firestore,
   collection,
   collectionData,
+  collectionChanges,
   addDoc,
   serverTimestamp,
   orderBy,
@@ -39,6 +40,24 @@ export class MessageService {
     return collectionData(messagesQuery, {
       idField: 'id'
     }) as Observable<Message[]>;
+  }
+
+  watchNewMessages(
+    workspaceId: string,
+    channelId: string
+  ) {
+
+    const messagesRef = collection(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}/messages`
+    );
+
+    const messagesQuery = query(
+      messagesRef,
+      orderBy('createdAt', 'asc')
+    );
+
+    return collectionChanges(messagesQuery);
   }
 
   async sendMessage(

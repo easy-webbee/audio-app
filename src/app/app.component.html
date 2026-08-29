@@ -4,17 +4,25 @@
     (workspaceSelected)="selectWorkspace($event)"
   />
 
-  <app-sidebar
-    [workspace]="selectedWorkspace"
-    (channelSelected)="selectChannel($event)"
-  />
+<app-sidebar
+  [workspace]="selectedWorkspace()"
+  [selectedChannel]="selectedChannel()"
+  (channelSelected)="selectChannel($event)"
+/>
 
-  @if (selectedChannel.id) {
+  @if (selectedChannel(); as channel) {
 
     <app-channel
-      [workspaceId]="selectedWorkspace.id"
-      [channel]="selectedChannel"
+      [workspaceId]="selectedWorkspace().id"
+      [channel]="channel"
     />
+
+  } @else {
+
+    <div class="empty-channel">
+      <h2>Select a channel</h2>
+      <p>Choose a channel from the sidebar.</p>
+    </div>
 
   }
 

@@ -7,7 +7,8 @@ import {
   addDoc,
   doc,
   setDoc,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp,query,orderBy
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -27,8 +28,13 @@ export class ChannelService {
       this.firestore,
       `workspaces/${workspaceId}/channels`
     );
-
-    return collectionData(channelsRef, {
+  
+    const channelsQuery = query(
+      channelsRef,
+      orderBy('createdAt', 'asc')
+    );
+  
+    return collectionData(channelsQuery, {
       idField: 'id'
     }) as Observable<Channel[]>;
   }
@@ -37,14 +43,15 @@ export class ChannelService {
     workspaceId: string,
     name: string
   ): Promise<void> {
-
+  
     const channelsRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels`
     );
-
+  
     await addDoc(channelsRef, {
-      name: name.trim()
+      name: name.trim(),
+      createdAt: serverTimestamp()
     });
   }
 
