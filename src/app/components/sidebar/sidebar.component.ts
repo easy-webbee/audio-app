@@ -18,6 +18,7 @@ import { Channel } from '../../models/channel.model';
 import { Workspace } from '../../models/workspace.model';
 import { UnreadService } from '../../services/unread.service';
 import { ChannelSection } from '../../models/section.model';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -31,6 +32,8 @@ export class SidebarComponent {
 
   private unreadService = inject(UnreadService);
 
+  private localStorageService = inject(LocalStorageService);
+
   public unreadCounts = this.unreadService.counts;
 
   readonly messageCounts = this.unreadService.messageCounts;
@@ -42,38 +45,7 @@ export class SidebarComponent {
   channelSelected = output<Channel>();
 
   // Sections
-  sections = signal<ChannelSection[]>([
-    {
-      id: 'crypto',
-      name: 'crypto',
-      expanded: true,
-      channels: [] as Channel[],
-    },
-    {
-      id: 'forex',
-      name: 'forex',
-      expanded: true,
-      channels: [] as Channel[],
-    },
-    {
-      id: 'us-rsi',
-      name: 'us-rsi',
-      expanded: true,
-      channels: [] as Channel[],
-    },
-    {
-      id: 'trading',
-      name: 'trading',
-      expanded: true,
-      channels: [] as Channel[],
-    },
-    {
-      id: 'other',
-      name: 'Other',
-      expanded: true,
-      channels: [] as Channel[],
-    },
-  ]);
+  sections = signal<ChannelSection[]>(this.localStorageService.createSections());
 
   channels$ = toObservable(this.workspace).pipe(
     switchMap((workspace) => this.channelService.getChannels(workspace.id)),
@@ -127,16 +99,23 @@ export class SidebarComponent {
   }
 
   toggleSection(sectionId: string): void {
-    this.sections.update((sections) =>
-      sections.map((section) =>
+
+    this.sections.update((sections) => {
+  
+      const updatedSections = sections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
               expanded: !section.expanded,
             }
           : section
-      )
-    );
+      );
+  
+      this.localStorageService.saveSectionState(updatedSections);
+  
+      return updatedSections;
+    });
+  
   }
 
   selectChannel(channel: Channel): void {

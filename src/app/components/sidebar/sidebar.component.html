@@ -22,6 +22,10 @@
           {{ section.name }}
         </span>
 
+        <span class="channel-count">
+          {{ section.channels.length }}
+        </span>
+        
         <button
           type="button"
           (click)="$event.stopPropagation(); createChannel()"
@@ -61,6 +65,7 @@
           [value]="channel.sectionId ?? 'other'"
           (change)="moveChannelToSection(channel, $any($event.target).value)"
           (click)="$event.stopPropagation()"
+          class="select-channel"
         >
           @for ( targetSection of sections(); track targetSection.id ) {
 

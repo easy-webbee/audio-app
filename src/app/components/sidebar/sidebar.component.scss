@@ -261,3 +261,13 @@
 .sidebar-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
+.select-channel{
+  max-width: 50px;
+}
+
+.channel-count {
+  font-size: 11px;
+  opacity: 0.6;
+  font-weight: 400;
+}
