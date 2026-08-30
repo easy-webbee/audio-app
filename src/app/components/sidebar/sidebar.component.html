@@ -7,45 +7,78 @@
     <span>⌄</span>
   </div>
 
-  <div class="section">
-    <div class="section-title">
-      <span>Channels</span>
+  <div class="sidebar-content">
+    @if (channels$ | async; as channels) { @for (section of sections(); track
+    section.id) {
 
-      <button type="button" (click)="createChannel()">+</button>
+    <div class="section">
+      <!-- SECTION HEADER -->
+      <div class="section-title" (click)="toggleSection(section.id)">
+        <span>
+          {{ section.expanded ? "▼" : "▶" }}
+        </span>
+
+        <span>
+          {{ section.name }}
+        </span>
+
+        <button
+          type="button"
+          (click)="$event.stopPropagation(); createChannel()"
+        >
+          +
+        </button>
+      </div>
+
+      <!-- CHANNELS -->
+
+      @if (section.expanded) { @for (channel of section.channels; track
+      channel.id) {
+
+      <div
+        class="channel-row"
+        [class.active]="selectedChannel()?.id === channel.id"
+      >
+        <button class="channel-item" (click)="selectChannel(channel)">
+          <span>#</span>
+
+          <span class="channel-name">
+            {{ channel.name }}
+          </span>
+
+          @if (messageCounts()[channel.id] > 0) {
+          <span class="message-count">
+            {{ messageCounts()[channel.id] }}
+          </span>
+          } @if (unreadCounts()[channel.id] > 0) {
+          <span class="unread-badge">
+            {{ unreadCounts()[channel.id] }}
+          </span>
+          }
+        </button>
+
+        <select
+          [value]="channel.sectionId ?? 'other'"
+          (change)="moveChannelToSection(channel, $any($event.target).value)"
+          (click)="$event.stopPropagation()"
+        >
+          @for ( targetSection of sections(); track targetSection.id ) {
+
+          <option [value]="targetSection.id">
+            {{ targetSection.name }}
+          </option>
+
+          }
+        </select>
+      </div>
+
+      } }
     </div>
-
-    @if (channels$ | async; as channels) { @for (channel of channels; track
-    channel.id) {
-    <button
-      class="channel-item"
-      [class.active]="selectedChannel()?.id === channel.id"
-      (click)="selectChannel(channel)"
-    >
-      <span>#</span>
-
-      <span class="channel-name">
-        {{ channel.name }}
-      </span>
-
-      @if (messageCounts()[channel.id] > 0) {
-
-      <span class="message-count">
-        {{ messageCounts()[channel.id] }}
-      </span>
-
-      } @if (unreadCounts()[channel.id] > 0) {
-
-      <span class="unread-badge">
-        {{ unreadCounts()[channel.id] }}
-      </span>
-
-      }
-    </button>
 
     } }
   </div>
-
-  <!-- <div class="section">
+</div>
+<!-- <div class="section">
     <div class="section-title">
       <span>Direct Messages</span>
       <span>+</span>
@@ -61,4 +94,4 @@
       John
     </div>
   </div> -->
-</div>
+<!-- </div> -->

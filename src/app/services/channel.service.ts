@@ -8,7 +8,10 @@ import {
   doc,
   setDoc,
   deleteDoc,
-  serverTimestamp,query,orderBy
+  updateDoc,
+  serverTimestamp,
+  query,
+  orderBy,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -16,42 +19,33 @@ import { Observable } from 'rxjs';
 import { Channel } from '../models/channel.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChannelService {
-
   private firestore = inject(Firestore);
 
   getChannels(workspaceId: string): Observable<Channel[]> {
-
     const channelsRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels`
     );
-  
-    const channelsQuery = query(
-      channelsRef,
-      orderBy('createdAt', 'asc')
-    );
-  
+
+    const channelsQuery = query(channelsRef, orderBy('createdAt', 'asc'));
+
     return collectionData(channelsQuery, {
-      idField: 'id'
+      idField: 'id',
     }) as Observable<Channel[]>;
   }
 
-  async createChannel(
-    workspaceId: string,
-    name: string
-  ): Promise<void> {
-  
+  async createChannel(workspaceId: string, name: string): Promise<void> {
     const channelsRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels`
     );
-  
+
     await addDoc(channelsRef, {
       name: name.trim(),
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     });
   }
 
@@ -60,27 +54,37 @@ export class ChannelService {
     channelId: string,
     name: string
   ): Promise<void> {
-
     const channelRef = doc(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}`
     );
 
     await setDoc(channelRef, {
-      name
+      name,
     });
   }
 
-  async deleteChannel(
-    workspaceId: string,
-    channelId: string
-  ): Promise<void> {
-
+  async deleteChannel(workspaceId: string, channelId: string): Promise<void> {
     const channelRef = doc(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}`
     );
 
     await deleteDoc(channelRef);
+  }
+
+  async updateChannelSection(
+    workspaceId: string,
+    channelId: string,
+    sectionId: string
+  ): Promise<void> {
+    const channelRef = doc(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}`
+    );
+
+    await updateDoc(channelRef, {
+      sectionId,
+    });
   }
 }
