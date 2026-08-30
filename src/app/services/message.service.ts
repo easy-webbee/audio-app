@@ -8,7 +8,9 @@ import {
   addDoc,
   serverTimestamp,
   orderBy,
-  query
+  query,
+  doc,
+  updateDoc
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -78,6 +80,23 @@ export class MessageService {
       userName,
       text,
       createdAt: serverTimestamp()
+    });
+  }
+
+  async setMessageRead(
+    workspaceId: string,
+    channelId: string,
+    messageId: string,
+    read: boolean
+  ): Promise<void> {
+  
+    const messageRef = doc(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}/messages/${messageId}`
+    );
+  
+    await updateDoc(messageRef, {
+      read
     });
   }
 }

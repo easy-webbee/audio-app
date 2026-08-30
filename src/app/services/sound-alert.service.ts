@@ -16,7 +16,7 @@ export class SoundAlertService {
   }
 
   playAlert(soundName: string = 'bullish.mp3'): void {
-    this.playSound(`./assets/${soundName}`);
+    // this.playSound(`./assets/${soundName}`);
   }
 }
 /**

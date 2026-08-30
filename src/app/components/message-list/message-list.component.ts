@@ -4,6 +4,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, switchMap } from 'rxjs';
 import { MessageService } from '../../services/message.service';
 import { MessageFormatPipe } from './msg.pipe';
+import { Message } from '../../models/message.model';
 
 @Component({
   selector: 'app-message-list',
@@ -33,4 +34,15 @@ export class MessageListComponent {
       this.messageService.getMessages(workspaceId, channelId)
     )
   );
+
+  async toggleRead(message: Message): Promise<void> {
+
+    await this.messageService.setMessageRead(
+      this.workspaceId(),
+      this.channelId(),
+      message.id,
+      !message.read
+    );
+  
+  }
 }

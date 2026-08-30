@@ -5,7 +5,7 @@
 
     @for (message of messages; track message.id) {
 
-      <div class="message">
+      <div class="message"   [class.unread]="!message.read">
 
         <div class="avatar">
           {{ message.userName.charAt(0) }}
@@ -63,10 +63,18 @@
             </div>
           
           </ng-container>
+          <!-- READ / UNREAD BUTTON -->
+          <button
+            type="button"
+            class="read-button"
+            (click)="toggleRead(message)"
+          >
+            {{ message.read ? 'Mark unread' : 'Mark read' }}
+          </button>
         </div>
 
       </div>
-
+      <hr>
     }
 
   }

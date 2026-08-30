@@ -1,7 +1,8 @@
 export interface Message {
-    id?: string;
-    userId: string;
-    userName: string;
-    text: string;
-    createdAt: any;
-  }
+  id: string;
+  userId: string;
+  userName: string;
+  text: string;
+  createdAt: any;
+  read?: boolean;
+}

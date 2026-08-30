@@ -89,3 +89,15 @@
 .text.buy {
   border-left-color: green;
 }
+
+.read-button {
+  margin-top: 6px;
+  padding: 3px 8px;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.message.unread {
+  background: #6f66b3;
+}
