@@ -1,12 +1,20 @@
 
+
 .app {
   display: flex;
-
   width: 100vw;
   height: 100vh;
+
+  min-width: 0;
+  min-height: 0;
 
   overflow: hidden;
 
   background-color: rgb(230, 219, 219);
 }
 
+.empty-channel {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+}
