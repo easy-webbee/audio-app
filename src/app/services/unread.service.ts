@@ -16,7 +16,10 @@ import { SoundAlertService } from './sound-alert.service';
 export class UnreadService {
   private firestore = inject(Firestore);
 
-  // Unread/new message counts
+  // Current logged-in user
+  private uid = localStorage.getItem('uid');
+
+  // Unread message count per channel
   private unreadCounts = signal<Record<string, number>>({});
 
   readonly counts = this.unreadCounts.asReadonly();
@@ -41,13 +44,47 @@ export class UnreadService {
     const messagesQuery = query(messagesRef, orderBy('createdAt', 'asc'));
 
     const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-      // Total number of messages
+      // --------------------------------
+      // TOTAL MESSAGE COUNT
+      // --------------------------------
+
       this._messageCounts.update((counts) => ({
         ...counts,
         [channelId]: snapshot.size,
       }));
 
-      // Existing unread logic
+      // --------------------------------
+      // UNREAD COUNT
+      // --------------------------------
+
+      if (!this.uid) {
+        this.unreadCounts.update((counts) => ({
+          ...counts,
+          [channelId]: 0,
+        }));
+
+        return;
+      }
+
+      const unreadCount = snapshot.docs.filter((doc) => {
+        const data = doc.data();
+
+        const readBy = data['readBy'] as Record<string, boolean> | undefined;
+
+        // true = read
+        // false/undefined = unread
+        return readBy?.[this.uid!] !== true;
+      }).length;
+
+      this.unreadCounts.update((counts) => ({
+        ...counts,
+        [channelId]: unreadCount,
+      }));
+
+      // --------------------------------
+      // INITIALIZE CHANNEL
+      // --------------------------------
+
       if (!this.initializedChannels.has(channelId)) {
         const lastMessage = snapshot.docs.at(-1);
 
@@ -59,6 +96,10 @@ export class UnreadService {
 
         return;
       }
+
+      // --------------------------------
+      // NEW MESSAGE SOUND
+      // --------------------------------
 
       for (const change of snapshot.docChanges()) {
         if (change.type !== 'added') {
@@ -75,8 +116,6 @@ export class UnreadService {
 
         this.lastMessageIds.set(channelId, messageId);
 
-        this.increment(channelId);
-
         this.soundService.playAlert('bullish.mp3');
       }
     });
@@ -84,26 +123,26 @@ export class UnreadService {
     return unsubscribe;
   }
 
-  // Get total messages
+  // --------------------------------
+  // TOTAL MESSAGE COUNT
+  // --------------------------------
+
   getMessageCount(channelId: string): number {
     return this.messageCounts()[channelId] ?? 0;
   }
 
-  // Unread count
-  increment(channelId: string): void {
-    this.unreadCounts.update((counts) => ({
-      ...counts,
-
-      [channelId]: (counts[channelId] ?? 0) + 1,
-    }));
-  }
-
+  // --------------------------------
+  // MANUALLY MARK CHANNEL AS READ
+  // --------------------------------
   markAsRead(channelId: string): void {
     this.unreadCounts.update((counts) => ({
       ...counts,
       [channelId]: 0,
     }));
   }
+    // --------------------------------
+  // UNREAD COUNT
+  // --------------------------------
 
   getCount(channelId: string): number {
     return this.unreadCounts()[channelId] ?? 0;
