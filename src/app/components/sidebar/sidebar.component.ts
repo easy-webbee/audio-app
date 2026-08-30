@@ -1,18 +1,9 @@
-import {
-  Component,
-  effect,
-  inject,
-  input,
-  output
-} from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
-import {
-  switchMap,
-  tap
-} from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 
 import { ChannelService } from '../../services/channel.service';
 
@@ -25,69 +16,46 @@ import { UnreadService } from '../../services/unread.service';
   standalone: true,
   imports: [AsyncPipe],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
   private channelService = inject(ChannelService);
 
   private unreadService = inject(UnreadService);
-  
-  public unreadCounts =
-    this.unreadService.counts;
 
+  public unreadCounts = this.unreadService.counts;
+
+  readonly messageCounts =
+  this.unreadService.messageCounts;
+  
   workspace = input.required<Workspace>();
 
   selectedChannel = input<Channel | null>(null);
-  
+
   channelSelected = output<Channel>();
 
   channels$ = toObservable(this.workspace).pipe(
+    switchMap((workspace) => this.channelService.getChannels(workspace.id)),
 
-    switchMap(workspace =>
-      this.channelService.getChannels(workspace.id)
-    ),
-  
-    tap(channels => {
-  
+    tap((channels) => {
       for (const channel of channels) {
-  
-        this.unreadService.watchChannel(
-          this.workspace().id,
-          channel.id
-        );
-  
+        this.unreadService.watchChannel(this.workspace().id, channel.id);
       }
-  
+
       if (channels.length > 0) {
-  
-        this.channelSelected.emit(
-          channels[0]
-        );
-  
+        this.channelSelected.emit(channels[0]);
       }
-  
     })
-  
   );
 
   constructor() {
-
     effect(() => {
-
-      this.channels$.subscribe(channels => {
-
+      this.channels$.subscribe((channels) => {
         if (channels.length > 0) {
-
-          this.channelSelected.emit(
-            channels[0]
-          );
-
+          this.channelSelected.emit(channels[0]);
         }
-
       });
-
     });
-
   }
 
   selectChannel(channel: Channel): void {
@@ -95,16 +63,12 @@ export class SidebarComponent {
   }
 
   async createChannel(): Promise<void> {
-
     const name = prompt('Channel name');
 
     if (!name?.trim()) {
       return;
     }
 
-    await this.channelService.createChannel(
-      this.workspace().id,
-      name
-    );
+    await this.channelService.createChannel(this.workspace().id, name);
   }
 }
