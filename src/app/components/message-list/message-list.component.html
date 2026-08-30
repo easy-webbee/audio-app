@@ -21,44 +21,48 @@
           </div>
 
           <!-- <div>{{message.text}}</div> -->
-          <div class="text">
+          <ng-container *ngIf="message.text | messageFormat as formatted">
 
-            <ng-container *ngFor="let part of message.text | messageFormat">
+            <div
+              class="text"
+              [class.sell]="formatted.borderClass === 'sell'"
+              [class.buy]="formatted.borderClass === 'buy'"
+            >
           
-              <!-- Bold -->
-              <strong *ngIf="part.type === 'bold'">
-                {{ part.text }}
-              </strong>
+              <ng-container *ngFor="let part of formatted.parts">
           
-              <!-- Normal text -->
-              <span *ngIf="part.type === 'text'">
-                {{ part.text }}
-              </span>
+                <strong *ngIf="part.type === 'bold'">
+                  {{ part.text }}
+                </strong>
           
-              <!-- Discord link -->
-              <a
-                *ngIf="part.type === 'link'"
-                [href]="part.url"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ part.text }}
-              </a>
+                <span *ngIf="part.type === 'text'">
+                  {{ part.text }}
+                </span>
           
-              <!-- Stock iframe -->
-              <div
-                *ngIf="part.type === 'iframe'"
-                class="iframe-container"
-              >
-                <iframe
-                  [src]="part.safeUrl"
-                  class="stock-iframe"
-                ></iframe>
-              </div>
+                <a
+                  *ngIf="part.type === 'link'"
+                  [href]="part.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ part.text }}
+                </a>
           
-            </ng-container>
+                <div
+                  *ngIf="part.type === 'iframe'"
+                  class="iframe-container"
+                >
+                  <iframe
+                    [src]="part.safeUrl"
+                    class="stock-iframe"
+                  ></iframe>
+                </div>
           
-          </div>
+              </ng-container>
+          
+            </div>
+          
+          </ng-container>
         </div>
 
       </div>

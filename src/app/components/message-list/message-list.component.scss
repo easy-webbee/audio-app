@@ -77,3 +77,15 @@
   display: block;
 }
 
+.text {
+  border-left: 4px solid transparent;
+  padding-left: 10px;
+}
+
+.text.sell {
+  border-left-color: red;
+}
+
+.text.buy {
+  border-left-color: green;
+}
