@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgFor, NgIf, NgClass } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, switchMap } from 'rxjs';
 import { MessageService } from '../../services/message.service';
@@ -10,7 +10,7 @@ import { LocalStorageService } from '../../services/localstorage.service';
 @Component({
   selector: 'app-message-list',
   standalone: true,
-  imports: [AsyncPipe, NgIf, NgFor, MessageFormatPipe, DatePipe],
+  imports: [AsyncPipe, NgIf, NgFor, MessageFormatPipe, DatePipe, NgClass],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
 })
@@ -33,7 +33,6 @@ export class MessageListComponent {
   );
 
   async toggleRead(message: Message): Promise<void> {
-    console.log(123, message);
     if (!this.uid) {
       this.uid = this.localStorageService.setUid() || '';
       console.error('No uid found in localStorage');
@@ -59,17 +58,41 @@ export class MessageListComponent {
     return message.readBy?.[this.uid] ?? false;
   }
 
-  async deleteMessage(message: Message): Promise<void> {
-    const confirmed = confirm('Are you sure you want to delete this message?');
+  async deleteMessage(message: Message, deleteother?: any): Promise<void> {
+    if (deleteother === 'read_delete_old') {
+      await this.toggleRead(message);
+      const data = await this.messageService.getMessagesByUserName(
+        this.workspaceId(),
+        this.channelId(),
+        message.userName
+      );
 
-    if (!confirmed) {
-      return;
+      const newdata = data.filter((each) => {
+        const eachTime = each.createdAt?.toMillis?.() ?? 0;
+        const messageTime = message.createdAt?.toMillis?.() ?? 0;
+
+        return eachTime < messageTime;
+      });
+      newdata.forEach(async (message) => {
+        await this.messageService.deleteMessage(
+          this.workspaceId(),
+          this.channelId(),
+          message.id
+        );
+      });
+    } else {
+      const confirmed = confirm(
+        'Are you sure you want to delete this message?'
+      );
+
+      if (!confirmed) {
+        return;
+      }
+      await this.messageService.deleteMessage(
+        this.workspaceId(),
+        this.channelId(),
+        message.id
+      );
     }
-
-    await this.messageService.deleteMessage(
-      this.workspaceId(),
-      this.channelId(),
-      message.id
-    );
   }
 }

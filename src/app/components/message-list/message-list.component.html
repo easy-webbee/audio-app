@@ -58,7 +58,16 @@
         class="delete-button"
         (click)="deleteMessage(message)"
       >
-        Delete
+        Delete Just Me
+      </button>
+
+      <button
+        type="button"
+        class="delete-button"
+        [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
+        (click)="deleteMessage(message, 'read_delete_old')"
+      >
+        {{ isRead(message) ? "Mark unread" : "Mark read" }} and Delete Old
       </button>
     </div>
   </div>

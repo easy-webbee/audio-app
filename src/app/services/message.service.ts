@@ -12,6 +12,8 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  where,
+  getDocs,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -96,5 +98,29 @@ export class MessageService {
     );
 
     await deleteDoc(messageRef);
+  }
+
+  async getMessagesByUserName(
+    workspaceId: string,
+    channelId: string,
+    userName: string
+  ): Promise<Message[]> {
+    const messagesRef = collection(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}/messages`
+    );
+
+    const messagesQuery = query(
+      messagesRef,
+      where('userName', '==', userName),
+      orderBy('createdAt', 'asc')
+    );
+
+    const snapshot = await getDocs(messagesQuery);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Message[];
   }
 }
