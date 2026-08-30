@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, switchMap } from 'rxjs';
 import { MessageService } from '../../services/message.service';
@@ -12,7 +12,8 @@ import { MessageFormatPipe } from './msg.pipe';
     AsyncPipe,
     NgIf,
     NgFor,
-    MessageFormatPipe
+    MessageFormatPipe,
+    DatePipe
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss'

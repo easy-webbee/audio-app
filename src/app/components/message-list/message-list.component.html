@@ -15,6 +15,9 @@
 
           <div class="header">
             <strong>{{ message.userName }}</strong>
+            <span>
+              {{ message.createdAt?.toDate() | date:'MMM d, h:mm a':'America/Chicago' }}
+            </span>
           </div>
 
           <!-- <div>{{message.text}}</div> -->

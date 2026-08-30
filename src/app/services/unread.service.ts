@@ -11,6 +11,7 @@ import {
     query,
     orderBy
   } from '@angular/fire/firestore';
+import { SoundAlertService } from './sound-alert.service';
   
   @Injectable({
     providedIn: 'root'
@@ -22,7 +23,7 @@ import {
     private unreadCounts = signal<Record<string, number>>({});
   
     readonly counts = this.unreadCounts.asReadonly();
-  
+    private soundService=inject(SoundAlertService); 
     private lastMessageIds =
       new Map<string, string>();
   
@@ -84,8 +85,10 @@ import {
               channelId,
               messageId
             );
-  
+            
             this.increment(channelId);
+            
+            this.soundService.playAlert('bullish.mp3');
           }
         }
       );
