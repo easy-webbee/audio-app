@@ -101,3 +101,18 @@
 .message.unread {
   background: #6f66b3;
 }
+
+.delete-button {
+  margin-top: 6px;
+  margin-left: 6px;
+  padding: 3px 8px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: red;
+  color: whitesmoke;
+  cursor: pointer;
+}
+
+.delete-button {
+  border: 0;
+}

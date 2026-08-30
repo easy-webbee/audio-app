@@ -10,7 +10,8 @@ import {
   orderBy,
   query,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -18,46 +19,31 @@ import { Observable } from 'rxjs';
 import { Message } from '../models/message.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessageService {
-
   private firestore = inject(Firestore);
 
-  getMessages(
-    workspaceId: string,
-    channelId: string
-  ): Observable<Message[]> {
-
+  getMessages(workspaceId: string, channelId: string): Observable<Message[]> {
     const messagesRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}/messages`
     );
 
-    const messagesQuery = query(
-      messagesRef,
-      orderBy('createdAt', 'asc')
-    );
+    const messagesQuery = query(messagesRef, orderBy('createdAt', 'asc'));
 
     return collectionData(messagesQuery, {
-      idField: 'id'
+      idField: 'id',
     }) as Observable<Message[]>;
   }
 
-  watchNewMessages(
-    workspaceId: string,
-    channelId: string
-  ) {
-
+  watchNewMessages(workspaceId: string, channelId: string) {
     const messagesRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}/messages`
     );
 
-    const messagesQuery = query(
-      messagesRef,
-      orderBy('createdAt', 'asc')
-    );
+    const messagesQuery = query(messagesRef, orderBy('createdAt', 'asc'));
 
     return collectionChanges(messagesQuery);
   }
@@ -69,7 +55,6 @@ export class MessageService {
     userName: string,
     text: string
   ): Promise<void> {
-
     const messagesRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}/messages`
@@ -79,7 +64,7 @@ export class MessageService {
       userId,
       userName,
       text,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     });
   }
 
@@ -90,14 +75,26 @@ export class MessageService {
     uid: string,
     read: boolean
   ): Promise<void> {
-  
     const messageRef = doc(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}/messages/${messageId}`
     );
-  
+
     await updateDoc(messageRef, {
-      [`readBy.${uid}`]: read
+      [`readBy.${uid}`]: read,
     });
+  }
+
+  async deleteMessage(
+    workspaceId: string,
+    channelId: string,
+    messageId: string
+  ): Promise<void> {
+    const messageRef = doc(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}/messages/${messageId}`
+    );
+
+    await deleteDoc(messageRef);
   }
 }

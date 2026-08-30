@@ -1,83 +1,67 @@
-
 <div class="messages">
+  @if (messages$ | async; as messages) { @for (message of messages; track
+  message.id) {
 
-  @if (messages$ | async; as messages) {
+  <div class="message" [class.unread]="!isRead(message)">
+    <div class="avatar">
+      {{ message.userName.charAt(0) }}
+    </div>
 
-    @for (message of messages; track message.id) {
-
-      <div class="message" [class.unread]="!isRead(message)">
-
-        <div class="avatar">
-          {{ message.userName.charAt(0) }}
-        </div>
-
-        <div class="content">
-
-          <div class="header">
-            <strong>{{ message.userName }}</strong>
-            <span>
-              {{ message.createdAt?.toDate() | date:'MMM d, h:mm a':'America/Chicago' }}
-            </span>
-          </div>
-
-          <!-- <div>{{message.text}}</div> -->
-          <ng-container *ngIf="message.text | messageFormat as formatted">
-
-            <div
-              class="text"
-              [class.sell]="formatted.borderClass === 'sell'"
-              [class.buy]="formatted.borderClass === 'buy'"
-            >
-          
-              <ng-container *ngFor="let part of formatted.parts">
-          
-                <strong *ngIf="part.type === 'bold'">
-                  {{ part.text }}
-                </strong>
-          
-                <span *ngIf="part.type === 'text'">
-                  {{ part.text }}
-                </span>
-          
-                <a
-                  *ngIf="part.type === 'link'"
-                  [href]="part.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ part.text }}
-                </a>
-          
-                <div
-                  *ngIf="part.type === 'iframe'"
-                  class="iframe-container"
-                >
-                  <iframe
-                    [src]="part.safeUrl"
-                    class="stock-iframe"
-                  ></iframe>
-                </div>
-          
-              </ng-container>
-          
-            </div>
-          
-          </ng-container>
-          <!-- READ / UNREAD BUTTON -->
-          <button
-            type="button"
-            class="read-button"
-            (click)="toggleRead(message)"
-          >
-            {{ isRead(message) ? 'Mark unread' : 'Mark read' }}
-          </button>
-        </div>
-
+    <div class="content">
+      <div class="header">
+        <strong>{{ message.userName }}</strong>
+        <span>
+          {{
+            message.createdAt?.toDate()
+              | date : "MMM d, h:mm a" : "America/Chicago"
+          }}
+        </span>
+        <!-- READ / UNREAD BUTTON -->
+        <button type="button" class="read-button" (click)="toggleRead(message)">
+          {{ isRead(message) ? "Mark unread" : "Mark read" }}
+        </button>
       </div>
-      <hr>
-    }
 
-  }
+      <!-- <div>{{message.text}}</div> -->
+      <ng-container *ngIf="message.text | messageFormat as formatted">
+        <div
+          class="text"
+          [class.sell]="formatted.borderClass === 'sell'"
+          [class.buy]="formatted.borderClass === 'buy'"
+        >
+          <ng-container *ngFor="let part of formatted.parts">
+            <strong *ngIf="part.type === 'bold'">
+              {{ part.text }}
+            </strong>
 
+            <span *ngIf="part.type === 'text'">
+              {{ part.text }}
+            </span>
+
+            <a
+              *ngIf="part.type === 'link'"
+              [href]="part.url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ part.text }}
+            </a>
+
+            <div *ngIf="part.type === 'iframe'" class="iframe-container">
+              <iframe [src]="part.safeUrl" class="stock-iframe"></iframe>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <button
+        type="button"
+        class="delete-button"
+        (click)="deleteMessage(message)"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+  <hr />
+  } }
 </div>
-

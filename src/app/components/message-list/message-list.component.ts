@@ -10,18 +10,11 @@ import { LocalStorageService } from '../../services/localstorage.service';
 @Component({
   selector: 'app-message-list',
   standalone: true,
-  imports: [
-    AsyncPipe,
-    NgIf,
-    NgFor,
-    MessageFormatPipe,
-    DatePipe
-  ],
+  imports: [AsyncPipe, NgIf, NgFor, MessageFormatPipe, DatePipe],
   templateUrl: './message-list.component.html',
-  styleUrl: './message-list.component.scss'
+  styleUrl: './message-list.component.scss',
 })
 export class MessageListComponent {
-
   private messageService = inject(MessageService);
   private localStorageService = inject(LocalStorageService);
 
@@ -40,9 +33,9 @@ export class MessageListComponent {
   );
 
   async toggleRead(message: Message): Promise<void> {
-
+    console.log(123, message);
     if (!this.uid) {
-      this.uid = this.localStorageService.setUid()||''
+      this.uid = this.localStorageService.setUid() || '';
       console.error('No uid found in localStorage');
       return;
     }
@@ -59,11 +52,24 @@ export class MessageListComponent {
   }
 
   isRead(message: Message): boolean {
-
     if (!this.uid) {
       return false;
     }
 
     return message.readBy?.[this.uid] ?? false;
+  }
+
+  async deleteMessage(message: Message): Promise<void> {
+    const confirmed = confirm('Are you sure you want to delete this message?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    await this.messageService.deleteMessage(
+      this.workspaceId(),
+      this.channelId(),
+      message.id
+    );
   }
 }
