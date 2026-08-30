@@ -14,9 +14,9 @@
 }
 
 
-/* -------------------------
-   WORKSPACE HEADER
-------------------------- */
+/* =====================================
+   WORKSPACE
+===================================== */
 
 .workspace {
   height: 60px;
@@ -35,9 +35,9 @@
 }
 
 
-/* -------------------------
-   SCROLLABLE AREA
-------------------------- */
+/* =====================================
+   SCROLLABLE CONTENT
+===================================== */
 
 .sidebar-content {
   flex: 1;
@@ -51,18 +51,18 @@
 }
 
 
-/* -------------------------
+/* =====================================
    SECTION
-------------------------- */
+===================================== */
 
 .section {
   margin-bottom: 12px;
 }
 
 
-/* -------------------------
+/* =====================================
    SECTION HEADER
-------------------------- */
+===================================== */
 
 .section-title {
   height: 32px;
@@ -88,11 +88,93 @@
   opacity: 1;
 }
 
-.section-title button {
-  margin-left: auto;
 
+/* =====================================
+   SECTION ARROW
+===================================== */
+
+.section-arrow {
+  width: 12px;
+
+  flex-shrink: 0;
+
+  font-size: 9px;
+}
+
+
+/* =====================================
+   SECTION NAME
+===================================== */
+
+.section-name {
+  flex: 1;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =====================================
+   SECTION UNREAD
+===================================== */
+
+.section-unread {
+  min-width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 6px;
+
+  border-radius: 10px;
+
+  background: white;
+  color: #3f0e40;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================
+   CHANNEL COUNT
+===================================== */
+
+.channel-count {
+  min-width: 16px;
+
+  font-size: 11px;
+
+  opacity: 0.6;
+
+  font-weight: 400;
+
+  text-align: center;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================
+   ADD CHANNEL BUTTON
+===================================== */
+
+.section-title button {
   width: 24px;
   height: 24px;
+
+  margin-left: 2px;
+
+  padding: 0;
 
   border: 0;
   border-radius: 4px;
@@ -101,8 +183,11 @@
   color: white;
 
   font-size: 18px;
+  line-height: 24px;
 
   cursor: pointer;
+
+  flex-shrink: 0;
 }
 
 .section-title button:hover {
@@ -110,9 +195,9 @@
 }
 
 
-/* -------------------------
+/* =====================================
    CHANNEL ROW
-------------------------- */
+===================================== */
 
 .channel-row {
   display: flex;
@@ -124,12 +209,13 @@
 }
 
 
-/* -------------------------
+/* =====================================
    CHANNEL BUTTON
-------------------------- */
+===================================== */
 
 .channel-item {
   flex: 1;
+
   min-width: 0;
 
   display: flex;
@@ -156,6 +242,9 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+
+/* Active channel */
+
 .channel-row.active .channel-item {
   background: rgba(255, 255, 255, 0.2);
 
@@ -163,9 +252,9 @@
 }
 
 
-/* -------------------------
+/* =====================================
    CHANNEL NAME
-------------------------- */
+===================================== */
 
 .channel-name {
   flex: 1;
@@ -180,22 +269,26 @@
 }
 
 
-/* -------------------------
-   MESSAGE COUNT
-------------------------- */
+/* =====================================
+   TOTAL MESSAGE COUNT
+===================================== */
 
 .message-count {
   flex-shrink: 0;
 
+  min-width: 16px;
+
   font-size: 11px;
 
   opacity: 0.6;
+
+  text-align: center;
 }
 
 
-/* -------------------------
-   UNREAD
-------------------------- */
+/* =====================================
+   UNREAD BADGE
+===================================== */
 
 .unread-badge {
   min-width: 20px;
@@ -219,14 +312,19 @@
 }
 
 
-/* -------------------------
-   MOVE SECTION SELECT
-------------------------- */
+/* =====================================
+   MOVE CHANNEL SELECT
+===================================== */
 
-.channel-row select {
-  width: 75px;
+.select-channel {
+  width: 50px;
+  max-width: 50px;
+
+  height: 24px;
 
   margin-right: 3px;
+
+  padding: 0 2px;
 
   border: 0;
   border-radius: 4px;
@@ -234,15 +332,21 @@
   background: #5a175b;
   color: white;
 
-  font-size: 10px;
+  font-size: 9px;
 
   cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+.select-channel:focus {
+  outline: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 
-/* -------------------------
+/* =====================================
    SCROLLBAR
-------------------------- */
+===================================== */
 
 .sidebar-content::-webkit-scrollbar {
   width: 6px;
@@ -260,14 +364,4 @@
 
 .sidebar-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
-}
-
-.select-channel{
-  max-width: 50px;
-}
-
-.channel-count {
-  font-size: 11px;
-  opacity: 0.6;
-  font-weight: 400;
 }

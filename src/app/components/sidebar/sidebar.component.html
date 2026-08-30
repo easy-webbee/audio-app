@@ -1,31 +1,60 @@
 <div class="sidebar">
+  <!-- =====================================
+       WORKSPACE
+  ====================================== -->
+
   <div class="workspace">
     <span>
       {{ workspace().name }}
     </span>
 
-    <span>⌄</span>
+    <span> ⌄ </span>
   </div>
 
+  <!-- =====================================
+       SCROLLABLE SIDEBAR
+  ====================================== -->
+
   <div class="sidebar-content">
-    @if (channels$ | async; as channels) { @for (section of sections(); track
-    section.id) {
+    @if (channels$ | async; as channels) { @for ( section of sections(); track
+    section.id ) {
 
     <div class="section">
-      <!-- SECTION HEADER -->
+      <!-- =====================================
+               SECTION HEADER
+          ====================================== -->
+
       <div class="section-title" (click)="toggleSection(section.id)">
-        <span>
+        <!-- Arrow -->
+
+        <span class="section-arrow">
           {{ section.expanded ? "▼" : "▶" }}
         </span>
 
-        <span>
+        <!-- Section name -->
+
+        <span class="section-name">
           {{ section.name }}
         </span>
+
+        <!-- Section unread count -->
+
+        @if ( getSectionUnreadCount(section) > 0 ) {
+
+        <span class="section-unread">
+          {{ getSectionUnreadCount(section) }}
+        </span>
+
+        }
+
+        <!-- Number of channels -->
 
         <span class="channel-count">
           {{ section.channels.length }}
         </span>
-        
+
+        <!-- Add channel -->
+
         <button
           type="button"
           (click)="$event.stopPropagation(); createChannel()"
@@ -34,38 +63,58 @@
         </button>
       </div>
 
-      <!-- CHANNELS -->
+      <!-- =====================================
+               CHANNELS
+          ====================================== -->
 
-      @if (section.expanded) { @for (channel of section.channels; track
-      channel.id) {
+      @if (section.expanded) { @for ( channel of section.channels; track
+      channel.id ) {
 
       <div
         class="channel-row"
         [class.active]="selectedChannel()?.id === channel.id"
       >
+        <!-- =====================================
+                     CHANNEL BUTTON
+                ====================================== -->
+
         <button class="channel-item" (click)="selectChannel(channel)">
-          <span>#</span>
+          <span> # </span>
 
           <span class="channel-name">
             {{ channel.name }}
           </span>
 
-          @if (messageCounts()[channel.id] > 0) {
-          <span class="message-count">
-            {{ messageCounts()[channel.id] }}
-          </span>
-          } @if (unreadCounts()[channel.id] > 0) {
+          <!-- Unread messages -->
+
+          @if ( unreadCounts()[channel.id] > 0 ) {
+
           <span class="unread-badge">
             {{ unreadCounts()[channel.id] }}
           </span>
+
+          }
+
+          <!-- Total messages -->
+
+          @if ( messageCounts()[channel.id] > 0 ) {
+
+          <span class="message-count">
+            {{ messageCounts()[channel.id] }}
+          </span>
+
           }
         </button>
 
+        <!-- =====================================
+                     MOVE CHANNEL
+                ====================================== -->
+
         <select
+          class="select-channel"
           [value]="channel.sectionId ?? 'other'"
           (change)="moveChannelToSection(channel, $any($event.target).value)"
           (click)="$event.stopPropagation()"
-          class="select-channel"
         >
           @for ( targetSection of sections(); track targetSection.id ) {
 

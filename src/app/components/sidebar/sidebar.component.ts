@@ -1,16 +1,9 @@
-import {
-  Component,
-  effect,
-  inject,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
-import { switchMap, tap, map } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 
 import { ChannelService } from '../../services/channel.service';
 
@@ -34,28 +27,59 @@ export class SidebarComponent {
 
   private localStorageService = inject(LocalStorageService);
 
+  // ==========================================
+  // UNREAD COUNTS
+  // ==========================================
+
   public unreadCounts = this.unreadService.counts;
 
+  // ==========================================
+  // TOTAL MESSAGE COUNTS
+  // ==========================================
+
   readonly messageCounts = this.unreadService.messageCounts;
+
+  // ==========================================
+  // INPUTS
+  // ==========================================
 
   workspace = input.required<Workspace>();
 
   selectedChannel = input<Channel | null>(null);
 
+  // ==========================================
+  // OUTPUT
+  // ==========================================
+
   channelSelected = output<Channel>();
 
-  // Sections
-  sections = signal<ChannelSection[]>(this.localStorageService.createSections());
+  // ==========================================
+  // SECTIONS
+  // ==========================================
+
+  sections = signal<ChannelSection[]>(
+    this.localStorageService.createSections()
+  );
+
+  // ==========================================
+  // CHANNELS
+  // ==========================================
 
   channels$ = toObservable(this.workspace).pipe(
     switchMap((workspace) => this.channelService.getChannels(workspace.id)),
 
     tap((channels) => {
+      // Watch every channel for unread messages
+
       for (const channel of channels) {
         this.unreadService.watchChannel(this.workspace().id, channel.id);
       }
 
+      // Group channels into sections
+
       this.groupChannels(channels);
+
+      // Select first channel
 
       if (channels.length > 0) {
         this.channelSelected.emit(channels[0]);
@@ -63,32 +87,39 @@ export class SidebarComponent {
     })
   );
 
-  constructor() {
-    effect(() => {
-      this.channels$.subscribe((channels) => {
-        if (channels.length > 0) {
-          this.channelSelected.emit(channels[0]);
-        }
-      });
-    });
-  }
+  // ==========================================
+  // GROUP CHANNELS
+  // ==========================================
 
   private groupChannels(channels: Channel[]): void {
     this.sections.update((sections) => {
+      /*
+       * Create a new section array.
+       *
+       * Keep expanded/collapsed state.
+       * Clear channels before regrouping.
+       */
+
       const updated: ChannelSection[] = sections.map((section) => ({
         ...section,
-        channels: [] as Channel[],
+
+        channels: [],
       }));
 
+      // Put channels into their section
+
       for (const channel of channels) {
-        // Change this logic to whatever
-        // determines which section a channel belongs to
+        let section = updated.find(
+          (section) => section.id === channel.sectionId
+        );
 
-        let section = updated.find((s) => s.id === channel.sectionId);
+        /*
+         * If the channel does not have
+         * a valid section, use Other.
+         */
 
-        // If no section exists, put it in Other
         if (!section) {
-          section = updated.find((s) => s.id === 'other');
+          section = updated.find((section) => section.id === 'other');
         }
 
         section?.channels.push(channel);
@@ -98,29 +129,53 @@ export class SidebarComponent {
     });
   }
 
-  toggleSection(sectionId: string): void {
+  // ==========================================
+  // GET SECTION UNREAD COUNT
+  // ==========================================
 
+  getSectionUnreadCount(section: ChannelSection): number {
+    const unreadCounts = this.unreadCounts();
+
+    return section.channels.reduce((total, channel) => {
+      return total + (unreadCounts[channel.id] ?? 0);
+    }, 0);
+  }
+
+  // ==========================================
+  // TOGGLE SECTION
+  // ==========================================
+
+  toggleSection(sectionId: string): void {
     this.sections.update((sections) => {
-  
       const updatedSections = sections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
+
               expanded: !section.expanded,
             }
           : section
       );
-  
+
+      // Save expanded/collapsed state
+
       this.localStorageService.saveSectionState(updatedSections);
-  
+
       return updatedSections;
     });
-  
   }
+
+  // ==========================================
+  // SELECT CHANNEL
+  // ==========================================
 
   selectChannel(channel: Channel): void {
     this.channelSelected.emit(channel);
   }
+
+  // ==========================================
+  // CREATE CHANNEL
+  // ==========================================
 
   async createChannel(): Promise<void> {
     const name = prompt('Channel name');
@@ -132,13 +187,19 @@ export class SidebarComponent {
     await this.channelService.createChannel(this.workspace().id, name);
   }
 
+  // ==========================================
+  // MOVE CHANNEL TO SECTION
+  // ==========================================
+
   async moveChannelToSection(
     channel: Channel,
     sectionId: string
   ): Promise<void> {
     await this.channelService.updateChannelSection(
       this.workspace().id,
+
       channel.id,
+
       sectionId
     );
   }
