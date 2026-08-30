@@ -5,6 +5,7 @@ import { combineLatest, switchMap } from 'rxjs';
 import { MessageService } from '../../services/message.service';
 import { MessageFormatPipe } from './msg.pipe';
 import { Message } from '../../models/message.model';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-message-list',
@@ -22,9 +23,12 @@ import { Message } from '../../models/message.model';
 export class MessageListComponent {
 
   private messageService = inject(MessageService);
+  private localStorageService = inject(LocalStorageService);
 
   workspaceId = input.required<string>();
   channelId = input.required<string>();
+
+  private uid = this.localStorageService.getUid();
 
   messages$ = combineLatest([
     toObservable(this.workspaceId),
@@ -37,12 +41,29 @@ export class MessageListComponent {
 
   async toggleRead(message: Message): Promise<void> {
 
+    if (!this.uid) {
+      this.uid = this.localStorageService.setUid()||''
+      console.error('No uid found in localStorage');
+      return;
+    }
+
+    const currentRead = message.readBy?.[this.uid] ?? false;
+
     await this.messageService.setMessageRead(
       this.workspaceId(),
       this.channelId(),
       message.id,
-      !message.read
+      this.uid,
+      !currentRead
     );
-  
+  }
+
+  isRead(message: Message): boolean {
+
+    if (!this.uid) {
+      return false;
+    }
+
+    return message.readBy?.[this.uid] ?? false;
   }
 }

@@ -87,6 +87,7 @@ export class MessageService {
     workspaceId: string,
     channelId: string,
     messageId: string,
+    uid: string,
     read: boolean
   ): Promise<void> {
   
@@ -96,7 +97,7 @@ export class MessageService {
     );
   
     await updateDoc(messageRef, {
-      read
+      [`readBy.${uid}`]: read
     });
   }
 }

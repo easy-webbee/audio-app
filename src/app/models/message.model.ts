@@ -4,5 +4,7 @@ export interface Message {
   userName: string;
   text: string;
   createdAt: any;
-  read?: boolean;
+  readBy?: {
+    [uid: string]: boolean;
+  };
 }
