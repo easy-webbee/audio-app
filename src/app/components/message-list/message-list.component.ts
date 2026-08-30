@@ -95,4 +95,20 @@ export class MessageListComponent {
       );
     }
   }
+
+  isToday(timestamp: any): boolean {
+    if (!timestamp) {
+      return false;
+    }
+
+    const date = timestamp.toDate();
+
+    const today = new Date();
+
+    return (
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
+    );
+  }
 }

@@ -10,7 +10,10 @@
     <div class="content">
       <div class="header">
         <strong>{{ message.userName }}</strong>
-        <span>
+        <span
+          class="message-date"
+          [class.current-date]="isToday(message.createdAt)"
+        >
           {{
             message.createdAt?.toDate()
               | date : "MMM d, h:mm a" : "America/Chicago"
@@ -71,6 +74,6 @@
       </button>
     </div>
   </div>
-  <hr />
+  <hr class="hr_line" />
   } }
 </div>

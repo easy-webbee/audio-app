@@ -124,3 +124,19 @@
 .read_btn {
   background-color: rgb(230, 109, 109);
 }
+
+.message-date {
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.message-date.current-date {
+  background: green;
+  color: white;
+}
+
+.hr_line {
+  border: 0;
+  height: 2px;
+  background: rgb(176, 26, 26);
+}
