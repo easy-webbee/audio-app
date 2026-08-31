@@ -46,6 +46,8 @@ export class MessageListComponent {
 
   private uid = this.localStorageService.getUid();
 
+  private shouldScrollToBottom = false;
+
   messages$ = combineLatest([
     toObservable(this.workspaceId),
     toObservable(this.channelId),
@@ -53,7 +55,14 @@ export class MessageListComponent {
     switchMap(([workspaceId, channelId]) =>
       this.messageService.getMessages(workspaceId, channelId)
     ),
+    /* * Firebase can emit many times. * * We only scroll when shouldScrollToBottom * was set by the channelId effect. */
     tap(() => {
+      if (!this.shouldScrollToBottom) {
+        return;
+      }
+
+      this.shouldScrollToBottom = false;
+
       setTimeout(() => {
         this.scrollToBottom();
       });
@@ -61,16 +70,12 @@ export class MessageListComponent {
   );
 
   constructor() {
-    /*
-     * Whenever the channel changes,
-     * scroll to the newest message.
-     */
+    /* * This runs when channelId changes. * * It does NOT run when Firebase updates * the messages. */
     effect(() => {
       this.channelId();
 
-      setTimeout(() => {
-        this.scrollToBottom();
-      });
+      // New channel selected
+      this.shouldScrollToBottom = true;
     });
   }
 
