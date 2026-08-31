@@ -22,7 +22,31 @@
               | date : "MMM d, h:mm a" : "America/Chicago"
           }}
         </span>
-
+        <span>
+          <a
+            [href]="
+              'http://localhost:4200/price-log/' +
+              message.userName +
+              '?daysRange=5'
+            "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ message.userName }}-local
+          </a>
+          |
+          <a
+            [href]="
+              'https://stockmarkets000.web.app/price-log/' +
+              message.userName +
+              '?daysRange=5'
+            "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ message.userName }}-product
+          </a>
+        </span>
         <button type="button" class="read-button" (click)="toggleRead(message)">
           {{ isRead(message) ? "Mark unread" : "Mark read" }}
         </button>
