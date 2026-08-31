@@ -1,4 +1,4 @@
-<div class="messages">
+<div class="messages" #messagesContainer>
   @if (messages$ | async; as messages) { @for (message of messages; track
   message.id) {
 
@@ -10,6 +10,7 @@
     <div class="content">
       <div class="header">
         <strong class="color-red">{{ message.userName }}</strong>
+
         <span
           class="message-date"
           [class.current-date]="isToday(message.createdAt)"
@@ -19,13 +20,12 @@
               | date : "MMM d, h:mm a" : "America/Chicago"
           }}
         </span>
-        <!-- READ / UNREAD BUTTON -->
+
         <button type="button" class="read-button" (click)="toggleRead(message)">
           {{ isRead(message) ? "Mark unread" : "Mark read" }}
         </button>
       </div>
 
-      <!-- <div>{{message.text}}</div> -->
       <ng-container *ngIf="message.text | messageFormat as formatted">
         <div
           class="text"
@@ -50,12 +50,14 @@
               {{ part.text }}
             </a>
 
-            <div *ngIf="part.type === 'iframe'" class="iframe-container">
-              <iframe [src]="part.safeUrl" class="stock-iframe"></iframe>
-            </div>
+            <app-lazy-iframe
+              *ngIf="part.type === 'iframe'"
+              [iframeUrl]="part.safeUrl"
+            ></app-lazy-iframe>
           </ng-container>
         </div>
       </ng-container>
+
       <button
         type="button"
         class="delete-button"
