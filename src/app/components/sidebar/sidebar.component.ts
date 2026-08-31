@@ -245,4 +245,19 @@ export class SidebarComponent {
     this.contextMenuVisible = false;
     this.contextMenuChannel = null;
   }
+
+  copied = false;
+  copyText(channel: Channel): void {
+    navigator.clipboard
+      .writeText(channel.id)
+      .then(() => {
+        this.copied = true;
+        setTimeout(() => {
+          this.copied = false;
+        }, 2000); // Change back after 2 seconds
+      })
+      .catch((err) => {
+        alert('Failed to copy: ' + channel.id);
+      });
+  }
 }

@@ -122,6 +122,9 @@
   </div>
 
   }
+  <div class="context-menu-item" (click)="copyText(contextMenuChannel!)">
+    {{ copied ? "Copied!" : "Copy " + "Channel ID" }}
+  </div>
 </div>
 }
 <!-- <div class="section">
