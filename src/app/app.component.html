@@ -1,29 +1,40 @@
 <div class="app">
+  <app-workspace-switcher (workspaceSelected)="selectWorkspace($event)" />
 
-  <app-workspace-switcher
-    (workspaceSelected)="selectWorkspace($event)"
-  />
-
-<app-sidebar
-  [workspace]="selectedWorkspace()"
-  [selectedChannel]="selectedChannel()"
-  (channelSelected)="selectChannel($event)"
-/>
-
-  @if (selectedChannel(); as channel) {
-
-    <app-channel
-      [workspaceId]="selectedWorkspace().id"
-      [channel]="channel"
+  <!-- Sidebar -->
+  <div class="sidebar-container" [class.collapsed]="sidebarCollapsed()">
+    <app-sidebar
+      [workspace]="selectedWorkspace()"
+      [selectedChannel]="selectedChannel()"
+      (channelSelected)="selectChannel($event)"
     />
 
-  } @else {
+    <!-- Collapse / Expand button -->
+    <button
+      class="sidebar-toggle"
+      type="button"
+      (click)="toggleSidebar()"
+      [attr.aria-label]="
+        sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'
+      "
+    >
+      {{ sidebarCollapsed() ? "›" : "‹" }}
+    </button>
+  </div>
+
+  <!-- Main channel area -->
+  <div class="channel-container">
+    @if (selectedChannel(); as channel) {
+
+    <app-channel [workspaceId]="selectedWorkspace().id" [channel]="channel" />
+
+    } @else {
 
     <div class="empty-channel">
       <h2>Select a channel</h2>
       <p>Choose a channel from the sidebar.</p>
     </div>
 
-  }
-
+    }
+  </div>
 </div>

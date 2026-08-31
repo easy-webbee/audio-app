@@ -1,8 +1,4 @@
-import {
-  Component,
-  inject,
-  signal
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { ChannelComponent } from './components/channel/channel';
 
@@ -15,28 +11,23 @@ import { UnreadService } from './services/unread.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    SidebarComponent,
-    ChannelComponent,
-    WorkspaceSwitcherComponent
-  ],
+  imports: [SidebarComponent, ChannelComponent, WorkspaceSwitcherComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   private unreadService = inject(UnreadService);
   selectedWorkspace = signal<Workspace>({
     id: 'workspace-1',
-    name: 'My Workspace'
+    name: 'My Workspace',
   });
 
   selectedChannel = signal<Channel | null>({
     id: 'general',
-    name: 'general'
+    name: 'general',
   });
 
   selectWorkspace(workspace: Workspace): void {
-
     this.selectedWorkspace.set(workspace);
 
     // Clear the old channel.
@@ -45,11 +36,13 @@ export class AppComponent {
   }
 
   selectChannel(channel: Channel): void {
-
     this.selectedChannel.set(channel);
-  
-    this.unreadService.markAsRead(
-      channel.id
-    );
+
+    this.unreadService.markAsRead(channel.id);
+  }
+
+  sidebarCollapsed = signal(false);
+  toggleSidebar(): void {
+    this.sidebarCollapsed.update((value) => !value);
   }
 }
