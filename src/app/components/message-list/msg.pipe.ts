@@ -1,11 +1,8 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import {
-  DomSanitizer,
-  SafeResourceUrl
-} from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 export interface MessagePart {
-  type: 'text' | 'bold' | 'link' | 'iframe';
+  type: 'text' | 'bold' | 'link' | 'iframe' | 'image';
   text: string;
   url?: string;
   safeUrl?: SafeResourceUrl;
@@ -17,14 +14,12 @@ export interface FormattedMessage {
 }
 @Pipe({
   name: 'messageFormat',
-  standalone: true
+  standalone: true,
 })
 export class MessageFormatPipe implements PipeTransform {
-
   private sanitizer = inject(DomSanitizer);
 
   transform(message: string): FormattedMessage {
-
     const parts: MessagePart[] = [];
 
     const regex = /(\*[^*]+\*(?:[ \t]+\*[^*]+\*)*|<[^>]+>)/g;
@@ -33,57 +28,53 @@ export class MessageFormatPipe implements PipeTransform {
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(message)) !== null) {
-
       if (match.index > lastIndex) {
         parts.push({
           type: 'text',
-          text: message.substring(lastIndex, match.index)
+          text: message.substring(lastIndex, match.index),
         });
       }
 
       const value = match[0];
 
       if (value.startsWith('*') && value.endsWith('*')) {
-
         parts.push({
           type: 'bold',
-          text: value
-            .replace(/\*/g, '')
-            .replace(/\s+/g, ' ')
-            .trim()
+          text: value.replace(/\*/g, '').replace(/\s+/g, ' ').trim(),
         });
-
       } else if (value.startsWith('<') && value.endsWith('>')) {
-
         const link = value.slice(1, -1);
         const [url, label] = link.split('|');
 
-        if (
-          label === 'prodUrl' &&
-          this.isAllowedIframeUrl(url)
-        ) {
-
+        if (label === 'prodUrl' && this.isAllowedIframeUrl(url)) {
           parts.push({
             type: 'link',
             text: label,
-            url
+            url,
           });
 
           parts.push({
             type: 'iframe',
             text: label,
             url,
-            safeUrl:
-              this.sanitizer
-                .bypassSecurityTrustResourceUrl(url)
+            safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(url),
           });
-
+        } else if (label.toLowerCase().includes('image')) {
+          parts.push({
+            type: 'link',
+            text: label,
+            url,
+          });
+          parts.push({
+            type: 'image',
+            text: label || url,
+            url,
+          });
         } else if (url !== 'null') {
-
           parts.push({
             type: 'link',
             text: label || url,
-            url
+            url,
           });
         }
       }
@@ -94,7 +85,7 @@ export class MessageFormatPipe implements PipeTransform {
     if (lastIndex < message.length) {
       parts.push({
         type: 'text',
-        text: message.substring(lastIndex)
+        text: message.substring(lastIndex),
       });
     }
 
@@ -106,13 +97,11 @@ export class MessageFormatPipe implements PipeTransform {
 
     return {
       parts,
-      borderClass
+      borderClass,
     };
   }
 
   private isAllowedIframeUrl(url: string): boolean {
-    return url.startsWith(
-      'https://stockmarkets000.web.app/capture-target/'
-    );
+    return url.startsWith('https://stockmarkets000.web.app/capture-target/');
   }
 }

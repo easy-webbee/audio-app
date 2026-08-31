@@ -54,6 +54,10 @@
               *ngIf="part.type === 'iframe'"
               [iframeUrl]="part.safeUrl"
             ></app-lazy-iframe>
+
+            <div *ngIf="part.type === 'image'" class="image-container">
+              <img [src]="part.url" alt="" class="stock-image" />
+            </div>
           </ng-container>
         </div>
       </ng-container>
