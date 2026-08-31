@@ -2,7 +2,6 @@
   <!-- =====================================
        WORKSPACE
   ====================================== -->
-
   <div class="workspace">
     <span>
       {{ workspace().name }}
@@ -73,65 +72,58 @@
       <div
         class="channel-row"
         [class.active]="selectedChannel()?.id === channel.id"
+        (contextmenu)="showChannelContextMenu($event, channel)"
       >
-        <!-- =====================================
-                     CHANNEL BUTTON
-                ====================================== -->
-
         <button class="channel-item" (click)="selectChannel(channel)">
-          <span> # </span>
+          <span>#</span>
 
           <span class="channel-name">
             {{ channel.name }}
           </span>
 
-          <!-- Unread messages -->
-
-          @if ( unreadCounts()[channel.id] > 0 ) {
-
+          @if (unreadCounts()[channel.id] > 0) {
           <span class="unread-badge">
             {{ unreadCounts()[channel.id] }}
           </span>
-
-          }
-
-          <!-- Total messages -->
-
-          @if ( messageCounts()[channel.id] > 0 ) {
-
+          } @if (messageCounts()[channel.id] > 0) {
           <span class="message-count">
             {{ messageCounts()[channel.id] }}
           </span>
-
           }
         </button>
-
-        <!-- =====================================
-                     MOVE CHANNEL
-                ====================================== -->
-
-        <select
-          class="select-channel"
-          [value]="channel.sectionId ?? 'other'"
-          (change)="moveChannelToSection(channel, $any($event.target).value)"
-          (click)="$event.stopPropagation()"
-        >
-          @for ( targetSection of sections(); track targetSection.id ) {
-
-          <option [value]="targetSection.id">
-            {{ targetSection.name }}
-          </option>
-
-          }
-        </select>
       </div>
-
       } }
     </div>
 
     } }
   </div>
 </div>
+
+@if (contextMenuVisible) {
+<div
+  class="context-menu"
+  [style.left.px]="contextMenuX"
+  [style.top.px]="contextMenuY"
+  (click)="$event.stopPropagation()"
+>
+  <div class="context-menu-title">Move "{{ contextMenuChannel?.name }}"</div>
+
+  @for (targetSection of sections(); track targetSection.id) {
+
+  <div
+    class="context-menu-item"
+    (click)="moveChannelToSection(contextMenuChannel!, targetSection.id)"
+  >
+    {{ targetSection.name }}
+
+    @if (contextMenuChannel?.sectionId === targetSection.id) {
+    <span class="check">✓</span>
+    }
+  </div>
+
+  }
+</div>
+}
 <!-- <div class="section">
     <div class="section-title">
       <span>Direct Messages</span>

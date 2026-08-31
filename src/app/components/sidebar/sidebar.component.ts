@@ -1,4 +1,11 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  HostListener,
+} from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
 
@@ -21,6 +28,20 @@ import { LocalStorageService } from '../../services/localstorage.service';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.closeContextMenu();
+  }
+
+  @HostListener('document:contextmenu', ['$event'])
+  onDocumentContextMenu(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.context-menu')) {
+      this.closeContextMenu();
+    }
+  }
+
   private channelService = inject(ChannelService);
 
   private unreadService = inject(UnreadService);
@@ -202,5 +223,26 @@ export class SidebarComponent {
 
       sectionId
     );
+  }
+
+  contextMenuVisible = false;
+  contextMenuX = 0;
+  contextMenuY = 0;
+  contextMenuChannel: Channel | null = null;
+
+  showChannelContextMenu(event: MouseEvent, channel: Channel) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.contextMenuX = event.clientX;
+    this.contextMenuY = event.clientY;
+
+    this.contextMenuChannel = channel;
+    this.contextMenuVisible = true;
+  }
+
+  closeContextMenu() {
+    this.contextMenuVisible = false;
+    this.contextMenuChannel = null;
   }
 }

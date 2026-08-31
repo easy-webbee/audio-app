@@ -365,3 +365,50 @@
 .sidebar-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
+.channel-row {
+  position: relative;
+}
+
+.context-menu {
+  position: fixed;
+  z-index: 9999;
+
+  min-width: 200px;
+
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  padding: 6px 0;
+}
+
+.context-menu-title {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 1px solid #eee;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 9px 12px;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.context-menu-item:hover {
+  background: #f1f1f1;
+}
+
+.check {
+  margin-left: 20px;
+  font-weight: bold;
+}
