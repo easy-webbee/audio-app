@@ -12,6 +12,7 @@ import {
   serverTimestamp,
   query,
   orderBy,
+  getDocs,
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
@@ -86,5 +87,21 @@ export class ChannelService {
     await updateDoc(channelRef, {
       sectionId,
     });
+  }
+
+  async deleteAllMessages(
+    workspaceId: string,
+    channelId: string
+  ): Promise<void> {
+    const messagesRef = collection(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}/messages`
+    );
+
+    const snapshot = await getDocs(messagesRef);
+
+    await Promise.all(
+      snapshot.docs.map((messageDoc) => deleteDoc(messageDoc.ref))
+    );
   }
 }

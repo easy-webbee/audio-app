@@ -125,6 +125,10 @@
   <div class="context-menu-item" (click)="copyText(contextMenuChannel!)">
     {{ copied ? "Copied!" : "Copy " + "Channel ID" }}
   </div>
+
+  <div class="context-menu-item" (click)="delete_all_msg(contextMenuChannel!)">
+    delete all msg
+  </div>
 </div>
 }
 <!-- <div class="section">

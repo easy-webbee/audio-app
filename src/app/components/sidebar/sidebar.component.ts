@@ -260,4 +260,17 @@ export class SidebarComponent {
         alert('Failed to copy: ' + channel.id);
       });
   }
+  async delete_all_msg(channel: Channel): Promise<void> {
+    const confirmed = confirm(
+      'Are you sure you want to delete ALL-MSGs in this channel ?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+    await this.channelService.deleteAllMessages(
+      this.workspace().id,
+      channel.id
+    );
+  }
 }
