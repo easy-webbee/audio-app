@@ -2,15 +2,26 @@
   @if (messages$ | async; as messages) { @for (message of messages; track
   message.id) {
 
-  <div class="message" [class.unread]="!isRead(message)">
+  <div
+    class="message"
+    [class.unread]="!isRead(message)"
+    [attr.data-username]="message.userName"
+  >
     <div class="avatar">
       {{ message.userName.charAt(0) }}
     </div>
 
     <div class="content">
       <div class="header">
-        <strong (click)="this.helperService.copyText(message.userName)" class="color-red">
-          {{ this.helperService.copied ? "Copied! " + message.userName : "Copy:" + message.userName  }}
+        <strong
+          (click)="this.helperService.copyText(message.userName)"
+          class="color-red"
+        >
+          {{
+            this.helperService.copied
+              ? "Copied! " + message.userName
+              : "Copy:" + message.userName
+          }}
         </strong>
         <span
           class="message-date"
@@ -68,18 +79,18 @@
             </span>
 
             <a
-            *ngIf="part.type === 'link'"
-            class="message-link"
-            [href]="part.url"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="link-icon">↗</span>
-          
-            <span class="link-content">
-              <span class="link-text">{{ part.text }}</span>
-            </span>
-          </a>
+              *ngIf="part.type === 'link'"
+              class="message-link"
+              [href]="part.url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="link-icon">↗</span>
+
+              <span class="link-content">
+                <span class="link-text">{{ part.text }}</span>
+              </span>
+            </a>
           </ng-container>
 
           <!-- MEDIA ALWAYS AT BOTTOM -->
@@ -119,4 +130,24 @@
   <hr class="hr_line" />
 
   } }
+</div>
+
+<div class="open-menu-wrapper">
+  <button type="button" class="open-button" (click)="toggleOpenMenu($event)">
+    <span>Open</span>
+    <span class="open-arrow">{{ openMenuVisible ? "▲" : "▼" }}</span>
+  </button>
+
+  @if (openMenuVisible) {
+  <div class="open-menu" (click)="$event.stopPropagation()">
+    @for (username of this.userNames; track $index) {
+    <button type="button" (click)="openOption(username)">
+      {{ username }}
+    </button>
+    }
+    <div class="menu-divider"></div>
+
+    <button type="button" (click)="openOption('settings')">⚙ Settings</button>
+  </div>
+  }
 </div>

@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   ViewChild,
   effect,
   inject,
@@ -49,6 +50,7 @@ export class MessageListComponent {
 
   private shouldScrollToBottom = false;
 
+  userNames: string[] = [];
   messages$ = combineLatest([
     toObservable(this.workspaceId),
     toObservable(this.channelId),
@@ -57,7 +59,12 @@ export class MessageListComponent {
       this.messageService.getMessages(workspaceId, channelId)
     ),
     /* * Firebase can emit many times. * * We only scroll when shouldScrollToBottom * was set by the channelId effect. */
-    tap(() => {
+    tap((messages) => {
+      this.userNames = [
+        ...new Set(messages.map((message) => message.userName).filter(Boolean)),
+      ];
+
+      console.log('All usernames:', this.userNames);
       if (!this.shouldScrollToBottom) {
         return;
       }
@@ -170,5 +177,42 @@ export class MessageListComponent {
       date.getMonth() === today.getMonth() &&
       date.getDate() === today.getDate()
     );
+  }
+
+  openMenuVisible = false;
+
+  toggleOpenMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.openMenuVisible = !this.openMenuVisible;
+  }
+
+  openOption(username: string): void {
+    this.openMenuVisible = false;
+
+    setTimeout(() => {
+      const container = this.messagesContainer?.nativeElement;
+
+      const message = container?.querySelector(
+        `.message[data-username="${CSS.escape(username)}"]`
+      ) as HTMLElement | null;
+
+      if (!message) {
+        return;
+      }
+
+      message.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    });
+  }
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.closeContextMenu();
+    this.openMenuVisible = false;
+  }
+
+  closeContextMenu() {
+    this.openMenuVisible = false;
   }
 }
