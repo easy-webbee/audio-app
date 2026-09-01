@@ -58,6 +58,7 @@
           [class.sell]="formatted.borderClass === 'sell'"
           [class.buy]="formatted.borderClass === 'buy'"
         >
+          <!-- NORMAL CONTENT -->
           <ng-container *ngFor="let part of formatted.parts">
             <strong *ngIf="part.type === 'bold'">
               {{ part.text }}
@@ -68,14 +69,22 @@
             </span>
 
             <a
-              *ngIf="part.type === 'link'"
-              [href]="part.url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ part.text }}
-            </a>
+            *ngIf="part.type === 'link'"
+            class="message-link"
+            [href]="part.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="link-icon">↗</span>
+          
+            <span class="link-content">
+              <span class="link-text">{{ part.text }}</span>
+            </span>
+          </a>
+          </ng-container>
 
+          <!-- MEDIA ALWAYS AT BOTTOM -->
+          <ng-container *ngFor="let part of formatted.parts">
             <app-lazy-iframe
               *ngIf="part.type === 'iframe'"
               [iframeUrl]="part.safeUrl"
