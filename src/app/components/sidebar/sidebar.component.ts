@@ -19,6 +19,7 @@ import { Workspace } from '../../models/workspace.model';
 import { UnreadService } from '../../services/unread.service';
 import { ChannelSection } from '../../models/section.model';
 import { LocalStorageService } from '../../services/localstorage.service';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -47,6 +48,7 @@ export class SidebarComponent {
   private unreadService = inject(UnreadService);
 
   private localStorageService = inject(LocalStorageService);
+  public helperService = inject(HelperService);
 
   // ==========================================
   // UNREAD COUNTS
@@ -246,20 +248,6 @@ export class SidebarComponent {
     this.contextMenuChannel = null;
   }
 
-  copied = false;
-  copyText(channel: Channel): void {
-    navigator.clipboard
-      .writeText(channel.id)
-      .then(() => {
-        this.copied = true;
-        setTimeout(() => {
-          this.copied = false;
-        }, 2000); // Change back after 2 seconds
-      })
-      .catch((err) => {
-        alert('Failed to copy: ' + channel.id);
-      });
-  }
   async delete_all_msg(channel: Channel): Promise<void> {
     const confirmed = confirm(
       'Are you sure you want to delete ALL-MSGs in this channel ?'

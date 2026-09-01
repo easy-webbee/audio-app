@@ -18,6 +18,7 @@ import { Message } from '../../models/message.model';
 import { LocalStorageService } from '../../services/localstorage.service';
 import { tap } from 'rxjs';
 import { LazyIframeComponent } from './lazy-iframe.component';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
   selector: 'app-message-list',
@@ -37,7 +38,7 @@ import { LazyIframeComponent } from './lazy-iframe.component';
 export class MessageListComponent {
   private messageService = inject(MessageService);
   private localStorageService = inject(LocalStorageService);
-
+  public helperService = inject(HelperService);
   workspaceId = input.required<string>();
   channelId = input.required<string>();
 

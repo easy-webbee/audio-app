@@ -9,10 +9,9 @@
 
     <div class="content">
       <div class="header">
-        <strong class="color-red">
-          {{ message.userName }}
+        <strong (click)="this.helperService.copyText(message.userName)" class="color-red">
+          {{ this.helperService.copied ? "Copied! " + message.userName : "Copy:" + message.userName  }}
         </strong>
-
         <span
           class="message-date"
           [class.current-date]="isToday(message.createdAt)"

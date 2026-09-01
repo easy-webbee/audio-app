@@ -122,8 +122,8 @@
   </div>
 
   }
-  <div class="context-menu-item" (click)="copyText(contextMenuChannel!)">
-    {{ copied ? "Copied!" : "Copy " + "Channel ID" }}
+  <div class="context-menu-item" (click)="this.helperService.copyText(contextMenuChannel?.id)">
+    {{ this.helperService.copied ? "Copied!" : "Copy " + "Channel ID" }}
   </div>
 
   <div class="context-menu-item" (click)="delete_all_msg(contextMenuChannel!)">
