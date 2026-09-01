@@ -9,5 +9,6 @@ export const environment = {
     messagingSenderId: "350321423491",
     appId: "1:350321423491:web:0eb892669e74947623d7b6",
     measurementId: "G-SMQS7ZY1JR"
-  }
+  },
+  url: 'https://nestjs-api.koyeb.app',
 };

@@ -8,7 +8,7 @@ import {
   input,
 } from '@angular/core';
 
-import { AsyncPipe, DatePipe, NgFor, NgIf, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgFor, NgIf, NgClass, DecimalPipe } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, switchMap, tap } from 'rxjs';
@@ -19,6 +19,7 @@ import { Message } from '../../models/message.model';
 import { LocalStorageService } from '../../services/localstorage.service';
 import { LazyIframeComponent } from './lazy-iframe.component';
 import { HelperService } from '../../services/helper.service';
+import { ApiService } from '../../services/apiservice.service';
 
 @Component({
   selector: 'app-message-list',
@@ -31,6 +32,7 @@ import { HelperService } from '../../services/helper.service';
     DatePipe,
     NgClass,
     LazyIframeComponent,
+    DecimalPipe
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -39,6 +41,7 @@ export class MessageListComponent {
   private messageService = inject(MessageService);
   private localStorageService = inject(LocalStorageService);
   public helperService = inject(HelperService);
+  public apiService = inject(ApiService);
   workspaceId = input.required<string>();
   channelId = input.required<string>();
 
@@ -64,7 +67,7 @@ export class MessageListComponent {
    * User must be within this many pixels of the bottom
    * for a new message to automatically scroll the container.
    */
-  private readonly AUTO_SCROLL_THRESHOLD = 150;
+  private readonly AUTO_SCROLL_THRESHOLD = 500;
 
   userNames: string[] = [];
 
@@ -383,5 +386,33 @@ export class MessageListComponent {
 
       return null;
     }
+  }
+
+  currentPrice: any = null;
+  selectedTicker = '';
+  showPriceModal = false;
+  loadingPrice = false;
+  
+  GetPrice(ticker: string): void {
+    this.selectedTicker = ticker;
+    this.showPriceModal = true;
+    this.loadingPrice = true;
+    this.currentPrice = null;
+  
+    this.apiService.getCurrentPrice(ticker).subscribe({
+      next: (data) => {
+        this.currentPrice = data;
+        this.loadingPrice = false;
+      },
+      error: (error) => {
+        console.error('Error getting current price:', error);
+        this.currentPrice = null;
+        this.loadingPrice = false;
+      },
+    });
+  }
+  
+  closePriceModal(): void {
+    this.showPriceModal = false;
   }
 }

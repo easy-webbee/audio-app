@@ -32,34 +32,19 @@
               | date : "MMM d, h:mm a" : "America/Chicago"
           }}
         </span>
-        <!-- <span>
-          <a
-            [href]="
-              'http://localhost:4200/price-log/' +
-              message.userName +
-              '?daysRange=5'
-            "
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ message.userName }}-local
-          </a>
-          |
-          <a
-            [href]="
-              'https://stockmarkets000.web.app/price-log/' +
-              message.userName +
-              '?daysRange=5'
-            "
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ message.userName }}-product
-          </a>
-        </span> -->
+
         <button type="button" class="read-button" (click)="toggleRead(message)">
           {{ isRead(message) ? "Mark unread" : "Mark read" }}
         </button>
+        @if (!message.userName.includes("USD")) {
+        <button
+          type="button"
+          class="read-button"
+          (click)="GetPrice(message.userName)"
+        >
+          Get Current Price
+        </button>
+        }
       </div>
 
       <ng-container *ngIf="message.text | messageFormat as formatted">
@@ -126,11 +111,100 @@
     </div>
   </div>
 
-  <!-- FULL MESSAGE WIDTH -->
   <hr class="hr_line" />
 
   } }
 </div>
+
+<!-- CURRENT PRICE MODAL -->
+@if (showPriceModal) {
+<div class="price-modal-overlay" (click)="closePriceModal()">
+  <div class="price-modal" (click)="$event.stopPropagation()">
+    <!-- HEADER -->
+    <div class="price-modal-header">
+      <div>
+        <div class="price-modal-title">
+          {{ selectedTicker }}
+        </div>
+
+        <div class="price-modal-subtitle">Current Market Price</div>
+      </div>
+
+      <button
+        type="button"
+        class="price-modal-close"
+        (click)="closePriceModal()"
+      >
+        ×
+      </button>
+    </div>
+
+    @if (loadingPrice) {
+
+    <!-- LOADING -->
+    <div class="price-loading">
+      <div class="price-spinner"></div>
+      <span>Loading price...</span>
+    </div>
+
+    } @else if (currentPrice) {
+
+    <!-- CURRENT PRICE -->
+    <div class="price-main">
+      <span class="price-label">Current Price</span>
+
+      <span class="price-value">
+        ${{ currentPrice.close | number : "1.2-2" }}
+      </span>
+    </div>
+
+    <!-- OHLC -->
+    <div class="price-grid">
+      <div class="price-item">
+        <span>Open</span>
+        <strong> ${{ currentPrice.open | number : "1.2-2" }} </strong>
+      </div>
+
+      <div class="price-item">
+        <span>High</span>
+        <strong> ${{ currentPrice.high | number : "1.2-2" }} </strong>
+      </div>
+
+      <div class="price-item">
+        <span>Low</span>
+        <strong> ${{ currentPrice.low | number : "1.2-2" }} </strong>
+      </div>
+
+      <div class="price-item">
+        <span>Close</span>
+        <strong> ${{ currentPrice.close | number : "1.2-2" }} </strong>
+      </div>
+    </div>
+
+    <!-- DATE -->
+    <div class="price-main">
+      {{ currentPrice.date }}
+    </div>
+
+    } @else {
+
+    <div class="price-error">Unable to get current price.</div>
+
+    }
+
+    <!-- FOOTER -->
+    <div class="price-modal-footer">
+      <button
+        type="button"
+        class="price-close-button"
+        (click)="closePriceModal()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+}
 
 <div class="open-menu-wrapper">
   <button type="button" class="open-button" (click)="toggleOpenMenu($event)">
@@ -148,9 +222,7 @@
     <div class="menu-divider"></div>
 
     <button type="button" (click)="openOption('settings')">⚙ Settings</button>
-    <button (click)="keepScreenAwake()">
-      Keep Screen Awake
-    </button>
+    <button (click)="keepScreenAwake()">Keep Screen Awake</button>
   </div>
   }
 </div>
