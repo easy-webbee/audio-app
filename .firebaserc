@@ -2,7 +2,7 @@
   "targets": {
     "mymusicplayers": {
       "hosting": {
-        "site": "my-stock-slack",
+        "site": "my-slack-pwa",
         "public": "public"
       }
     }

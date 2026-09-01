@@ -1,7 +1,7 @@
 {
     "hosting": [
       {
-        "site": "my-stock-slack",
+        "site": "my-slack-pwa",
         "source": ".",
         "frameworksBackend": {
          "region": "us-east1"
