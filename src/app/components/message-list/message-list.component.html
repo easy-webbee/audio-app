@@ -86,7 +86,12 @@
             ></app-lazy-iframe>
 
             <div *ngIf="part.type === 'image'" class="image-container">
-              <img [src]="part.url" alt="" class="stock-image" />
+              <img
+                [src]="part.url"
+                alt=""
+                class="stock-image"
+                (click)="openImage(part.url || '')"
+              />
             </div>
           </ng-container>
         </div>
@@ -226,3 +231,37 @@
   </div>
   }
 </div>
+@if (showImageModal) {
+<div class="image-modal-overlay" (click)="closeImage()">
+  <div class="image-modal" (click)="$event.stopPropagation()">
+    <button type="button" class="image-modal-close" (click)="closeImage()">
+      ×
+    </button>
+
+    <div
+      class="image-pan-container"
+      [class.zoomed]="imageZoomed"
+      (mousedown)="startImageDrag($event)"
+      (mousemove)="dragImage($event)"
+      (mouseup)="stopImageDrag()"
+      (mouseleave)="stopImageDrag()"
+      (click)="toggleImageZoom($event)"
+    >
+      <img
+        [src]="selectedImage"
+        alt="Full size"
+        class="image-modal-content"
+        [style.transform]="
+          'translate(' +
+          imageX +
+          'px, ' +
+          imageY +
+          'px) scale(' +
+          imageScale +
+          ')'
+        "
+      />
+    </div>
+  </div>
+</div>
+}

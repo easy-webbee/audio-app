@@ -8,7 +8,14 @@ import {
   input,
 } from '@angular/core';
 
-import { AsyncPipe, DatePipe, NgFor, NgIf, NgClass, DecimalPipe } from '@angular/common';
+import {
+  AsyncPipe,
+  DatePipe,
+  NgFor,
+  NgIf,
+  NgClass,
+  DecimalPipe,
+} from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, switchMap, tap } from 'rxjs';
@@ -32,7 +39,7 @@ import { ApiService } from '../../services/apiservice.service';
     DatePipe,
     NgClass,
     LazyIframeComponent,
-    DecimalPipe
+    DecimalPipe,
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -392,13 +399,13 @@ export class MessageListComponent {
   selectedTicker = '';
   showPriceModal = false;
   loadingPrice = false;
-  
+
   GetPrice(ticker: string): void {
     this.selectedTicker = ticker;
     this.showPriceModal = true;
     this.loadingPrice = true;
     this.currentPrice = null;
-  
+
     this.apiService.getCurrentPrice(ticker).subscribe({
       next: (data) => {
         this.currentPrice = data;
@@ -411,8 +418,98 @@ export class MessageListComponent {
       },
     });
   }
-  
+
   closePriceModal(): void {
     this.showPriceModal = false;
+  }
+
+  showImageModal = false;
+  selectedImage = '';
+
+  imageZoomed = false;
+  imageScale = 1;
+
+  imageX = 0;
+  imageY = 0;
+
+  private draggingImage = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private startImageX = 0;
+  private startImageY = 0;
+
+  openImage(url: string): void {
+    this.selectedImage = url;
+
+    this.showImageModal = true;
+    this.imageZoomed = false;
+    this.imageScale = 1;
+
+    this.imageX = 0;
+    this.imageY = 0;
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  toggleImageZoom(event: MouseEvent): void {
+    // Don't toggle zoom when dragging
+    if (this.draggingImage) {
+      return;
+    }
+
+    event.stopPropagation();
+
+    this.imageZoomed = !this.imageZoomed;
+
+    if (this.imageZoomed) {
+      this.imageScale = 1.5;
+    } else {
+      this.imageScale = 1;
+      this.imageX = 0;
+      this.imageY = 0;
+    }
+  }
+
+  startImageDrag(event: MouseEvent): void {
+    if (!this.imageZoomed) {
+      return;
+    }
+
+    this.draggingImage = true;
+
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+
+    this.startImageX = this.imageX;
+    this.startImageY = this.imageY;
+
+    event.preventDefault();
+  }
+
+  dragImage(event: MouseEvent): void {
+    if (!this.draggingImage) {
+      return;
+    }
+
+    this.imageX = this.startImageX + (event.clientX - this.dragStartX);
+
+    this.imageY = this.startImageY + (event.clientY - this.dragStartY);
+  }
+
+  stopImageDrag(): void {
+    this.draggingImage = false;
+  }
+
+  closeImage(): void {
+    this.showImageModal = false;
+    this.selectedImage = '';
+
+    this.imageZoomed = false;
+    this.imageScale = 1;
+
+    this.imageX = 0;
+    this.imageY = 0;
+
+    document.body.style.overflow = '';
   }
 }
