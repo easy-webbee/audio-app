@@ -77,16 +77,20 @@
 }
 
 .text {
-  border-left: 4px solid transparent;
-  padding-left: 10px;
+  box-sizing: border-box;
+
+  min-height: 44px;
+  padding: 10px;
+
+  border: 4px solid transparent;
 }
 
 .text.sell {
-  border-left-color: red;
+  border-color: red;
 }
 
 .text.buy {
-  border-left-color: green;
+  border-color: green;
 }
 
 .read-button {
@@ -182,7 +186,7 @@
   display: inline-flex;
   align-items: center;
   max-width: 100%;
-  padding:2px;
+  padding: 2px;
 
   color: #1d4ed8;
   background: #f8fafc;
