@@ -23,16 +23,19 @@ export class AppComponent {
   });
 
   selectedChannel = signal<Channel | null>({
-    id: 'general',
-    name: 'general',
-  });
+    "name": "ALL_IN_ONE",
+    "id": "vPbVpdIoDIRjNl9j5Iu7"
+});
 
   selectWorkspace(workspace: Workspace): void {
     this.selectedWorkspace.set(workspace);
 
     // Clear the old channel.
     // Sidebar will select the first channel.
-    this.selectedChannel.set(null);
+    this.selectedChannel.set({
+      "name": "ALL_IN_ONE",
+      "id": "vPbVpdIoDIRjNl9j5Iu7"
+  });
   }
 
   selectChannel(channel: Channel): void {

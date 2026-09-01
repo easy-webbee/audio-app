@@ -104,9 +104,9 @@ export class SidebarComponent {
 
       // Select first channel
 
-      if (channels.length > 0) {
-        this.channelSelected.emit(channels[0]);
-      }
+      // if (channels.length > 0) {
+      //   this.channelSelected.emit(channels[0]);
+      // }
     })
   );
 
