@@ -215,4 +215,21 @@ export class MessageListComponent {
   closeContextMenu() {
     this.openMenuVisible = false;
   }
+
+  async keepScreenAwake() {
+    try {
+      const wakeLock = await navigator.wakeLock.request('screen');
+  
+      console.log('Screen Wake Lock active');
+  
+      wakeLock.addEventListener('release', () => {
+        console.log('Wake Lock released');
+      });
+  
+      return wakeLock;
+    } catch (err) {
+      console.error('Wake Lock failed:', err);
+      return null;
+    }
+  }
 }
