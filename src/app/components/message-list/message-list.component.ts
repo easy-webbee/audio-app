@@ -11,13 +11,12 @@ import {
 import { AsyncPipe, DatePipe, NgFor, NgIf, NgClass } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, switchMap } from 'rxjs';
+import { combineLatest, switchMap, tap } from 'rxjs';
 
 import { MessageService } from '../../services/message.service';
 import { MessageFormatPipe } from './msg.pipe';
 import { Message } from '../../models/message.model';
 import { LocalStorageService } from '../../services/localstorage.service';
-import { tap } from 'rxjs';
 import { LazyIframeComponent } from './lazy-iframe.component';
 import { HelperService } from '../../services/helper.service';
 
@@ -48,9 +47,27 @@ export class MessageListComponent {
 
   private uid = this.localStorageService.getUid();
 
+  /**
+   * True when the user has selected/switched to a new channel.
+   */
   private shouldScrollToBottom = false;
 
+  /**
+   * Keeps track of messages from the previous Firebase emission.
+   *
+   * This allows us to detect when a new message is added
+   * without reacting to normal Firebase updates.
+   */
+  private previousMessageIds = new Set<string>();
+
+  /**
+   * User must be within this many pixels of the bottom
+   * for a new message to automatically scroll the container.
+   */
+  private readonly AUTO_SCROLL_THRESHOLD = 150;
+
   userNames: string[] = [];
+
   messages$ = combineLatest([
     toObservable(this.workspaceId),
     toObservable(this.channelId),
@@ -58,35 +75,120 @@ export class MessageListComponent {
     switchMap(([workspaceId, channelId]) =>
       this.messageService.getMessages(workspaceId, channelId)
     ),
-    /* * Firebase can emit many times. * * We only scroll when shouldScrollToBottom * was set by the channelId effect. */
+
     tap((messages) => {
+      // ========================================
+      // UPDATE USERNAME LIST
+      // ========================================
+
       this.userNames = [
         ...new Set(messages.map((message) => message.userName).filter(Boolean)),
       ];
 
-      console.log('All usernames:', this.userNames);
-      if (!this.shouldScrollToBottom) {
+      // ========================================
+      // CURRENT MESSAGE IDS
+      // ========================================
+
+      const currentMessageIds = new Set(messages.map((message) => message.id));
+
+      // ========================================
+      // NEW CHANNEL
+      // ========================================
+
+      if (this.shouldScrollToBottom) {
+        this.shouldScrollToBottom = false;
+
+        /**
+         * This is important.
+         *
+         * The existing messages in the new channel become
+         * our baseline. Therefore, they won't be treated
+         * as "new messages".
+         */
+        this.previousMessageIds = currentMessageIds;
+
+        /**
+         * Wait until Angular has rendered the messages
+         * before calculating scrollHeight.
+         */
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
+
         return;
       }
 
-      this.shouldScrollToBottom = false;
+      // ========================================
+      // SAME CHANNEL
+      // CHECK FOR NEW MESSAGE
+      // ========================================
 
-      setTimeout(() => {
-        this.scrollToBottom();
-      });
+      const hasNewMessage = messages.some(
+        (message) => !this.previousMessageIds.has(message.id)
+      );
+
+      // Always update our baseline.
+      this.previousMessageIds = currentMessageIds;
+
+      // Nothing new was added.
+      if (!hasNewMessage) {
+        return;
+      }
+
+      console.log('New message detected');
+
+      // ========================================
+      // AUTO SCROLL ONLY IF NEAR BOTTOM
+      // ========================================
+
+      if (this.isNearBottom()) {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
+      }
     })
   );
 
   constructor() {
-    /* * This runs when channelId changes. * * It does NOT run when Firebase updates * the messages. */
     effect(() => {
       this.channelId();
 
-      // New channel selected
+      // ========================================
+      // NEW CHANNEL SELECTED
+      // ========================================
+
       this.shouldScrollToBottom = true;
+
+      /**
+       * Clear the old channel's message IDs.
+       *
+       * The first Firebase emission from the new channel
+       * will establish a fresh baseline.
+       */
+      this.previousMessageIds.clear();
     });
   }
 
+  /**
+   * Returns true when the user is close enough to the
+   * bottom of the message container.
+   */
+  private isNearBottom(): boolean {
+    const container = this.messagesContainer?.nativeElement;
+
+    if (!container) {
+      return true;
+    }
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    return distanceFromBottom <= this.AUTO_SCROLL_THRESHOLD;
+  }
+
+  /**
+   * Scroll the message container to the bottom.
+   */
   private scrollToBottom(): void {
     const container = this.messagesContainer?.nativeElement;
 
@@ -94,13 +196,21 @@ export class MessageListComponent {
       return;
     }
 
-    container.scrollTop = container.scrollHeight;
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    });
   }
 
+  /**
+   * Toggle the read state for a message.
+   */
   async toggleRead(message: Message): Promise<void> {
     if (!this.uid) {
       this.uid = this.localStorageService.setUid() || '';
+
       console.error('No uid found in localStorage');
+
       return;
     }
 
@@ -115,6 +225,9 @@ export class MessageListComponent {
     );
   }
 
+  /**
+   * Check whether the current user has read this message.
+   */
   isRead(message: Message): boolean {
     if (!this.uid) {
       return false;
@@ -123,6 +236,17 @@ export class MessageListComponent {
     return message.readBy?.[this.uid] ?? false;
   }
 
+  /**
+   * Delete a message.
+   *
+   * If deleteother === 'read_delete_old':
+   *   - Mark the selected message as read/unread
+   *   - Find older messages from the same username
+   *   - Delete those older messages
+   *
+   * Otherwise:
+   *   - Delete only the selected message
+   */
   async deleteMessage(message: Message, deleteother?: any): Promise<void> {
     if (deleteother === 'read_delete_old') {
       await this.toggleRead(message);
@@ -164,6 +288,9 @@ export class MessageListComponent {
     }
   }
 
+  /**
+   * Check whether a Firebase timestamp belongs to today.
+   */
   isToday(timestamp: any): boolean {
     if (!timestamp) {
       return false;
@@ -181,11 +308,18 @@ export class MessageListComponent {
 
   openMenuVisible = false;
 
+  /**
+   * Toggle the Open menu.
+   */
   toggleOpenMenu(event: MouseEvent): void {
     event.stopPropagation();
+
     this.openMenuVisible = !this.openMenuVisible;
   }
 
+  /**
+   * Scroll to the first message belonging to a username.
+   */
   openOption(username: string): void {
     this.openMenuVisible = false;
 
@@ -206,29 +340,47 @@ export class MessageListComponent {
       });
     });
   }
+
+  /**
+   * Close the Open menu when clicking anywhere
+   * outside the menu.
+   */
   @HostListener('document:click')
-  onDocumentClick() {
+  onDocumentClick(): void {
     this.closeContextMenu();
     this.openMenuVisible = false;
   }
 
-  closeContextMenu() {
+  closeContextMenu(): void {
     this.openMenuVisible = false;
   }
 
-  async keepScreenAwake() {
+  /**
+   * Request the browser to keep the screen awake.
+   *
+   * Works in browsers that support the Screen Wake Lock API,
+   * including supported versions of Safari/iPadOS.
+   */
+  async keepScreenAwake(): Promise<WakeLockSentinel | null> {
     try {
+      if (!('wakeLock' in navigator)) {
+        console.error('Screen Wake Lock API is not supported');
+
+        return null;
+      }
+
       const wakeLock = await navigator.wakeLock.request('screen');
-  
+
       console.log('Screen Wake Lock active');
-  
+
       wakeLock.addEventListener('release', () => {
         console.log('Wake Lock released');
       });
-  
+
       return wakeLock;
     } catch (err) {
       console.error('Wake Lock failed:', err);
+
       return null;
     }
   }
