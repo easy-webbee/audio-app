@@ -151,13 +151,6 @@
   overflow: hidden;
 }
 
-.stock-image {
-  width: 900px;
-  height: 450px;
-  object-fit: cover;
-  display: block;
-}
-
 .messages {
   display: flex;
   flex-direction: column;
@@ -617,7 +610,7 @@
 .stock-image {
   display: block;
   max-width: 100%;
-  height: auto;
+  height: 440px;
   border-radius: 8px;
   cursor: zoom-in;
   transition: transform 0.2s ease, opacity 0.2s ease;
