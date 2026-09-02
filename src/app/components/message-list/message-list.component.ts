@@ -67,7 +67,7 @@ export class MessageListComponent {
    * User must be within this many pixels of the bottom
    * for a new message to automatically scroll the container.
    */
-  private readonly AUTO_SCROLL_THRESHOLD = 500;
+  private readonly AUTO_SCROLL_THRESHOLD = 150;
 
   userNames: string[] = [];
 
