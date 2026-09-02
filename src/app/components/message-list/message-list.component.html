@@ -34,7 +34,7 @@
         </span>
 
         <button type="button" class="read-button" (click)="toggleRead(message)">
-          {{ isRead(message) ? "Mark unread" : "Mark read" }}
+          {{ isRead(message) ? "Mark unread: " : "Mark read: " }} {{message.userName}}
         </button>
         @if (!message.userName.includes("USD")) {
         <button
@@ -42,7 +42,7 @@
           class="read-button"
           (click)="GetPrice(message.userName)"
         >
-          Get Current Price
+          Get Current Price: {{message.userName}}
         </button>
         }
       </div>
@@ -102,7 +102,7 @@
         class="delete-button"
         (click)="deleteMessage(message)"
       >
-        Delete Just Me
+        Delete Just Me :{{message.userName}}
       </button>
 
       <button
@@ -111,7 +111,7 @@
         [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
         (click)="deleteMessage(message, 'read_delete_old')"
       >
-        {{ isRead(message) ? "Mark unread" : "Mark read" }} and Delete Old
+        {{ isRead(message) ? "Mark unread:" : "Mark read:" }} {{message.userName}} and Delete Old
       </button>
     </div>
   </div>

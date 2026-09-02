@@ -22,7 +22,7 @@
   border-radius: 6px;
 
   background: #3f0e40;
-  color: white;
+  color: rgb(221, 202, 202);
 
   font-weight: 600;
 }
@@ -137,7 +137,7 @@
 
 .message-date.current-date {
   background: green;
-  color: white;
+  color: rgb(181, 168, 168);
 }
 
 .messages {
@@ -278,7 +278,7 @@
   border: 1px solid #d1d5db;
   border-radius: 8px;
 
-  background: #ffffff;
+  background: #211e1e;
   color: #374151;
 
   font-size: 14px;
@@ -295,7 +295,7 @@
 }
 
 .open-button:hover {
-  background: #f9fafb;
+  background: #586571;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
@@ -318,7 +318,7 @@
 
   padding: 6px;
 
-  background: #ffffff;
+  background: #2c2020;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
 
@@ -708,7 +708,7 @@
   border: none;
   border-radius: 50%;
 
-  background: white;
+  background: rgb(220, 211, 211);
   color: #222;
 
   font-size: 30px;
