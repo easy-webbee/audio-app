@@ -462,7 +462,7 @@ export class MessageListComponent {
     this.imageZoomed = !this.imageZoomed;
 
     if (this.imageZoomed) {
-      this.imageScale = 1.5;
+      this.imageScale = 1.25;
     } else {
       this.imageScale = 1;
       this.imageX = 0;

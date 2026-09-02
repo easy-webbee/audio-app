@@ -105,7 +105,8 @@ export class SidebarComponent {
       // Select first channel
 
       // if (channels.length > 0) {
-      //   this.channelSelected.emit(channels[0]);
+        // this.channelSelected.emit({   "name": "crypto-4hour-buy",
+        //   "id": "kDzIP4BiFSWMLDqwu44v"});
       // }
     })
   );
