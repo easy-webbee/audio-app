@@ -7,15 +7,14 @@
     [class.unread]="!isRead(message)"
     [attr.data-username]="message.userName"
   >
-    <div class="avatar">
-      {{ message.userName.charAt(0) }}
-    </div>
-
     <div class="content">
       <div class="header">
+        <span class="avatar">
+          {{ message.userName.charAt(0) }}
+        </span>
         <strong
           (click)="this.helperService.copyText(message.userName)"
-          class="color-red"
+          class="copy-text"
         >
           {{
             this.helperService.copied
@@ -23,6 +22,35 @@
               : "Copy:" + message.userName
           }}
         </strong>
+        @if (!message.userName.includes("USD")) {
+        <button
+          type="button"
+          class="base-btn"
+          (click)="GetPrice(message.userName)"
+        >
+          Get Current Price: {{ message.userName }}
+        </button>
+        }
+        <button
+          type="button"
+          class="base-btn delete-button"
+          (click)="deleteMessage(message)"
+        >
+          Delete Just Me :{{ message.userName }}
+        </button>
+        <button type="button" class="base-btn" (click)="toggleRead(message)">
+          {{ isRead(message) ? "Mark unread: " : "Mark read: " }}
+          {{ message.userName }}
+        </button>
+        <button
+          type="button"
+          class="base-btn"
+          [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
+          (click)="deleteMessage(message, 'read_delete_old')"
+        >
+          {{ isRead(message) ? "Mark unread:" : "Mark read:" }}
+          {{ message.userName }} and Delete Old
+        </button>
         <span
           class="message-date"
           [class.current-date]="isToday(message.createdAt)"
@@ -32,87 +60,60 @@
               | date : "MMM d, h:mm a" : "America/Chicago"
           }}
         </span>
-
-        <button type="button" class="read-button" (click)="toggleRead(message)">
-          {{ isRead(message) ? "Mark unread: " : "Mark read: " }} {{message.userName}}
-        </button>
-        @if (!message.userName.includes("USD")) {
-        <button
-          type="button"
-          class="read-button"
-          (click)="GetPrice(message.userName)"
-        >
-          Get Current Price: {{message.userName}}
-        </button>
-        }
       </div>
 
       <ng-container *ngIf="message.text | messageFormat as formatted">
         <div
-          class="text"
+          class="text inside-box"
           [class.sell]="formatted.borderClass === 'sell'"
           [class.buy]="formatted.borderClass === 'buy'"
         >
-          <!-- NORMAL CONTENT -->
-          <ng-container *ngFor="let part of formatted.parts">
-            <strong *ngIf="part.type === 'bold'">
-              {{ part.text }}
-            </strong>
-
-            <span *ngIf="part.type === 'text'">
-              {{ part.text }}
-            </span>
-
-            <a
-              *ngIf="part.type === 'link'"
-              class="message-link"
-              [href]="part.url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span class="link-icon">↗</span>
-
-              <span class="link-content">
-                <span class="link-text">{{ part.text }}</span>
-              </span>
-            </a>
-          </ng-container>
-
           <!-- MEDIA ALWAYS AT BOTTOM -->
-          <ng-container *ngFor="let part of formatted.parts">
-            <app-lazy-iframe
-              *ngIf="part.type === 'iframe'"
-              [iframeUrl]="part.safeUrl"
-            ></app-lazy-iframe>
+          <div class="media-content">
+            <ng-container *ngFor="let part of formatted.parts">
+              <app-lazy-iframe
+                *ngIf="part.type === 'iframe'"
+                [iframeUrl]="part.safeUrl"
+              ></app-lazy-iframe>
 
-            <div *ngIf="part.type === 'image'" class="image-container">
-              <img
-                [src]="part.url"
-                alt=""
-                class="stock-image"
-                (click)="openImage(part.url || '')"
-              />
-            </div>
-          </ng-container>
+              <div *ngIf="part.type === 'image'" class="image-container">
+                <img
+                  [src]="part.url"
+                  alt=""
+                  class="stock-image"
+                  (click)="openImage(part.url || '')"
+                />
+              </div>
+            </ng-container>
+          </div>
+          <!-- NORMAL CONTENT -->
+          <div class="normal-content">
+            <ng-container *ngFor="let part of formatted.parts">
+              <strong *ngIf="part.type === 'bold'">
+                {{ part.text }}
+              </strong>
+
+              <span *ngIf="part.type === 'text'">
+                {{ part.text }}
+              </span>
+
+              <a
+                *ngIf="part.type === 'link'"
+                class="message-link"
+                [href]="part.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="link-icon">↗</span>
+
+                <span class="link-content">
+                  <span class="link-text">{{ part.text }}</span>
+                </span>
+              </a>
+            </ng-container>
+          </div>
         </div>
       </ng-container>
-
-      <button
-        type="button"
-        class="delete-button"
-        (click)="deleteMessage(message)"
-      >
-        Delete Just Me :{{message.userName}}
-      </button>
-
-      <button
-        type="button"
-        class="delete-button"
-        [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
-        (click)="deleteMessage(message, 'read_delete_old')"
-      >
-        {{ isRead(message) ? "Mark unread:" : "Mark read:" }} {{message.userName}} and Delete Old
-      </button>
     </div>
   </div>
 

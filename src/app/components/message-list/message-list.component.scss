@@ -1,3 +1,15 @@
+@mixin baseText {
+  margin-left: 6px;
+  padding: 3px 8px;
+  font-size: 14px;
+}
+
+@mixin baseTextBig {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 22px;
+}
+
 .messages {
   display: flex;
   flex-direction: column;
@@ -19,12 +31,19 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 6px;
+  border-radius: 50%;
 
-  background: #3f0e40;
-  color: rgb(221, 202, 202);
+  background: linear-gradient(135deg, #611f69, #3f0e40);
+  color: #ffffff;
 
+  font-size: 14px;
   font-weight: 600;
+
+  border: 2px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  user-select: none;
 }
 
 .content {
@@ -32,7 +51,10 @@
 }
 
 .header {
-  margin-bottom: 3px;
+  display: flex;
+  align-items: flex-start;
+  margin-left: 6px;
+  padding: 3px 8px;
 }
 
 .text {
@@ -93,11 +115,16 @@
   border-color: green;
 }
 
-.read-button {
-  margin-top: 6px;
-  padding: 3px 8px;
-  font-size: 18px;
+.base-btn {
+  cursor: pointer;
+  border: 1px solid blue;
+  @include baseText();
   border-radius: 5px;
+}
+
+.copy-text {
+  @include baseText();
+  color: rgb(153, 15, 15);
   cursor: pointer;
 }
 
@@ -106,17 +133,8 @@
 }
 
 .delete-button {
-  margin-top: 6px;
-  margin-left: 6px;
-  padding: 3px 8px;
-  font-size: 18px;
-  border-radius: 5px;
   background-color: rgb(230, 109, 109);
   color: whitesmoke;
-  cursor: pointer;
-}
-
-.delete-button {
   border: 0;
 }
 
@@ -130,9 +148,7 @@
 }
 
 .message-date {
-  margin: 0 4px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  @include baseText();
 }
 
 .message-date.current-date {
@@ -146,7 +162,7 @@
 }
 
 .image-container {
-  width: 900px;
+  // width: 900px;
   height: 450px;
   overflow: hidden;
 }
@@ -714,4 +730,45 @@
 
 .image-modal-close:hover {
   background: #eee;
+}
+
+/* Large desktop */
+@media (min-width: 1440px) {
+  .base-btn {
+    @include baseTextBig();
+  }
+
+  .copy-text {
+    @include baseTextBig();
+  }
+
+  .message-date {
+    @include baseTextBig();
+  }
+
+  .image-container {
+    height: 700px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stock-image {
+    display: block;
+    // max-width: 100%;
+    width: 1500px;
+    height: 700px;
+    border-radius: 8px;
+    cursor: zoom-in;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .inside-box {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    direction: ltr;
+    gap: 20px;
+    font-size: 22px;
+  }
 }

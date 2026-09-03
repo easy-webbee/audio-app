@@ -44,7 +44,7 @@ export class AppComponent {
     this.unreadService.markAsRead(channel.id);
   }
 
-  sidebarCollapsed = signal(false);
+  sidebarCollapsed = signal(true);
   toggleSidebar(): void {
     this.sidebarCollapsed.update((value) => !value);
   }
