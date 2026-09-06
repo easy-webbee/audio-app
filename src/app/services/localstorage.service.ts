@@ -33,6 +33,12 @@ export class LocalStorageService {
 
     return [
       {
+        id: 'trading',
+        name: 'TRADING',
+        expanded: savedState['trading'] ?? true,
+        channels: [],
+      },
+      {
         id: 'crypto',
         name: 'CRYPTO',
         expanded: savedState['crypto'] ?? true,
@@ -50,12 +56,7 @@ export class LocalStorageService {
         expanded: savedState['us-rsi'] ?? true,
         channels: [],
       },
-      {
-        id: 'trading',
-        name: 'TRADING',
-        expanded: savedState['trading'] ?? true,
-        channels: [],
-      },
+
       {
         id: 'other',
         name: 'OTHER',

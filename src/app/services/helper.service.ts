@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HelperService {
+  unreadCounts = signal<Message[]>([]);
 
   copied = false;
   copyText(text: any): void {

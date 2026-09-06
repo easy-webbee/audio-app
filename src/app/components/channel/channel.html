@@ -1,27 +1,39 @@
-
 <div class="channel">
-
   <div class="channel-header">
-
     <strong>
-      # {{ channel().name }}  | {{ unreadCounts()[channel().id] }}
+      # {{ channel().name }} | {{ unreadCounts()[channel().id] }}
     </strong>
+    <div  *ngIf="unreadCounts()[channel().id]>0" class="open-menu-wrapper">
+      <button
+        type="button"
+        class="open-button"
+        (click)="toggleOpenMenu($event)"
+      >
+        <span>Open</span>
+        <span class="open-arrow">{{ openMenuVisible ? "▲" : "▼" }}</span>
+      </button>
 
+      @if (openMenuVisible) {
+      <div class="open-menu" (click)="$event.stopPropagation()">
+        @for (msg of this.helperService.unreadCounts(); track $index) {
+        <button type="button" (click)="scrollingTo(msg.id)">
+          {{ msg.userName }}
+        </button>
+        }
+      </div>
+      }
+    </div>
   </div>
 
-  <div class="channel-messages">
-
+  <div class="channel-messages" #messagesContainer>
     <app-message-list
       [workspaceId]="workspaceId()"
       [channelId]="channel().id"
     />
-
   </div>
 
   <!-- <app-message-input
     [workspaceId]="workspaceId()"
     [channelId]="channel().id"
   /> -->
-
 </div>
-

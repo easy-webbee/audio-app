@@ -6,6 +6,7 @@
     class="message"
     [class.unread]="!isRead(message)"
     [attr.data-username]="message.userName"
+    [attr.data-msg-id]="message.id"
   >
     <div class="content">
       <div class="header">
@@ -87,7 +88,7 @@
             </ng-container>
           </div>
           <!-- NORMAL CONTENT -->
-          <div class="normal-content">
+          <div class="normal-content" >
             <ng-container *ngFor="let part of formatted.parts">
               <strong *ngIf="part.type === 'bold'">
                 {{ part.text }}
@@ -111,6 +112,10 @@
                 </span>
               </a>
             </ng-container>
+            <div  *ngIf="!message.userName.includes('USD')">
+              <h4>BULL BEER LIST</h4>
+              <p>{{this.getBullBear(message.userName)}}</p>
+            </div>
           </div>
         </div>
       </ng-container>

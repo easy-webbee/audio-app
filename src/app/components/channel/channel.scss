@@ -56,3 +56,81 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.open-menu-wrapper {
+  position: relative;
+  z-index: 1000;
+}
+
+.open-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 90px;
+  height: 40px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #211e1e;
+  color: #374151;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.open-button:hover {
+  background: #586571;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.open-button:active {
+  transform: translateY(1px);
+}
+
+.open-arrow {
+  font-size: 9px;
+  color: #6b7280;
+}
+
+
+
+.open-menu {
+  position: absolute;
+
+  right: 0;
+  top: calc(100% + 8px);
+  bottom: auto;
+
+  width: 190px;
+  max-height: 300px;
+
+  padding: 6px;
+
+  background: #2c2626;
+  border: 1px solid #494141;
+  border-radius: 10px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #6b6262 transparent;
+}
+

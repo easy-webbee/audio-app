@@ -27,6 +27,8 @@ import { LocalStorageService } from '../../services/localstorage.service';
 import { LazyIframeComponent } from './lazy-iframe.component';
 import { HelperService } from '../../services/helper.service';
 import { ApiService } from '../../services/apiservice.service';
+import { FormsModule } from '@angular/forms';
+import * as DataSymbols from '../../models/chartData';
 
 @Component({
   selector: 'app-message-list',
@@ -40,6 +42,7 @@ import { ApiService } from '../../services/apiservice.service';
     NgClass,
     LazyIframeComponent,
     DecimalPipe,
+    FormsModule
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -94,7 +97,8 @@ export class MessageListComponent {
       this.userNames = [
         ...new Set(messages.map((message) => message.userName).filter(Boolean)),
       ];
-
+      const msgunread =  messages.filter((message: Message) => !this.isRead(message));
+      this.helperService.unreadCounts.set(msgunread)
       // ========================================
       // CURRENT MESSAGE IDS
       // ========================================
@@ -351,6 +355,30 @@ export class MessageListComponent {
     });
   }
 
+    /**
+   * Scroll to the first message belonging to a username.
+   */
+    scrollingTo(id: string): void {
+      this.openMenuVisible = false;
+  
+      setTimeout(() => {
+        const container = this.messagesContainer?.nativeElement;
+  
+        const message = container?.querySelector(
+          `.message[data-msg-id="${CSS.escape(id)}"]`
+        ) as HTMLElement | null;
+  
+        if (!message) {
+          return;
+        }
+  
+        message.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+    }
+
   /**
    * Close the Open menu when clicking anywhere
    * outside the menu.
@@ -511,5 +539,24 @@ export class MessageListComponent {
     this.imageY = 0;
 
     document.body.style.overflow = '';
+  }
+
+  getBullBear(ticker:string){
+    let bullxx: string = '';
+    let bearxx: string = '';
+    if (DataSymbols.watchlistBB[ticker]?.BULL.length > 0) {
+      DataSymbols.watchlistBB[ticker].BULL.forEach((element) => {
+        // bullxx += `<https://www.tradingview.com/chart/?symbol=${element}|BULL_${element}> | `;
+        bullxx += `${element} || `;
+      });
+    }
+    if (DataSymbols.watchlistBB[ticker]?.BEAR.length > 0) {
+      DataSymbols.watchlistBB[ticker].BEAR.forEach((element) => {
+        // bearxx +=  `<https://www.tradingview.com/chart/?symbol=${element}|BEAR_${element}> | `;
+        bearxx +=  `${element} || `;
+      });
+    }
+    let bullbearxx = `BULL: ${bullxx} \nBEAR: ${bearxx}`;
+    return bullbearxx
   }
 }

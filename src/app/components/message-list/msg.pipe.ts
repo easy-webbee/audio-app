@@ -88,13 +88,15 @@ export class MessageFormatPipe implements PipeTransform {
         text: message.substring(lastIndex),
       });
     }
-
-    const borderClass = message.toUpperCase().includes('BUY')
+    const textall = parts.filter(item => item.type === 'text' || item.type === 'bold')
+    .map(item => item.text)
+    .join('');
+    
+    const borderClass = textall.toUpperCase().includes('BUY')
       ? 'buy'
-      : message.toUpperCase().includes('SELL')
+      : textall.toUpperCase().includes('SELL')
       ? 'sell'
       : '';
-
     return {
       parts,
       borderClass,
