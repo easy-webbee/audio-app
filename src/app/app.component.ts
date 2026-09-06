@@ -44,8 +44,15 @@ export class AppComponent {
     this.unreadService.markAsRead(channel.id);
   }
 
-  sidebarCollapsed = signal(true);
+  sidebarCollapsed = signal(
+    localStorage.getItem('sidebarCollapsed') === 'true'
+  );
+  
   toggleSidebar(): void {
-    this.sidebarCollapsed.update((value) => !value);
+    this.sidebarCollapsed.update(value => {
+      const newValue = !value;
+      localStorage.setItem('sidebarCollapsed', String(newValue));
+      return newValue;
+    });
   }
 }
