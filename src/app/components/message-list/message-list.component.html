@@ -9,7 +9,12 @@
     [attr.data-msg-id]="message.id"
   >
     <div class="content">
-      <div class="header">
+      <div
+        class="header message-date"
+        [class.current-date]="
+          message.createdAt | recentMessage : message.userName : 60
+        "
+      >
         <span class="avatar">
           {{ message.userName.charAt(0) }}
         </span>
@@ -54,7 +59,9 @@
         </button>
         <span
           class="message-date"
-          [class.current-date]="isToday(message.createdAt)"
+          [class.current-date]="
+            message.createdAt | recentMessage : message.userName : 60
+          "
         >
           {{
             message.createdAt?.toDate()
@@ -88,7 +95,7 @@
             </ng-container>
           </div>
           <!-- NORMAL CONTENT -->
-          <div class="normal-content" >
+          <div class="normal-content">
             <ng-container *ngFor="let part of formatted.parts">
               <strong *ngIf="part.type === 'bold'">
                 {{ part.text }}
@@ -112,9 +119,9 @@
                 </span>
               </a>
             </ng-container>
-            <div  *ngIf="!message.userName.includes('USD')">
+            <div *ngIf="!message.userName.includes('USD')">
               <h4>BULL BEER LIST</h4>
-              <p>{{this.getBullBear(message.userName)}}</p>
+              <p>{{ this.getBullBear(message.userName) }}</p>
             </div>
           </div>
         </div>

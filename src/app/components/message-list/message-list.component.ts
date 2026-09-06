@@ -29,6 +29,7 @@ import { HelperService } from '../../services/helper.service';
 import { ApiService } from '../../services/apiservice.service';
 import { FormsModule } from '@angular/forms';
 import * as DataSymbols from '../../models/chartData';
+import { RecentMessagePipe } from './recent-msg.pipe';
 
 @Component({
   selector: 'app-message-list',
@@ -42,7 +43,8 @@ import * as DataSymbols from '../../models/chartData';
     NgClass,
     LazyIframeComponent,
     DecimalPipe,
-    FormsModule
+    FormsModule,
+    RecentMessagePipe
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -302,23 +304,7 @@ export class MessageListComponent {
     }
   }
 
-  /**
-   * Check whether a Firebase timestamp belongs to today.
-   */
-  isToday(timestamp: any): boolean {
-    if (!timestamp) {
-      return false;
-    }
 
-    const date = timestamp.toDate();
-    const today = new Date();
-
-    return (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate()
-    );
-  }
 
   openMenuVisible = false;
 
