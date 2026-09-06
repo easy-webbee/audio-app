@@ -17,4 +17,8 @@ export class ApiService {
       },
     });
   }
+
+  deleteDiscord_msg(discord_id: string): Observable<any> {
+    return this.http.get<any>(`${environment.url}/slack/discord-one-msg/${discord_id}`);
+  }
 }

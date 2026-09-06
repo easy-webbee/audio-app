@@ -18,7 +18,7 @@ import {
 } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, switchMap, tap } from 'rxjs';
+import { combineLatest, forkJoin, switchMap, tap } from 'rxjs';
 
 import { MessageService } from '../../services/message.service';
 import { MessageFormatPipe } from './msg.pipe';
@@ -82,6 +82,7 @@ export class MessageListComponent {
   private readonly AUTO_SCROLL_THRESHOLD = 150;
 
   userNames: string[] = [];
+  User_DC_W_Time:any;
 
   messages$ = combineLatest([
     toObservable(this.workspaceId),
@@ -101,6 +102,22 @@ export class MessageListComponent {
       ];
       const msgunread =  messages.filter((message: Message) => !this.isRead(message));
       this.helperService.unreadCounts.set(msgunread)
+      this.User_DC_W_Time = messages.reduce<Record<string, { discord: string; createdAt: any }[]>>((acc, message) => {
+        const match = message.text.match(
+          /discord\.com\/channels\/\d+\/(\d+)\/(\d+)/
+        );
+      
+        if (!match) return acc;
+      
+        const [, channelId, messageId] = match;
+      
+        (acc[message.userName] ??= []).push({
+          discord: `${channelId}/${messageId}`,
+          createdAt: message.createdAt.seconds,
+        });
+      
+        return acc;
+      }, {});
       // ========================================
       // CURRENT MESSAGE IDS
       // ========================================
@@ -287,6 +304,24 @@ export class MessageListComponent {
           message.id
         );
       });
+
+      const dc_msg_target = {
+        username:message.userName,
+        createdAt: message.createdAt.seconds
+      }
+      const olderDiscordMessages = this.User_DC_W_Time[dc_msg_target.username]?.filter(   (item:any) => item.createdAt < dc_msg_target.createdAt ) ?? [];
+      forkJoin(
+        olderDiscordMessages.map((element: any) =>
+          this.apiService.deleteDiscord_msg(element.discord)
+        )
+      ).subscribe({
+        next: () => {
+          console.log('All Discord messages deleted');
+        },
+        error: (err) => {
+          console.error('Failed to delete Discord message:', err);
+        }
+      });
     } else {
       const confirmed = confirm(
         'Are you sure you want to delete this message?'
@@ -301,6 +336,7 @@ export class MessageListComponent {
         this.channelId(),
         message.id
       );
+      this.apiService.deleteDiscord_msg(message.dc_msg_full).subscribe()
     }
   }
 
