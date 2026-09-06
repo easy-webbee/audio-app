@@ -226,6 +226,7 @@ export class SidebarComponent {
 
       sectionId
     );
+    this.closeContextMenu()
   }
 
   contextMenuVisible = false;
@@ -255,11 +256,21 @@ export class SidebarComponent {
     );
 
     if (!confirmed) {
+      this.closeContextMenu()
       return;
     }
     await this.channelService.deleteAllMessages(
       this.workspace().id,
       channel.id
     );
+    this.closeContextMenu()
+  }
+
+  async copyText(contextMenuChannel:any){
+    if(contextMenuChannel){
+      console.log(contextMenuChannel)
+      this.helperService.copyText(contextMenuChannel.id)
+      this.closeContextMenu()
+    }
   }
 }

@@ -122,7 +122,7 @@
   </div>
 
   }
-  <div class="context-menu-item" (click)="this.helperService.copyText(contextMenuChannel?.id)">
+  <div class="context-menu-item" (click)="this.copyText(contextMenuChannel)">
     {{ this.helperService.copied ? "Copied!" : "Copy " + "Channel ID" }}
   </div>
 
