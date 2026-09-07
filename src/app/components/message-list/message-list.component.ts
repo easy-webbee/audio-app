@@ -102,17 +102,19 @@ export class MessageListComponent {
       ];
       const msgunread =  messages.filter((message: Message) => !this.isRead(message));
       this.helperService.unreadCounts.set(msgunread)
-      this.User_DC_W_Time = messages.reduce<Record<string, { discord: string; createdAt: any }[]>>((acc, message) => {
-        const match = message.text.match(
-          /discord\.com\/channels\/\d+\/(\d+)\/(\d+)/
-        );
-      
-        if (!match) return acc;
-      
-        const [, channelId, messageId] = match;
+      this.User_DC_W_Time = messages.reduce<Record<string, { discord: any; createdAt: any }[]>>((acc, message) => {
+        const matches = [
+          ...message.text.matchAll(
+            /discord\.com\/channels\/\d+\/(\d+)\/(\d+)/g
+          )
+        ];
+        
+        const dc_msg_full = matches.length
+          ? matches.map(match => `${match[1]}/${match[2]}`)
+          : null;
       
         (acc[message.userName] ??= []).push({
-          discord: `${channelId}/${messageId}`,
+          discord: dc_msg_full,
           createdAt: message.createdAt.seconds,
         });
       
@@ -309,19 +311,25 @@ export class MessageListComponent {
         username:message.userName,
         createdAt: message.createdAt.seconds
       }
-      const olderDiscordMessages = this.User_DC_W_Time[dc_msg_target.username]?.filter(   (item:any) => item.createdAt < dc_msg_target.createdAt ) ?? [];
-      forkJoin(
-        olderDiscordMessages.map((element: any) =>
-          this.apiService.deleteDiscord_msg(element.discord)
-        )
-      ).subscribe({
-        next: () => {
-          console.log('All Discord messages deleted');
-        },
-        error: (err) => {
-          console.error('Failed to delete Discord message:', err);
-        }
-      });
+
+      const olderDiscordMessages =
+      this.User_DC_W_Time[dc_msg_target.username]?.filter(
+        (item: any) => item.createdAt < dc_msg_target.createdAt
+      ) ?? [];
+      console.log(olderDiscordMessages)
+      const discordIds = olderDiscordMessages.flatMap(
+        (item: any) => item.discord ?? []
+      );
+      if (discordIds.length > 0) {
+        forkJoin(
+          discordIds.map((discordId: string) =>
+            this.apiService.deleteDiscord_msg(discordId)
+          )
+        ).subscribe({
+          next: () => console.log('All Discord messages deleted'),
+          error: (err) => console.error('Failed to delete Discord messages:', err)
+        });
+      }
     } else {
       const confirmed = confirm(
         'Are you sure you want to delete this message?'
@@ -336,7 +344,12 @@ export class MessageListComponent {
         this.channelId(),
         message.id
       );
-      this.apiService.deleteDiscord_msg(message.dc_msg_full).subscribe()
+      console.log(message.dc_msg_full)
+
+      const discordMessages = Array.isArray(message.dc_msg_full)? message.dc_msg_full  : message.dc_msg_full?.split(',') ?? [];
+      discordMessages.forEach((id:string)=>{
+        this.apiService.deleteDiscord_msg(id).subscribe()
+      })
     }
   }
 
