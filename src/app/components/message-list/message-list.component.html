@@ -77,7 +77,7 @@
           [class.buy]="formatted.borderClass === 'buy'"
         >
           <!-- MEDIA ALWAYS AT BOTTOM -->
-          <div class="media-content">
+          <div class="media-content" *ngIf="!message.userName.includes('RSIENDBOT') && channelId() !== '86UamrSwHhQYgEszLmcP'">
             <ng-container *ngFor="let part of formatted.parts">
               <app-lazy-iframe
                 *ngIf="part.type === 'iframe'"
@@ -106,7 +106,7 @@
               </span>
 
               <a
-                *ngIf="part.type === 'link'  && channelId() !== '86UamrSwHhQYgEszLmcP'"
+                *ngIf="(part.type === 'link')  && channelId() !== '86UamrSwHhQYgEszLmcP' && !message.userName.includes('RSIENDBOT') "
                 class="message-link"
                 [href]="part.url"
                 target="_blank"
