@@ -122,16 +122,17 @@
   </div>
 
   }
+  <hr />
   <div class="context-menu-item" (click)="copyText(contextMenuChannel)">
     {{ this.helperService.copied ? "COPIED!" : "COPY " + "CHANNEL ID" }}
   </div>
 
-  <div class="context-menu-item" (click)="delete_all_msg(contextMenuChannel!)">
-    DELETE ALL MSG
-  </div>
-
   <div class="context-menu-item" (click)="alertTogle(contextMenuChannel!)">
     {{ contextMenuChannel?.alert ? "MUTE" : "UNMUTE" }}
+  </div>
+  <hr />
+  <div class="context-menu-item" (click)="delete_all_msg(contextMenuChannel!)">
+    DELETE ALL MSG
   </div>
 </div>
 }

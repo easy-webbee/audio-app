@@ -56,11 +56,17 @@ export class LocalStorageService {
         expanded: savedState['us-rsi'] ?? true,
         channels: [],
       },
-
       {
         id: 'other',
         name: 'OTHER',
         expanded: savedState['other'] ?? true,
+        channels: [],
+      },
+
+      {
+        id: 'do_not_do',
+        name: 'DO NOT DELETE CN',
+        expanded: savedState['do_not_do'] ?? true,
         channels: [],
       },
     ];
