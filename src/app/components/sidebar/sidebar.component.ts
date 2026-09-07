@@ -10,7 +10,7 @@ import {
 import { AsyncPipe } from '@angular/common';
 
 import { toObservable } from '@angular/core/rxjs-interop';
-import { switchMap, tap } from 'rxjs';
+import { switchMap, tap, shareReplay } from 'rxjs';
 
 import { ChannelService } from '../../services/channel.service';
 
@@ -92,22 +92,20 @@ export class SidebarComponent {
     switchMap((workspace) => this.channelService.getChannels(workspace.id)),
 
     tap((channels) => {
-      // Watch every channel for unread messages
-
       for (const channel of channels) {
         this.unreadService.watchChannel(this.workspace().id, channel.id);
       }
 
-      // Group channels into sections
-
       this.groupChannels(channels);
 
-      // Select first channel
+      const channelA = channels.filter((channel) => channel?.alert === true);
+      console.log(channelA);
+      this.helperService.alertChannelId.set(channelA);
+    }),
 
-      // if (channels.length > 0) {
-        // this.channelSelected.emit({   "name": "crypto-4hour-buy",
-        //   "id": "kDzIP4BiFSWMLDqwu44v"});
-      // }
+    shareReplay({
+      bufferSize: 1,
+      refCount: true,
     })
   );
 
@@ -226,7 +224,7 @@ export class SidebarComponent {
 
       sectionId
     );
-    this.closeContextMenu()
+    this.closeContextMenu();
   }
 
   contextMenuVisible = false;
@@ -256,21 +254,35 @@ export class SidebarComponent {
     );
 
     if (!confirmed) {
-      this.closeContextMenu()
+      this.closeContextMenu();
       return;
     }
     await this.channelService.deleteAllMessages(
       this.workspace().id,
       channel.id
     );
-    this.closeContextMenu()
+    this.closeContextMenu();
+
   }
 
-  async copyText(contextMenuChannel:any){
-    if(contextMenuChannel){
-      console.log(contextMenuChannel)
-      this.helperService.copyText(contextMenuChannel.id)
-      this.closeContextMenu()
+  async copyText(contextMenuChannel: any) {
+    if (contextMenuChannel) {
+      console.log(contextMenuChannel);
+      this.helperService.copyText(contextMenuChannel.id);
+      this.closeContextMenu();
     }
+  }
+
+  async alertTogle(channel: Channel) {
+    console.log('🔥 alertTogle CALLED', channel.id, channel.alert);
+    await this.channelService.updateChannelAlert(
+      this.workspace().id,
+
+      channel.id,
+
+      !channel.alert
+    );
+    console.log('🔥 updateChannelAlert FINISHED');
+    this.closeContextMenu();
   }
 }

@@ -9,12 +9,16 @@ import {
 } from '@angular/fire/firestore';
 
 import { SoundAlertService } from './sound-alert.service';
+import { HelperService } from './helper.service';
+import { Channel } from '../models/channel.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UnreadService {
   private firestore = inject(Firestore);
+
+  public helperService = inject(HelperService);
 
   // Current logged-in user
   private uid = localStorage.getItem('uid');
@@ -34,8 +38,18 @@ export class UnreadService {
   private lastMessageIds = new Map<string, string>();
 
   private initializedChannels = new Set<string>();
+  private channelListeners = new Map<string, () => void>();
 
   watchChannel(workspaceId: string, channelId: string): () => void {
+    const key = `${workspaceId}:${channelId}`;
+
+    // Already watching this channel
+    const existingListener = this.channelListeners.get(key);
+
+    if (existingListener) {
+      return existingListener;
+    }
+
     const messagesRef = collection(
       this.firestore,
       `workspaces/${workspaceId}/channels/${channelId}/messages`
@@ -116,11 +130,26 @@ export class UnreadService {
 
         this.lastMessageIds.set(channelId, messageId);
 
-        this.soundService.playAlert('bullish.mp3');
+        const shouldAlert = this.helperService
+          .alertChannelId()
+          .some((channel: Channel) => channel.id === channelId);
+
+        if (shouldAlert) {
+          this.soundService.playAlert('bullish.mp3');
+        }
       }
     });
 
-    return unsubscribe;
+    // Save listener
+    this.channelListeners.set(key, unsubscribe);
+
+    // Return unsubscribe function
+    return () => {
+      unsubscribe();
+      this.channelListeners.delete(key);
+      this.initializedChannels.delete(channelId);
+      this.lastMessageIds.delete(channelId);
+    };
   }
 
   // --------------------------------

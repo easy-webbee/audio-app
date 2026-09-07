@@ -89,6 +89,21 @@ export class ChannelService {
     });
   }
 
+  async updateChannelAlert(
+    workspaceId: string,
+    channelId: string,
+    alert: boolean
+  ): Promise<void> {
+    const channelRef = doc(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}`
+    );
+
+    await updateDoc(channelRef, {
+      alert,
+    });
+  }
+
   async deleteAllMessages(
     workspaceId: string,
     channelId: string
