@@ -1,3 +1,7 @@
+/* =====================================
+   APP
+===================================== */
+
 .app {
   display: flex;
 
@@ -14,6 +18,18 @@
 
 
 /* =====================================
+   WORKSPACE SWITCHER
+===================================== */
+
+app-workspace-switcher {
+  flex: 0 0 auto;
+
+  min-width: 0;
+  height: 100vh;
+}
+
+
+/* =====================================
    SIDEBAR CONTAINER
 ===================================== */
 
@@ -22,13 +38,51 @@
 
   width: 240px;
   min-width: 240px;
+  max-width: 240px;
+
   height: 100vh;
+
+  flex: 0 0 240px;
+  flex-shrink: 0;
+
+  min-height: 0;
+
+  overflow: visible;
 
   transition:
     width 0.2s ease,
-    min-width 0.2s ease;
+    min-width 0.2s ease,
+    flex-basis 0.2s ease;
+}
 
-  flex-shrink: 0;
+
+/* =====================================
+   iPAD / TABLET
+===================================== */
+
+@media (min-width: 768px) and (max-width: 1439px) {
+  .sidebar-container {
+    width: 120px;
+    min-width: 120px;
+    max-width: 140px;
+
+    flex: 0 0 100px;
+  }
+}
+
+
+/* =====================================
+   LARGE DESKTOP
+===================================== */
+
+@media (min-width: 1440px) {
+  .sidebar-container {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+
+    flex: 0 0 240px;
+  }
 }
 
 
@@ -39,15 +93,33 @@
 .sidebar-container.collapsed {
   width: 0;
   min-width: 0;
+  max-width: 0;
+
+  flex: 0 0 0;
 }
 
 
-/*
- * Hide the actual sidebar when collapsed.
- */
+/* Hide actual sidebar when collapsed */
 
 .sidebar-container.collapsed app-sidebar {
   display: none;
+}
+
+
+/* =====================================
+   SIDEBAR COMPONENT
+===================================== */
+
+.sidebar-container app-sidebar {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
 }
 
 
@@ -97,10 +169,9 @@
 }
 
 
-/*
- * When collapsed, move the button back
- * into the visible area.
- */
+/* =====================================
+   COLLAPSED TOGGLE
+===================================== */
 
 .sidebar-container.collapsed .sidebar-toggle {
   right: -24px;
@@ -110,11 +181,13 @@
 
 
 /* =====================================
-   CHANNEL
+   CHANNEL CONTAINER
 ===================================== */
 
 .channel-container {
   flex: 1 1 0;
+
+  width: 0;
 
   min-width: 0;
   min-height: 0;
@@ -127,16 +200,23 @@
 }
 
 
-/*
- * Make app-channel fill the available
- * space completely.
- */
+/* =====================================
+   APP CHANNEL
+===================================== */
 
 .channel-container app-channel {
+  display: flex;
+
   flex: 1 1 0;
+
+  width: 0;
 
   min-width: 0;
   min-height: 0;
+
+  height: 100%;
+
+  overflow: hidden;
 }
 
 
@@ -147,12 +227,45 @@
 .empty-channel {
   flex: 1 1 0;
 
+  width: 0;
+
   min-width: 0;
   min-height: 0;
+
+  height: 100%;
 
   display: flex;
   flex-direction: column;
 
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 767px) {
+  .sidebar-container {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+
+    flex: 0 0 240px;
+  }
+}
+
+
+/* =====================================
+   BOX SIZING
+===================================== */
+
+.app,
+.app *,
+.app *::before,
+.app *::after {
+  box-sizing: border-box;
 }

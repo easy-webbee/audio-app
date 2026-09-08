@@ -10,6 +10,12 @@
   font-size: 22px;
 }
 
+@mixin baseText_ipad {
+  margin-left: 2px;
+  padding: 2px 5px;
+  font-size: 12px;
+}
+
 .messages {
   display: flex;
   flex-direction: column;
@@ -109,7 +115,7 @@
 
 .text.sell {
   // border-color: red;
-  border: 5px solid  red;
+  border: 5px solid red;
 }
 
 .text.buy {
@@ -734,8 +740,64 @@
   background: #eee;
 }
 
+.ali_all {
+  display: block;
+}
+
+.ali_ipad {
+  display: none;
+}
+
+/* iPad / Tablet */
+@media (min-width: 768px) {
+  .ali_all {
+    display: none;
+  }
+
+  .ali_ipad {
+    display: block;
+  }
+
+  .base-btn {
+    @include baseText_ipad();
+  }
+
+  .copy-text {
+    @include baseText_ipad();
+  }
+
+  .message-date {
+    @include baseText_ipad();
+  }
+
+  .inside-box {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    direction: ltr;
+    gap: 2px;
+    font-size: 12px;
+  }
+
+  .app-lazy-iframe {
+    max-width: 400px;
+  }
+
+  .image-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 /* Large desktop */
 @media (min-width: 1440px) {
+  .ali_all {
+    display: block;
+  }
+
+  .ali_ipad {
+    display: none;
+  }
+
   .base-btn {
     @include baseTextBig();
   }

@@ -11,7 +11,7 @@ import {
 import { SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-lazy-iframe',
+  selector: 'app-lazy-iframe-ipad',
   standalone: true,
   template: `
     <div
@@ -48,8 +48,8 @@ import { SafeResourceUrl } from '@angular/platform-browser';
   styles: [
     `
       .iframe-container {
-        width: 1200px;
-        height: 570px;
+        width: 800px;
+        height: 370px;
 
         overflow: hidden;
 
@@ -140,7 +140,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
     `,
   ],
 })
-export class LazyIframeComponent implements AfterViewInit, OnDestroy {
+export class LazyIframeIpadComponent implements AfterViewInit, OnDestroy {
   @Input() iframeUrl?: SafeResourceUrl;
 
   @ViewChild('container')
@@ -152,7 +152,7 @@ export class LazyIframeComponent implements AfterViewInit, OnDestroy {
   fullscreen = false;
 
   // Original iframe scale
-  scale = 0.53;
+  scale = 0.36;
 
   imageX = 0;
   imageY = 0;
@@ -211,7 +211,7 @@ export class LazyIframeComponent implements AfterViewInit, OnDestroy {
       this.zoomed = true;
 
       // 1920px iframe -> approximately 2x larger
-      this.scale = 0.8;
+      this.scale = 0.72;
 
       this.imageX = 0;
       this.imageY = 0;
@@ -223,14 +223,14 @@ export class LazyIframeComponent implements AfterViewInit, OnDestroy {
 
     // Second click:
     // Zoom in more
-    if (this.scale === 0.8) {
+    if (this.scale === 0.72) {
       this.scale = 1;
       return;
     }
 
     // Third click:
     // Return to original fullscreen size
-    this.scale = 0.8;
+    this.scale = 0.72;
   }
 
   startDrag(event: MouseEvent): void {
@@ -272,7 +272,7 @@ export class LazyIframeComponent implements AfterViewInit, OnDestroy {
     this.fullscreen = false;
     this.zoomed = false;
 
-    this.scale = 0.46875;
+    this.scale = 0.36;
 
     this.imageX = 0;
     this.imageY = 0;

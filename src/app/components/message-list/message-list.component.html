@@ -77,13 +77,27 @@
           [class.buy]="formatted.borderClass === 'buy'"
         >
           <!-- MEDIA ALWAYS AT BOTTOM -->
-          <div class="media-content" *ngIf="!message.userName.includes('RSIENDBOT') && channelId() !== '86UamrSwHhQYgEszLmcP'">
+          <div
+            class="media-content"
+            *ngIf="
+              !message.userName.includes('RSIENDBOT') &&
+              channelId() !== '86UamrSwHhQYgEszLmcP'
+            "
+          >
             <ng-container *ngFor="let part of formatted.parts">
-              <app-lazy-iframe
-                *ngIf="part.type === 'iframe'"
-                [iframeUrl]="part.safeUrl"
-              ></app-lazy-iframe>
+              <div class="app-lazy-iframe ali_all">
+                <app-lazy-iframe
+                  *ngIf="part.type === 'iframe'"
+                  [iframeUrl]="part.safeUrl"
+                ></app-lazy-iframe>
+              </div>
 
+              <div class="app-lazy-iframe ali_ipad">
+                <app-lazy-iframe-ipad
+                  *ngIf="part.type === 'iframe'"
+                  [iframeUrl]="part.safeUrl"
+                ></app-lazy-iframe-ipad>
+              </div>
               <div *ngIf="part.type === 'image'" class="image-container">
                 <img
                   [src]="part.url"
@@ -106,7 +120,11 @@
               </span>
 
               <a
-                *ngIf="(part.type === 'link')  && channelId() !== '86UamrSwHhQYgEszLmcP' && !message.userName.includes('RSIENDBOT') "
+                *ngIf="
+                  part.type === 'link' &&
+                  channelId() !== '86UamrSwHhQYgEszLmcP' &&
+                  !message.userName.includes('RSIENDBOT')
+                "
                 class="message-link"
                 [href]="part.url"
                 target="_blank"
@@ -119,7 +137,12 @@
                 </span>
               </a>
             </ng-container>
-            <div *ngIf="!message.userName.includes('RSIENDBOT') && channelId() !== '86UamrSwHhQYgEszLmcP'">
+            <div
+              *ngIf="
+                !message.userName.includes('RSIENDBOT') &&
+                channelId() !== '86UamrSwHhQYgEszLmcP'
+              "
+            >
               <h4>BULL BEER LIST</h4>
               <p>{{ this.getBullBear(message.userName) }}</p>
             </div>

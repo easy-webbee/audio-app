@@ -30,6 +30,7 @@ import { ApiService } from '../../services/apiservice.service';
 import { FormsModule } from '@angular/forms';
 import * as DataSymbols from '../../models/chartData';
 import { RecentMessagePipe } from './recent-msg.pipe';
+import { LazyIframeIpadComponent } from './lazy-iframe-ipad-size.component';
 
 @Component({
   selector: 'app-message-list',
@@ -42,9 +43,10 @@ import { RecentMessagePipe } from './recent-msg.pipe';
     DatePipe,
     NgClass,
     LazyIframeComponent,
+    LazyIframeIpadComponent,
     DecimalPipe,
     FormsModule,
-    RecentMessagePipe
+    RecentMessagePipe,
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -82,7 +84,7 @@ export class MessageListComponent {
   private readonly AUTO_SCROLL_THRESHOLD = 150;
 
   userNames: string[] = [];
-  User_DC_W_Time:any;
+  User_DC_W_Time: any;
 
   messages$ = combineLatest([
     toObservable(this.workspaceId),
@@ -100,24 +102,28 @@ export class MessageListComponent {
       this.userNames = [
         ...new Set(messages.map((message) => message.userName).filter(Boolean)),
       ];
-      const msgunread =  messages.filter((message: Message) => !this.isRead(message));
-      this.helperService.unreadCounts.set(msgunread)
-      this.User_DC_W_Time = messages.reduce<Record<string, { discord: any; createdAt: any }[]>>((acc, message) => {
+      const msgunread = messages.filter(
+        (message: Message) => !this.isRead(message)
+      );
+      this.helperService.unreadCounts.set(msgunread);
+      this.User_DC_W_Time = messages.reduce<
+        Record<string, { discord: any; createdAt: any }[]>
+      >((acc, message) => {
         const matches = [
           ...message.text.matchAll(
             /discord\.com\/channels\/\d+\/(\d+)\/(\d+)/g
-          )
+          ),
         ];
-        
+
         const dc_msg_full = matches.length
-          ? matches.map(match => `${match[1]}/${match[2]}`)
+          ? matches.map((match) => `${match[1]}/${match[2]}`)
           : null;
-      
+
         (acc[message.userName] ??= []).push({
           discord: dc_msg_full,
           createdAt: message.createdAt.seconds,
         });
-      
+
         return acc;
       }, {});
       // ========================================
@@ -308,15 +314,15 @@ export class MessageListComponent {
       });
 
       const dc_msg_target = {
-        username:message.userName,
-        createdAt: message.createdAt.seconds
-      }
+        username: message.userName,
+        createdAt: message.createdAt.seconds,
+      };
 
       const olderDiscordMessages =
-      this.User_DC_W_Time[dc_msg_target.username]?.filter(
-        (item: any) => item.createdAt < dc_msg_target.createdAt
-      ) ?? [];
-      console.log(olderDiscordMessages)
+        this.User_DC_W_Time[dc_msg_target.username]?.filter(
+          (item: any) => item.createdAt < dc_msg_target.createdAt
+        ) ?? [];
+      console.log(olderDiscordMessages);
       const discordIds = olderDiscordMessages.flatMap(
         (item: any) => item.discord ?? []
       );
@@ -327,7 +333,8 @@ export class MessageListComponent {
           )
         ).subscribe({
           next: () => console.log('All Discord messages deleted'),
-          error: (err) => console.error('Failed to delete Discord messages:', err)
+          error: (err) =>
+            console.error('Failed to delete Discord messages:', err),
         });
       }
     } else {
@@ -344,16 +351,16 @@ export class MessageListComponent {
         this.channelId(),
         message.id
       );
-      console.log(message.dc_msg_full)
+      console.log(message.dc_msg_full);
 
-      const discordMessages = Array.isArray(message.dc_msg_full)? message.dc_msg_full  : message.dc_msg_full?.split(',') ?? [];
-      discordMessages.forEach((id:string)=>{
-        this.apiService.deleteDiscord_msg(id).subscribe()
-      })
+      const discordMessages = Array.isArray(message.dc_msg_full)
+        ? message.dc_msg_full
+        : message.dc_msg_full?.split(',') ?? [];
+      discordMessages.forEach((id: string) => {
+        this.apiService.deleteDiscord_msg(id).subscribe();
+      });
     }
   }
-
-
 
   openMenuVisible = false;
 
@@ -390,29 +397,29 @@ export class MessageListComponent {
     });
   }
 
-    /**
+  /**
    * Scroll to the first message belonging to a username.
    */
-    scrollingTo(id: string): void {
-      this.openMenuVisible = false;
-  
-      setTimeout(() => {
-        const container = this.messagesContainer?.nativeElement;
-  
-        const message = container?.querySelector(
-          `.message[data-msg-id="${CSS.escape(id)}"]`
-        ) as HTMLElement | null;
-  
-        if (!message) {
-          return;
-        }
-  
-        message.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
+  scrollingTo(id: string): void {
+    this.openMenuVisible = false;
+
+    setTimeout(() => {
+      const container = this.messagesContainer?.nativeElement;
+
+      const message = container?.querySelector(
+        `.message[data-msg-id="${CSS.escape(id)}"]`
+      ) as HTMLElement | null;
+
+      if (!message) {
+        return;
+      }
+
+      message.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
       });
-    }
+    });
+  }
 
   /**
    * Close the Open menu when clicking anywhere
@@ -576,7 +583,7 @@ export class MessageListComponent {
     document.body.style.overflow = '';
   }
 
-  getBullBear(ticker:string){
+  getBullBear(ticker: string) {
     let bullxx: string = '';
     let bearxx: string = '';
     if (DataSymbols.watchlistBB[ticker]?.BULL.length > 0) {
@@ -588,10 +595,10 @@ export class MessageListComponent {
     if (DataSymbols.watchlistBB[ticker]?.BEAR.length > 0) {
       DataSymbols.watchlistBB[ticker].BEAR.forEach((element) => {
         // bearxx +=  `<https://www.tradingview.com/chart/?symbol=${element}|BEAR_${element}> | `;
-        bearxx +=  `${element} || `;
+        bearxx += `${element} || `;
       });
     }
     let bullbearxx = `BULL: ${bullxx} \nBEAR: ${bearxx}`;
-    return bullbearxx
+    return bullbearxx;
   }
 }
