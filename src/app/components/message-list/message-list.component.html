@@ -119,7 +119,7 @@
                 </span>
               </a>
             </ng-container>
-            <div *ngIf="!message.userName.includes('USD')">
+            <div *ngIf="!message.userName.includes('RSIENDBOT') && channelId() !== '86UamrSwHhQYgEszLmcP'">
               <h4>BULL BEER LIST</h4>
               <p>{{ this.getBullBear(message.userName) }}</p>
             </div>
