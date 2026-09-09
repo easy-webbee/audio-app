@@ -152,7 +152,7 @@ export class LazyIframeIpadComponent implements AfterViewInit, OnDestroy {
   fullscreen = false;
 
   // Original iframe scale
-  scale = 0.36;
+  scale = 0.33;
 
   imageX = 0;
   imageY = 0;
