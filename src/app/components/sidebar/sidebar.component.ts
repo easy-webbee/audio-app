@@ -422,19 +422,19 @@ export class SidebarComponent {
     // DELETE CHANNEL
     // ==========================================
 
-    if (channel.sectionId !== 'do_not_do') {
-      const confirmed2 = confirm(
-        'Are you sure you want to delete this channel ? ' + channel.name
-      );
+    // if (channel.sectionId !== 'do_not_do') {
+    //   const confirmed2 = confirm(
+    //     'Are you sure you want to delete this channel ? ' + channel.name
+    //   );
 
-      if (!confirmed2) {
-        this.closeContextMenu();
+    //   if (!confirmed2) {
+    //     this.closeContextMenu();
 
-        return;
-      }
+    //     return;
+    //   }
 
-      await this.channelService.deleteChannel(this.workspace().id, channel.id);
-    }
+    //   await this.channelService.deleteChannel(this.workspace().id, channel.id);
+    // }
   }
 
   // ==========================================
