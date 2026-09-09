@@ -25,6 +25,15 @@
 
       <div class="section-title" (click)="toggleSection(section.id)">
         <!-- Arrow -->
+        <!-- Section unread count -->
+
+        @if ( getSectionUnreadCount(section) > 0 ) {
+
+          <span class="section-unread">
+            {{ getSectionUnreadCount(section) }}
+          </span>
+
+        }
 
         <span class="section-arrow">
           {{ section.expanded ? "▼" : "▶" }}
@@ -38,13 +47,13 @@
 
         <!-- Section unread count -->
 
-        @if ( getSectionUnreadCount(section) > 0 ) {
+        <!-- @if ( getSectionUnreadCount(section) > 0 ) {
 
-        <span class="section-unread">
-          {{ getSectionUnreadCount(section) }}
-        </span>
+          <span class="section-unread">
+            {{ getSectionUnreadCount(section) }}
+          </span>
 
-        }
+        } -->
 
         <!-- Number of channels -->
 
@@ -75,7 +84,11 @@
         (contextmenu)="showChannelContextMenu($event, channel)"
       >
         <button class="channel-item" (click)="selectChannel(channel)">
-          <span>#</span>
+          @if (unreadCounts()[channel.id] > 0) {
+            <span class="unread-badge">
+              {{ unreadCounts()[channel.id] }}
+            </span>
+            } <span>#</span>
 
           <span class="channel-name">
             {{ channel.name }}
@@ -85,7 +98,8 @@
           <span class="unread-badge">
             {{ unreadCounts()[channel.id] }}
           </span>
-          } @if (messageCounts()[channel.id] > 0) {
+          } 
+          @if (messageCounts()[channel.id] > 0) {
           <span class="message-count">
             {{ messageCounts()[channel.id] }}
           </span>
