@@ -25,6 +25,9 @@
 
       <div class="section-title" (click)="toggleSection(section.id)">
         <!-- Arrow -->
+        <span class="section-arrow">
+          {{ section.expanded ? "▼" : "▶" }}
+        </span>
         <!-- Section unread count -->
 
         @if ( getSectionUnreadCount(section) > 0 ) {
@@ -34,10 +37,6 @@
           </span>
 
         }
-
-        <span class="section-arrow">
-          {{ section.expanded ? "▼" : "▶" }}
-        </span>
 
         <!-- Section name -->
 
