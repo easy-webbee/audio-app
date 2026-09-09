@@ -71,7 +71,6 @@
   align-items: center;
 
   gap: 6px;
-
   padding: 0 8px;
 
   font-size: 13px;
@@ -80,7 +79,6 @@
   opacity: 0.8;
 
   cursor: pointer;
-
   user-select: none;
 }
 
@@ -95,7 +93,6 @@
 
 .section-arrow {
   width: 12px;
-
   flex-shrink: 0;
 
   font-size: 9px;
@@ -108,13 +105,10 @@
 
 .section-name {
   flex: 1;
-
   min-width: 0;
 
   overflow: hidden;
-
   white-space: nowrap;
-
   text-overflow: ellipsis;
 }
 
@@ -173,7 +167,6 @@
   height: 24px;
 
   margin-left: 2px;
-
   padding: 0;
 
   border: 0;
@@ -200,11 +193,12 @@
 ===================================== */
 
 .channel-row {
+  position: relative;
+
   display: flex;
   align-items: center;
 
   width: 100%;
-
   min-width: 0;
 }
 
@@ -215,7 +209,6 @@
 
 .channel-item {
   flex: 1;
-
   min-width: 0;
 
   display: flex;
@@ -232,7 +225,6 @@
   color: rgb(175, 161, 161);
 
   text-align: left;
-
   font-size: 15px;
 
   cursor: pointer;
@@ -243,11 +235,12 @@
 }
 
 
-/* Active channel */
+/* =====================================
+   ACTIVE CHANNEL
+===================================== */
 
 .channel-row.active .channel-item {
   background: rgba(255, 255, 255, 0.2);
-
   font-weight: 600;
 }
 
@@ -258,13 +251,10 @@
 
 .channel-name {
   flex: 1;
-
   min-width: 0;
 
   overflow: hidden;
-
   white-space: nowrap;
-
   text-overflow: ellipsis;
 }
 
@@ -323,7 +313,6 @@
   height: 24px;
 
   margin-right: 3px;
-
   padding: 0 2px;
 
   border: 0;
@@ -358,7 +347,6 @@
 
 .sidebar-content::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
-
   border-radius: 3px;
 }
 
@@ -366,32 +354,54 @@
   background: rgba(255, 255, 255, 0.4);
 }
 
-.channel-row {
-  position: relative;
-}
+
+/* =====================================
+   CONTEXT MENU
+===================================== */
 
 .context-menu {
   position: fixed;
+
   z-index: 9999;
 
   min-width: 200px;
 
   background: #ffffff;
+
   border: 1px solid #ddd;
   border-radius: 6px;
 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
   padding: 6px 0;
+
+  /*
+   * Important:
+   * The menu is positioned using viewport coordinates
+   * from MouseEvent.clientX/clientY.
+   */
 }
+
+
+/* =====================================
+   CONTEXT MENU TITLE
+===================================== */
 
 .context-menu-title {
   padding: 8px 12px;
+
   font-size: 12px;
   font-weight: 600;
+
   color: #666;
+
   border-bottom: 1px solid #eee;
 }
+
+
+/* =====================================
+   CONTEXT MENU ITEM
+===================================== */
 
 .context-menu-item {
   display: flex;
@@ -401,6 +411,7 @@
   padding: 9px 12px;
 
   font-size: 14px;
+
   cursor: pointer;
 }
 
@@ -408,7 +419,25 @@
   background: #b44d4d;
 }
 
+
+/* =====================================
+   CONTEXT MENU CHECK
+===================================== */
+
 .check {
   margin-left: 20px;
+
   font-weight: bold;
+}
+
+
+/* =====================================
+   CONTEXT MENU HR
+===================================== */
+
+.context-menu hr {
+  margin: 6px 0;
+
+  border: 0;
+  border-top: 1px solid #eee;
 }

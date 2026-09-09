@@ -255,14 +255,22 @@
 
   @if (openMenuVisible) {
   <div class="open-menu" (click)="$event.stopPropagation()">
-    @for (username of this.userNames; track $index) {
-    <button type="button" (click)="openOption(username)">
-      {{ username }}
-    </button>
+    @for (username of filteredUserNames; track $index) {
+      <button type="button" (click)="openOption(username)">
+        {{ username }}
+      </button>
     }
+    
     <div class="menu-divider"></div>
+    
+    <input
+      type="text"
+      [(ngModel)]="usernameSearch"
+      (input)="filterUserNames()"
+      placeholder="Search username..."
+    />
+    <!-- <button type="button" (click)="openOption('settings')">⚙ Settings</button> -->
 
-    <button type="button" (click)="openOption('settings')">⚙ Settings</button>
     <button (click)="keepScreenAwake()">Keep Screen Awake</button>
   </div>
   }

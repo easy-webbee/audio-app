@@ -102,6 +102,7 @@ export class MessageListComponent {
       this.userNames = [
         ...new Set(messages.map((message) => message.userName).filter(Boolean)),
       ];
+      this.filteredUserNames = [...this.userNames];
       const msgunread = messages.filter(
         (message: Message) => !this.isRead(message)
       );
@@ -600,5 +601,19 @@ export class MessageListComponent {
     }
     let bullbearxx = `BULL: ${bullxx} \nBEAR: ${bearxx}`;
     return bullbearxx;
+  }
+  usernameSearch = '';
+  filteredUserNames: string[] = [];
+  filterUserNames() {
+    const search = this.usernameSearch.trim().toLowerCase();
+  
+    if (!search) {
+      this.filteredUserNames = [...this.userNames];
+      return;
+    }
+  
+    this.filteredUserNames = this.userNames.filter(username =>
+      username.toLowerCase().includes(search)
+    );
   }
 }

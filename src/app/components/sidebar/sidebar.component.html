@@ -7,61 +7,44 @@
       {{ workspace().name }}
     </span>
 
-    <span> ⌄ </span>
+    <span>⌄</span>
   </div>
 
   <!-- =====================================
        SCROLLABLE SIDEBAR
   ====================================== -->
-
   <div class="sidebar-content">
-    @if (channels$ | async; as channels) { @for ( section of sections(); track
-    section.id ) {
+    @if (channels$ | async; as channels) { @for (section of sections(); track
+    section.id) {
 
     <div class="section">
       <!-- =====================================
                SECTION HEADER
           ====================================== -->
-
       <div class="section-title" (click)="toggleSection(section.id)">
         <!-- Arrow -->
         <span class="section-arrow">
           {{ section.expanded ? "▼" : "▶" }}
         </span>
+
         <!-- Section unread count -->
-
-        @if ( getSectionUnreadCount(section) > 0 ) {
-
-          <span class="section-unread">
-            {{ getSectionUnreadCount(section) }}
-          </span>
-
+        @if (getSectionUnreadCount(section) > 0) {
+        <span class="section-unread">
+          {{ getSectionUnreadCount(section) }}
+        </span>
         }
 
         <!-- Section name -->
-
         <span class="section-name">
           {{ section.name }}
         </span>
 
-        <!-- Section unread count -->
-
-        <!-- @if ( getSectionUnreadCount(section) > 0 ) {
-
-          <span class="section-unread">
-            {{ getSectionUnreadCount(section) }}
-          </span>
-
-        } -->
-
         <!-- Number of channels -->
-
         <span class="channel-count">
           {{ section.channels.length }}
         </span>
 
         <!-- Add channel -->
-
         <button
           type="button"
           (click)="$event.stopPropagation(); createChannel()"
@@ -73,21 +56,26 @@
       <!-- =====================================
                CHANNELS
           ====================================== -->
-
-      @if (section.expanded) { @for ( channel of section.channels; track
-      channel.id ) {
+      @if (section.expanded) { @for (channel of section.channels; track
+      channel.id) {
 
       <div
         class="channel-row"
         [class.active]="selectedChannel()?.id === channel.id"
         (contextmenu)="showChannelContextMenu($event, channel)"
       >
-        <button class="channel-item" (click)="selectChannel(channel)">
+        <button
+          type="button"
+          class="channel-item"
+          (click)="selectChannel(channel)"
+        >
           @if (unreadCounts()[channel.id] > 0) {
-            <span class="unread-badge">
-              {{ unreadCounts()[channel.id] }}
-            </span>
-            } <span>#</span>
+          <span class="unread-badge">
+            {{ unreadCounts()[channel.id] }}
+          </span>
+          }
+
+          <span>#</span>
 
           <span class="channel-name">
             {{ channel.name }}
@@ -97,14 +85,14 @@
           <span class="unread-badge">
             {{ unreadCounts()[channel.id] }}
           </span>
-          } 
-          @if (messageCounts()[channel.id] > 0) {
+          } @if (messageCounts()[channel.id] > 0) {
           <span class="message-count">
             {{ messageCounts()[channel.id] }}
           </span>
           }
         </button>
       </div>
+
       } }
     </div>
 
@@ -112,8 +100,14 @@
   </div>
 </div>
 
+<!-- =====================================
+     CONTEXT MENU
+====================================== -->
+
 @if (contextMenuVisible) {
+
 <div
+  #contextMenu
   class="context-menu"
   [style.left.px]="contextMenuX"
   [style.top.px]="contextMenuY"
@@ -135,34 +129,21 @@
   </div>
 
   }
+
   <hr />
+
   <div class="context-menu-item" (click)="copyText(contextMenuChannel)">
-    {{ this.helperService.copied ? "COPIED!" : "COPY " + "CHANNEL ID" }}
+    {{ helperService.copied ? "COPIED!" : "COPY CHANNEL ID" }}
   </div>
 
   <div class="context-menu-item" (click)="alertTogle(contextMenuChannel!)">
     {{ contextMenuChannel?.alert ? "MUTE" : "UNMUTE" }}
   </div>
+
   <hr />
+
   <div class="context-menu-item" (click)="delete_all_msg(contextMenuChannel!)">
     DELETE ALL MSG
   </div>
 </div>
 }
-<!-- <div class="section">
-    <div class="section-title">
-      <span>Direct Messages</span>
-      <span>+</span>
-    </div>
-
-    <div class="user-item">
-      <span class="status"></span>
-      Luke
-    </div>
-
-    <div class="user-item">
-      <span class="status"></span>
-      John
-    </div>
-  </div> -->
-<!-- </div> -->

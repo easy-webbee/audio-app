@@ -5,6 +5,8 @@ import {
   output,
   signal,
   HostListener,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
@@ -29,10 +31,25 @@ import { HelperService } from '../../services/helper.service';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  // ==========================================
+  // CONTEXT MENU ELEMENT
+  // ==========================================
+
+  @ViewChild('contextMenu')
+  contextMenu!: ElementRef<HTMLElement>;
+
+  // ==========================================
+  // DOCUMENT CLICK
+  // ==========================================
+
   @HostListener('document:click')
   onDocumentClick() {
     this.closeContextMenu();
   }
+
+  // ==========================================
+  // DOCUMENT RIGHT CLICK
+  // ==========================================
 
   @HostListener('document:contextmenu', ['$event'])
   onDocumentContextMenu(event: MouseEvent) {
@@ -43,11 +60,16 @@ export class SidebarComponent {
     }
   }
 
+  // ==========================================
+  // SERVICES
+  // ==========================================
+
   private channelService = inject(ChannelService);
 
   private unreadService = inject(UnreadService);
 
   private localStorageService = inject(LocalStorageService);
+
   public helperService = inject(HelperService);
 
   // ==========================================
@@ -99,7 +121,9 @@ export class SidebarComponent {
       this.groupChannels(channels);
 
       const channelA = channels.filter((channel) => channel?.alert === true);
+
       console.log(channelA);
+
       this.helperService.alertChannelId.set(channelA);
     }),
 
@@ -124,11 +148,12 @@ export class SidebarComponent {
 
       const updated: ChannelSection[] = sections.map((section) => ({
         ...section,
-
         channels: [],
       }));
 
-      // Put channels into their section
+      // ==========================================
+      // PUT CHANNELS INTO THEIR SECTION
+      // ==========================================
 
       for (const channel of channels) {
         let section = updated.find(
@@ -173,7 +198,6 @@ export class SidebarComponent {
         section.id === sectionId
           ? {
               ...section,
-
               expanded: !section.expanded,
             }
           : section
@@ -219,34 +243,162 @@ export class SidebarComponent {
   ): Promise<void> {
     await this.channelService.updateChannelSection(
       this.workspace().id,
-
       channel.id,
-
       sectionId
     );
+
     this.closeContextMenu();
   }
 
+  // ==========================================
+  // CONTEXT MENU
+  // ==========================================
+
   contextMenuVisible = false;
+
   contextMenuX = 0;
+
   contextMenuY = 0;
+
   contextMenuChannel: Channel | null = null;
 
-  showChannelContextMenu(event: MouseEvent, channel: Channel) {
+  // ==========================================
+  // SHOW CONTEXT MENU
+  // ==========================================
+
+  showChannelContextMenu(event: MouseEvent, channel: Channel): void {
     event.preventDefault();
+
     event.stopPropagation();
 
-    this.contextMenuX = event.clientX;
-    this.contextMenuY = event.clientY;
+    // Save channel
 
     this.contextMenuChannel = channel;
+
+    // Initial mouse position
+
+    this.contextMenuX = event.clientX;
+
+    this.contextMenuY = event.clientY;
+
+    // Show menu
+
     this.contextMenuVisible = true;
+
+    /*
+     * Angular needs to render the menu first
+     * before we can know its actual height/width.
+     *
+     * setTimeout allows @ViewChild to become
+     * available.
+     */
+
+    setTimeout(() => {
+      this.positionContextMenu(event.clientX, event.clientY);
+    });
   }
 
-  closeContextMenu() {
+  // ==========================================
+  // POSITION CONTEXT MENU
+  // ==========================================
+
+  private positionContextMenu(mouseX: number, mouseY: number): void {
+    if (!this.contextMenu) {
+      return;
+    }
+
+    const menu = this.contextMenu.nativeElement;
+
+    // ==========================================
+    // MENU SIZE
+    // ==========================================
+
+    const menuWidth = menu.offsetWidth;
+
+    const menuHeight = menu.offsetHeight;
+
+    // ==========================================
+    // VIEWPORT SIZE
+    // ==========================================
+
+    const viewportWidth = window.innerWidth;
+
+    const viewportHeight = window.innerHeight;
+
+    const padding = 8;
+
+    // ==========================================
+    // INITIAL POSITION
+    // ==========================================
+
+    let top = mouseY;
+
+    let left = mouseX;
+
+    // ==========================================
+    // FLIP UP
+    // ==========================================
+
+    /*
+     * If there isn't enough room below
+     * the mouse, place the menu above it.
+     */
+
+    if (mouseY + menuHeight > viewportHeight - padding) {
+      top = mouseY - menuHeight;
+    }
+
+    // ==========================================
+    // PREVENT TOP OVERFLOW
+    // ==========================================
+
+    if (top < padding) {
+      top = padding;
+    }
+
+    // ==========================================
+    // MOVE LEFT
+    // ==========================================
+
+    /*
+     * If there isn't enough room on the
+     * right side of the screen, move menu left.
+     */
+
+    if (mouseX + menuWidth > viewportWidth - padding) {
+      left = mouseX - menuWidth;
+    }
+
+    // ==========================================
+    // PREVENT LEFT OVERFLOW
+    // ==========================================
+
+    if (left < padding) {
+      left = padding;
+    }
+
+    // ==========================================
+    // APPLY POSITION
+    // ==========================================
+
+    this.contextMenuX = left;
+
+    this.contextMenuY = top;
+  }
+
+  // ==========================================
+  // CLOSE CONTEXT MENU
+  // ==========================================
+
+  closeContextMenu(): void {
     this.contextMenuVisible = false;
+
     this.contextMenuChannel = null;
   }
+
+  // ==========================================
+  // DELETE ALL MESSAGES
+  // ==========================================
 
   async delete_all_msg(channel: Channel): Promise<void> {
     const confirmed = confirm(
@@ -255,34 +407,65 @@ export class SidebarComponent {
 
     if (!confirmed) {
       this.closeContextMenu();
+
       return;
     }
+
     await this.channelService.deleteAllMessages(
       this.workspace().id,
       channel.id
     );
+
     this.closeContextMenu();
 
+    // ==========================================
+    // DELETE CHANNEL
+    // ==========================================
+
+    if (channel.sectionId !== 'do_not_do') {
+      const confirmed2 = confirm(
+        'Are you sure you want to delete this channel ? ' + channel.name
+      );
+
+      if (!confirmed2) {
+        this.closeContextMenu();
+
+        return;
+      }
+
+      await this.channelService.deleteChannel(this.workspace().id, channel.id);
+    }
   }
 
-  async copyText(contextMenuChannel: any) {
+  // ==========================================
+  // COPY CHANNEL ID
+  // ==========================================
+
+  async copyText(contextMenuChannel: Channel | null): Promise<void> {
     if (contextMenuChannel) {
       console.log(contextMenuChannel);
+
       this.helperService.copyText(contextMenuChannel.id);
+
       this.closeContextMenu();
     }
   }
 
-  async alertTogle(channel: Channel) {
+  // ==========================================
+  // TOGGLE ALERT
+  // ==========================================
+
+  async alertTogle(channel: Channel): Promise<void> {
     console.log('🔥 alertTogle CALLED', channel.id, channel.alert);
+
     await this.channelService.updateChannelAlert(
       this.workspace().id,
-
       channel.id,
-
       !channel.alert
     );
+
     console.log('🔥 updateChannelAlert FINISHED');
+
     this.closeContextMenu();
   }
 }
