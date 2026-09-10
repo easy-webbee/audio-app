@@ -291,29 +291,6 @@ export class MessageListComponent {
    */
   async deleteMessage(message: Message, deleteother?: any): Promise<void> {
     if (deleteother === 'read_delete_old') {
-      await this.toggleRead(message);
-
-      const data = await this.messageService.getMessagesByUserName(
-        this.workspaceId(),
-        this.channelId(),
-        message.userName
-      );
-
-      const newdata = data.filter((each) => {
-        const eachTime = each.createdAt?.toMillis?.() ?? 0;
-        const messageTime = message.createdAt?.toMillis?.() ?? 0;
-
-        return eachTime < messageTime;
-      });
-
-      newdata.forEach(async (message) => {
-        await this.messageService.deleteMessage(
-          this.workspaceId(),
-          this.channelId(),
-          message.id
-        );
-      });
-
       const dc_msg_target = {
         username: message.userName,
         createdAt: message.createdAt.seconds,
@@ -338,6 +315,28 @@ export class MessageListComponent {
             console.error('Failed to delete Discord messages:', err),
         });
       }
+      await this.toggleRead(message);
+
+      const data = await this.messageService.getMessagesByUserName(
+        this.workspaceId(),
+        this.channelId(),
+        message.userName
+      );
+
+      const newdata = data.filter((each) => {
+        const eachTime = each.createdAt?.toMillis?.() ?? 0;
+        const messageTime = message.createdAt?.toMillis?.() ?? 0;
+
+        return eachTime < messageTime;
+      });
+
+      newdata.forEach(async (message) => {
+        await this.messageService.deleteMessage(
+          this.workspaceId(),
+          this.channelId(),
+          message.id
+        );
+      });
     } else {
       const confirmed = confirm(
         'Are you sure you want to delete this message?'
