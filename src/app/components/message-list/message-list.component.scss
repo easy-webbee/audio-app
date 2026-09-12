@@ -68,6 +68,10 @@
   word-break: break-word;
 }
 
+.just-text{
+  font-size: 22px;
+}
+
 .text strong {
   font-weight: 700;
 }
@@ -749,7 +753,7 @@
 }
 
 /* iPad / Tablet */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .ali_all {
     display: none;
   }

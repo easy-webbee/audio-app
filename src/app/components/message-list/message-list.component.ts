@@ -31,6 +31,7 @@ import { FormsModule } from '@angular/forms';
 import * as DataSymbols from '../../models/chartData';
 import { RecentMessagePipe } from './recent-msg.pipe';
 import { LazyIframeIpadComponent } from './lazy-iframe-ipad-size.component';
+import { RegularFormatPipe } from './regulartext.pipe';
 
 @Component({
   selector: 'app-message-list',
@@ -47,6 +48,7 @@ import { LazyIframeIpadComponent } from './lazy-iframe-ipad-size.component';
     DecimalPipe,
     FormsModule,
     RecentMessagePipe,
+    RegularFormatPipe,
   ],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
@@ -98,7 +100,7 @@ export class MessageListComponent {
       // ========================================
       // UPDATE USERNAME LIST
       // ========================================
-
+      console.log(messages)
       this.userNames = [
         ...new Set(messages.map((message) => message.userName).filter(Boolean)),
       ];
