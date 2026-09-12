@@ -102,10 +102,17 @@
                 ></app-lazy-iframe-ipad>
               </div>
               <div *ngIf="part.type === 'image'" class="image-container">
+                <div class="image-loading" *ngIf="part.imageLoading">
+                  <div class="image-spinner"></div>
+                  <span>Loading image...</span>
+                </div>
                 <img
                   [src]="part.url"
                   alt=""
                   class="stock-image"
+                  [class.image-hidden]="part.imageLoading"
+                  (load)="part.imageLoading = false"
+                  (error)="part.imageLoading = false"
                   (click)="openImage(part.url || '')"
                 />
               </div>
@@ -154,71 +161,71 @@
       </ng-container>
     </div>
     } @else {
-      <div class="content ">
-        <div
-          class="header message-date"
+    <div class="content">
+      <div
+        class="header message-date"
+        [class.current-date]="
+          message.createdAt | recentMessage : message.userName : 60
+        "
+      >
+        <span class="avatar">
+          {{ message.userName.charAt(0) }}
+        </span>
+        <strong
+          (click)="this.helperService.copyText(message.userName)"
+          class="copy-text"
+        >
+          {{
+            this.helperService.copied
+              ? "Copied! " + message.userName
+              : "Copy:" + message.userName
+          }}
+        </strong>
+        @if (!message.userName.includes("USD")) {
+        <button
+          type="button"
+          class="base-btn"
+          (click)="GetPrice(message.userName)"
+        >
+          Get Current Price: {{ message.userName }}
+        </button>
+        }
+        <button
+          type="button"
+          class="base-btn delete-button"
+          (click)="deleteMessage(message)"
+        >
+          Delete Just Me :{{ message.userName }}
+        </button>
+        <button type="button" class="base-btn" (click)="toggleRead(message)">
+          {{ isRead(message) ? "Mark unread: " : "Mark read: " }}
+          {{ message.userName }}
+        </button>
+        <button
+          type="button"
+          class="base-btn"
+          [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
+          (click)="deleteMessage(message, 'read_delete_old')"
+        >
+          {{ isRead(message) ? "Mark unread:" : "Mark read:" }}
+          {{ message.userName }} and Delete Old
+        </button>
+        <span
+          class="message-date"
           [class.current-date]="
             message.createdAt | recentMessage : message.userName : 60
           "
         >
-          <span class="avatar">
-            {{ message.userName.charAt(0) }}
-          </span>
-          <strong
-            (click)="this.helperService.copyText(message.userName)"
-            class="copy-text"
-          >
-            {{
-              this.helperService.copied
-                ? "Copied! " + message.userName
-                : "Copy:" + message.userName
-            }}
-          </strong>
-          @if (!message.userName.includes("USD")) {
-          <button
-            type="button"
-            class="base-btn"
-            (click)="GetPrice(message.userName)"
-          >
-            Get Current Price: {{ message.userName }}
-          </button>
-          }
-          <button
-            type="button"
-            class="base-btn delete-button"
-            (click)="deleteMessage(message)"
-          >
-            Delete Just Me :{{ message.userName }}
-          </button>
-          <button type="button" class="base-btn" (click)="toggleRead(message)">
-            {{ isRead(message) ? "Mark unread: " : "Mark read: " }}
-            {{ message.userName }}
-          </button>
-          <button
-            type="button"
-            class="base-btn"
-            [ngClass]="isRead(message) ? 'unread_btn' : 'read_btn'"
-            (click)="deleteMessage(message, 'read_delete_old')"
-          >
-            {{ isRead(message) ? "Mark unread:" : "Mark read:" }}
-            {{ message.userName }} and Delete Old
-          </button>
-          <span
-            class="message-date"
-            [class.current-date]="
-              message.createdAt | recentMessage : message.userName : 60
-            "
-          >
-            {{
-              message.createdAt?.toDate()
-                | date : "MMM d, h:mm a" : "America/Chicago"
-            }}
-          </span>
-        </div>
-        <div class="just-text">
-          <div [innerHTML]="message.text | regulartext"></div>
-        </div>
+          {{
+            message.createdAt?.toDate()
+              | date : "MMM d, h:mm a" : "America/Chicago"
+          }}
+        </span>
       </div>
+      <div class="just-text">
+        <div [innerHTML]="message.text | regulartext"></div>
+      </div>
+    </div>
     }
   </div>
 

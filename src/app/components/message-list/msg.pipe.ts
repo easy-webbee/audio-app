@@ -6,6 +6,9 @@ export interface MessagePart {
   text: string;
   url?: string;
   safeUrl?: SafeResourceUrl;
+
+  // Image loading state
+  imageLoading?: boolean;
 }
 
 export interface FormattedMessage {
@@ -69,6 +72,7 @@ export class MessageFormatPipe implements PipeTransform {
             type: 'image',
             text: label || url,
             url,
+            imageLoading: true,
           });
         } else if (url !== 'null') {
           parts.push({
@@ -88,10 +92,11 @@ export class MessageFormatPipe implements PipeTransform {
         text: message.substring(lastIndex),
       });
     }
-    const textall = parts.filter(item => item.type === 'text' || item.type === 'bold')
-    .map(item => item.text)
-    .join('');
-    
+    const textall = parts
+      .filter((item) => item.type === 'text' || item.type === 'bold')
+      .map((item) => item.text)
+      .join('');
+
     const borderClass = textall.toUpperCase().includes('BUY')
       ? 'buy'
       : textall.toUpperCase().includes('SELL')
