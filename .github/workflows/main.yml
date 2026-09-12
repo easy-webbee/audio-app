@@ -5,10 +5,10 @@ name: CI/CD Deploy to Firebase Hosting on merge
 on:
   push:
     branches:
-        - slack-with-pwa
+        - my-stock-slack-pwa
   pull_request:
     branches:
-        - slack-with-pwa
+        - my-stock-slack-pwa
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
    build_and_deploy:

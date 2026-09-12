@@ -32,6 +32,8 @@ import * as DataSymbols from '../../models/chartData';
 import { RecentMessagePipe } from './recent-msg.pipe';
 import { LazyIframeIpadComponent } from './lazy-iframe-ipad-size.component';
 import { RegularFormatPipe } from './regulartext.pipe';
+import { environment } from '../../../environments/environment';
+import { PushNotificationService } from '../../services/push-notification.service';
 
 @Component({
   selector: 'app-message-list',
@@ -58,6 +60,7 @@ export class MessageListComponent {
   private localStorageService = inject(LocalStorageService);
   public helperService = inject(HelperService);
   public apiService = inject(ApiService);
+  private pushNotificationService = inject(PushNotificationService);
   workspaceId = input.required<string>();
   channelId = input.required<string>();
 
@@ -616,5 +619,32 @@ export class MessageListComponent {
     this.filteredUserNames = this.userNames.filter(username =>
       username.toLowerCase().includes(search)
     );
+  }
+
+  async enableNotifications(): Promise<void> {
+    alert('Enable notifications clicked');
+
+    const token = await this.pushNotificationService.requestPermission();
+
+    if (!token) {
+      console.log('Could not get FCM token.');
+      return;
+    }
+
+    console.log('FCM Token:', token);
+
+    // Send token to NestJS
+    await fetch(`${environment.url}/messages/fcm-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: 'n90Q4DYyzQc8Ibv9Xw5xTmT1G5F3',
+        token,
+      }),
+    });
+
+    alert('FCM token sent to backend');
   }
 }

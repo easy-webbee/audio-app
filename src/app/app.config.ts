@@ -1,15 +1,19 @@
-import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  isDevMode,
+} from '@angular/core';
 
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+
+import { provideServiceWorker } from '@angular/service-worker';
 
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
-import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,12 +27,11 @@ export const appConfig: ApplicationConfig = {
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
 
-    provideFirestore(() => getFirestore()), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    provideFirestore(() => getFirestore()),
+
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerImmediately',
+    }),
   ],
 };
