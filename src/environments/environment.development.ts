@@ -11,5 +11,6 @@ export const environment = {
     measurementId: "G-SMQS7ZY1JR"
   },
   // url: 'https://nestjs-api.koyeb.app',
-  url:'http://localhost:3000',
+  firebaseVapidKey:'BE7ON0CcAQ51X13Wm-KpXTK-JBBr5aS3Okdokcooq0afaN--5o1nccU5HvRirC9fW2HtrpF02Wlsvn0cA8uAasg',
+  url:'http://localhost:3010',
 };
