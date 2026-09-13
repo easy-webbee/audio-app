@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   selectedWorkspace = signal<Workspace>({
     id: 'workspace-1',
-    name: 'My Workspace-1',
+    name: 'My Workspace',
   });
 
   selectedChannel = signal<Channel | null>({
@@ -65,26 +65,23 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pushNotificationService.listenForeground();
-  
     this.pushNotificationService.notificationClick$.subscribe(
       async ({ channelId, messageId }) => {
-        alert(`'Opening notification message:', ${channelId},${messageId},`);
-  
-        const nameI = await firstValueFrom(
-          this.channelService.getChannelName(
-            'workspace-1',
-            channelId
-          )
+        alert(`Opening notification: ${channelId}, ${messageId}`);
+
+        const name = await firstValueFrom(
+          this.channelService.getChannelName('workspace-1', channelId)
         );
-  
+
         const channel: Channel = {
-          name: nameI ?? '',
+          name: name ?? '',
           id: channelId,
         };
-        alert(channel)
+
         this.selectChannel(channel);
       }
     );
+
+    this.pushNotificationService.listenForeground();
   }
 }
