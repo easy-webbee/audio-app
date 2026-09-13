@@ -13,9 +13,9 @@ import {
   query,
   orderBy,
   getDocs,
+  docData
 } from '@angular/fire/firestore';
-
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { Channel } from '../models/channel.model';
 
@@ -117,6 +117,20 @@ export class ChannelService {
 
     await Promise.all(
       snapshot.docs.map((messageDoc) => deleteDoc(messageDoc.ref))
+    );
+  }
+
+  getChannelName(
+    workspaceId: string,
+    channelId: string
+  ): Observable<string | undefined> {
+    const channelRef = doc(
+      this.firestore,
+      `workspaces/${workspaceId}/channels/${channelId}`
+    );
+  
+    return docData(channelRef).pipe(
+      map((channel: Channel) => channel?.name)
     );
   }
 }

@@ -10,6 +10,8 @@ import { WorkspaceSwitcherComponent } from './components/workspace-switcher/work
 
 import { UnreadService } from './services/unread.service';
 import { PushNotificationService } from './services/push-notification.service';
+import { ChannelService } from './services/channel.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +22,7 @@ import { PushNotificationService } from './services/push-notification.service';
 })
 export class AppComponent implements OnInit {
   private unreadService = inject(UnreadService);
+  private channelService = inject(ChannelService);
 
   private pushNotificationService = inject(PushNotificationService);
 
@@ -32,12 +35,6 @@ export class AppComponent implements OnInit {
     name: 'ALL_IN_ONE',
     id: 'vPbVpdIoDIRjNl9j5Iu7',
   });
-
-  ngOnInit(): void {
-    // Listen for FCM notifications
-    // while the app is open.
-    this.pushNotificationService.listenForeground();
-  }
 
   selectWorkspace(workspace: Workspace): void {
     this.selectedWorkspace.set(workspace);
@@ -56,16 +53,41 @@ export class AppComponent implements OnInit {
     this.unreadService.markAsRead(channel.id);
   }
 
-
   sidebarCollapsed = signal(
     localStorage.getItem('sidebarCollapsed') === 'true'
   );
-  
   toggleSidebar(): void {
-    this.sidebarCollapsed.update(value => {
+    this.sidebarCollapsed.update((value) => {
       const newValue = !value;
       localStorage.setItem('sidebarCollapsed', String(newValue));
       return newValue;
     });
+  }
+
+  ngOnInit(): void {
+    this.pushNotificationService.listenForeground();
+  
+    this.pushNotificationService.notificationClick$.subscribe(
+      async ({ channelId, messageId }) => {
+        console.log('Opening notification message:', {
+          channelId,
+          messageId,
+        });
+  
+        const nameI = await firstValueFrom(
+          this.channelService.getChannelName(
+            'workspace-1',
+            channelId
+          )
+        );
+  
+        const channel: Channel = {
+          name: nameI ?? '',
+          id: channelId,
+        };
+  
+        this.selectChannel(channel);
+      }
+    );
   }
 }

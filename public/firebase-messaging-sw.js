@@ -19,17 +19,80 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// messaging.onBackgroundMessage((payload) => {
+//   console.log("[firebase-messaging-sw.js] Background message", payload);
+
+//   const title = payload.notification?.title || "Stock Alert";
+
+//   const options = {
+//     body: payload.notification?.body || "New alert",
+//     icon: "/assets/icons/icon-192x192.png",
+//     badge: "/assets/icons/icon-192x192.png",
+//     data: payload.data || {},
+//   };
+
+//   self.registration.showNotification(title, options);
+// });
+
 messaging.onBackgroundMessage((payload) => {
-  console.log("[firebase-messaging-sw.js] Background message", payload);
+  console.log("Background FCM:", payload);
 
-  const title = payload.notification?.title || "Stock Alert";
+  const notification = payload.notification || {};
 
-  const options = {
-    body: payload.notification?.body || "New alert",
+  self.registration.showNotification(notification.title || "Notification", {
+    body: notification.body || "",
     icon: "/assets/icons/icon-192x192.png",
-    badge: "/assets/icons/icon-192x192.png",
-    data: payload.data || {},
-  };
 
-  self.registration.showNotification(title, options);
+    data: {
+      channelId: payload.data?.channelId,
+      messageId: payload.data?.messageId,
+      ticker: payload.data?.ticker,
+    },
+  });
+});
+
+self.addEventListener("notificationclick", (event) => {
+  console.log("Notification clicked:", event.notification);
+
+  event.notification.close();
+
+  const data = event.notification.data || {};
+
+  const channelId = data.channelId;
+  const messageId = data.messageId;
+
+  if (!channelId || !messageId) {
+    return;
+  }
+
+  const url = `/channel/${channelId}?messageId=${encodeURIComponent(
+    messageId
+  )}`;
+
+  event.waitUntil(
+    clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then((clientList) => {
+        // Try to find an existing app window
+        for (const client of clientList) {
+          if ("focus" in client) {
+            client.focus();
+
+            if ("navigate" in client) {
+              return client.navigate(url);
+            }
+
+            return;
+          }
+        }
+
+        // No existing window
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+  );
 });

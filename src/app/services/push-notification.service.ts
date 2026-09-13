@@ -7,13 +7,29 @@ import {
   Messaging,
 } from 'firebase/messaging';
 
+import { Subject } from 'rxjs';
+
 import { environment } from '../../environments/environment';
+
+export interface NotificationClickData {
+  channelId: string;
+  messageId: string;
+  ticker?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class PushNotificationService {
   private messaging: Messaging;
+
+  /**
+   * Emits when the user clicks a notification
+   * while the Angular app is open.
+   */
+  private notificationClickSubject = new Subject<NotificationClickData>();
+
+  notificationClick$ = this.notificationClickSubject.asObservable();
 
   constructor() {
     this.messaging = getMessaging();
@@ -27,10 +43,6 @@ export class PushNotificationService {
     try {
       console.log('1. Requesting notification permission...');
 
-      // --------------------------------------------------
-      // Request browser notification permission
-      // --------------------------------------------------
-
       const permission = await Notification.requestPermission();
 
       console.log('2. Notification permission:', permission);
@@ -41,10 +53,6 @@ export class PushNotificationService {
         return null;
       }
 
-      // --------------------------------------------------
-      // Check Service Worker support
-      // --------------------------------------------------
-
       if (!('serviceWorker' in navigator)) {
         console.error('Service Worker is not supported by this browser');
 
@@ -52,10 +60,6 @@ export class PushNotificationService {
       }
 
       console.log('3. Checking service workers...');
-
-      // --------------------------------------------------
-      // Get all registered Service Workers
-      // --------------------------------------------------
 
       const registrations = await navigator.serviceWorker.getRegistrations();
 
@@ -66,10 +70,6 @@ export class PushNotificationService {
 
         return null;
       }
-
-      // --------------------------------------------------
-      // Print information about each Service Worker
-      // --------------------------------------------------
 
       registrations.forEach((registration, index) => {
         console.log(`Service Worker #${index + 1}:`);
@@ -85,20 +85,12 @@ export class PushNotificationService {
         console.log('  Active state:', registration.active?.state);
       });
 
-      // --------------------------------------------------
-      // Find an ACTIVE Service Worker
-      // --------------------------------------------------
-
       const registration = registrations.find(
         (item) => item.active && item.active.state === 'activated'
       );
 
       if (!registration) {
         console.error('No ACTIVE Service Worker found');
-
-        console.error(
-          'The Service Worker is registered but has not been activated.'
-        );
 
         return null;
       }
@@ -109,10 +101,6 @@ export class PushNotificationService {
 
       console.log('7. Service Worker state:', registration.active?.state);
 
-      // --------------------------------------------------
-      // Get FCM token
-      // --------------------------------------------------
-
       console.log('8. Calling Firebase getToken...');
 
       const token = await getToken(this.messaging, {
@@ -120,10 +108,6 @@ export class PushNotificationService {
 
         serviceWorkerRegistration: registration,
       });
-
-      // --------------------------------------------------
-      // Check token
-      // --------------------------------------------------
 
       if (!token) {
         console.error('9. Firebase did not return an FCM token');
@@ -159,22 +143,53 @@ export class PushNotificationService {
 
       console.log('Notification body:', body);
 
-      if (Notification.permission === 'granted') {
-        const notification = new Notification(title, {
-          body,
-          icon: '/assets/icons/icon-192x192.png',
-          tag: payload.data?.['ticker'] ?? 'stock-alert',
-          data: payload.data,
-        });
-
-        notification.onclick = () => {
-          console.log('Notification clicked:', payload.data);
-
-          window.focus();
-
-          notification.close();
-        };
+      if (Notification.permission !== 'granted') {
+        return;
       }
+
+      const notification = new Notification(title, {
+        body,
+
+        icon: '/assets/icons/icon-192x192.png',
+
+        tag: payload.data?.['ticker'] ?? 'stock-alert',
+
+        /**
+         * This contains:
+         *
+         * channelId
+         * messageId
+         * ticker
+         */
+        data: payload.data,
+      });
+
+      notification.onclick = () => {
+        console.log('Notification clicked:', payload.data);
+
+        const channelId = payload.data?.['channelId'];
+
+        const messageId = payload.data?.['messageId'];
+
+        const ticker = payload.data?.['ticker'];
+
+        if (channelId && messageId) {
+          this.notificationClickSubject.next({
+            channelId,
+            messageId,
+            ticker,
+          });
+        } else {
+          console.warn(
+            'Notification is missing channelId or messageId',
+            payload.data
+          );
+        }
+
+        window.focus();
+
+        notification.close();
+      };
     });
   }
 }
