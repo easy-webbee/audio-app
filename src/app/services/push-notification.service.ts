@@ -37,7 +37,7 @@ export class PushNotificationService {
 
       if (event.data?.type === 'FCM_NOTIFICATION_CLICK') {
         const { channelId, messageId, ticker } = event.data;
-
+        alert(`notificationClickSubject: ${channelId}, ${messageId}`);
         if (channelId && messageId) {
           this.notificationClickSubject.next({
             channelId,

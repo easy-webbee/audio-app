@@ -1,5 +1,5 @@
 // messaging.onBackgroundMessage((payload) => {
-//   console.log("[firebase-messaging-sw.js] Background message", payload);
+//   alert("[firebase-messaging-sw.js] Background message", payload);
 
 //   const title = payload.notification?.title || "Stock Alert";
 
@@ -51,6 +51,8 @@ self.addEventListener("notificationclick", (event) => {
 
   const data = event.notification.data || {};
 
+  alert("[SW] CLICK:", data);
+
   const message = {
     type: "FCM_NOTIFICATION_CLICK",
     channelId: data.channelId,
@@ -59,21 +61,29 @@ self.addEventListener("notificationclick", (event) => {
   };
 
   event.waitUntil(
-    clients
-      .matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      })
-      .then(async (clientList) => {
-        for (const client of clientList) {
-          if (client.url.startsWith(self.location.origin)) {
-            client.postMessage(message);
-            await client.focus();
-            return;
-          }
-        }
+    clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    }).then(async (clientList) => {
 
-        await clients.openWindow("/");
-      })
+      alert("[SW] clients:", clientList.length);
+
+      for (const client of clientList) {
+        if (client.url.startsWith(self.location.origin)) {
+
+          alert("[SW] sending:", message);
+
+          client.postMessage(message);
+
+          await client.focus();
+
+          return;
+        }
+      }
+
+      alert("[SW] opening app");
+
+      await clients.openWindow("/");
+    })
   );
 });
