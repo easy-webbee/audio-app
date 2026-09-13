@@ -74,8 +74,14 @@
             {{ unreadCounts()[channel.id] }}
           </span>
           }
-
-          <span>#</span>
+          <span class="mute-wrapper">
+            <!-- <span class="mute-symbol">#</span> -->
+            <img
+              class="mute-unmute-icon"
+              [src]="'../assets/' + (!channel.alert ? '' : 'un') + 'mute.png'"
+              [alt]="!channel.alert ? 'Mute' : 'Unmute'"
+            />
+          </span>
 
           <span class="channel-name">
             {{ channel.name }}
