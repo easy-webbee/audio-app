@@ -58,9 +58,14 @@
 
 .header {
   display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
   align-items: flex-start;
   margin-left: 6px;
   padding: 3px 8px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
 .text {
