@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   selectedWorkspace = signal<Workspace>({
     id: 'workspace-1',
-    name: 'My Workspace-3',
+    name: 'My Workspace',
   });
 
   selectedChannel = signal<Channel | null>({

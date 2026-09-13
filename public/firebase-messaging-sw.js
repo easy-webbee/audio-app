@@ -49,41 +49,10 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const data = event.notification.data || {};
-
-  alert("[SW] CLICK:", data);
-
-  const message = {
-    type: "FCM_NOTIFICATION_CLICK",
-    channelId: data.channelId,
-    messageId: data.messageId,
-    ticker: data.ticker,
-  };
-
   event.waitUntil(
-    clients.matchAll({
-      type: "window",
-      includeUncontrolled: true,
-    }).then(async (clientList) => {
-
-      alert("[SW] clients:", clientList.length);
-
-      for (const client of clientList) {
-        if (client.url.startsWith(self.location.origin)) {
-
-          alert("[SW] sending:", message);
-
-          client.postMessage(message);
-
-          await client.focus();
-
-          return;
-        }
-      }
-
-      alert("[SW] opening app");
-
-      await clients.openWindow("/");
+    self.registration.showNotification("CLICK WORKED", {
+      body: "notificationclick fired",
+      tag: "click-test"
     })
   );
 });
