@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   selectedWorkspace = signal<Workspace>({
     id: 'workspace-1',
-    name: 'My Workspace',
+    name: 'My Workspace-last',
   });
 
   selectedChannel = signal<Channel | null>({
@@ -65,7 +65,6 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    alert(`Opening notification 68`);
     this.pushNotificationService.notificationClick$.subscribe(
       async ({ channelId, messageId }) => {
         alert(`Opening notification: ${channelId}, ${messageId}`);

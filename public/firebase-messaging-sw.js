@@ -49,10 +49,32 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
+  const data = event.notification.data || {};
+
+  const message = {
+    type: "FCM_NOTIFICATION_CLICK",
+    channelId: data.channelId,
+    messageId: data.messageId,
+    ticker: data.ticker,
+  };
+
   event.waitUntil(
-    self.registration.showNotification("CLICK WORKED", {
-      body: "notificationclick fired",
-      tag: "click-test"
-    })
+    clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then(async (clientList) => {
+        for (const client of clientList) {
+          if (client.url.startsWith(self.location.origin)) {
+            client.postMessage(message);
+            await client.focus();
+            return;
+          }
+        }
+
+        // Only used if the app is completely closed.
+        await clients.openWindow("/");
+      })
   );
 });

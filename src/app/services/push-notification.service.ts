@@ -35,16 +35,27 @@ export class PushNotificationService {
     navigator.serviceWorker?.addEventListener('message', (event) => {
       console.log('🔥 Angular received SW message:', event.data);
 
-      if (event.data?.type === 'FCM_NOTIFICATION_CLICK') {
-        const { channelId, messageId, ticker } = event.data;
-        alert(`notificationClickSubject: ${channelId}, ${messageId}`);
-        if (channelId && messageId) {
-          this.notificationClickSubject.next({
-            channelId,
-            messageId,
-            ticker,
-          });
-        }
+      const data =
+        event.data?.type === 'FCM_NOTIFICATION_CLICK'
+          ? event.data
+          : event.data?.data;
+
+      const channelId = data?.channelId;
+      const messageId = data?.messageId;
+      const ticker = data?.ticker;
+
+      if (channelId && messageId) {
+        console.log('🔥 Notification click:', {
+          channelId,
+          messageId,
+          ticker,
+        });
+
+        this.notificationClickSubject.next({
+          channelId,
+          messageId,
+          ticker,
+        });
       }
     });
   }
