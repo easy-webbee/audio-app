@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   selectedWorkspace = signal<Workspace>({
     id: 'workspace-1',
-    name: 'My Workspace',
+    name: 'My Workspace-1',
   });
 
   selectedChannel = signal<Channel | null>({
@@ -69,10 +69,7 @@ export class AppComponent implements OnInit {
   
     this.pushNotificationService.notificationClick$.subscribe(
       async ({ channelId, messageId }) => {
-        console.log('Opening notification message:', {
-          channelId,
-          messageId,
-        });
+        alert(`'Opening notification message:', ${channelId},${messageId},`);
   
         const nameI = await firstValueFrom(
           this.channelService.getChannelName(
@@ -85,7 +82,7 @@ export class AppComponent implements OnInit {
           name: nameI ?? '',
           id: channelId,
         };
-  
+        alert(channel)
         this.selectChannel(channel);
       }
     );
