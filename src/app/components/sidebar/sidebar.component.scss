@@ -441,3 +441,35 @@
   border: 0;
   border-top: 1px solid #eee;
 }
+
+.mute-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.mute-symbol {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mute-unmute-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  background-color: #f1cfcf;
+}
+
+.mute-wrapper:hover .mute-unmute-icon {
+  transform: scale(1.12);
+  opacity: 0.8;
+}
+
+.mute-wrapper:active .mute-unmute-icon {
+  transform: scale(0.95);
+}
