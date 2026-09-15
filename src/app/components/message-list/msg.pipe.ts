@@ -47,7 +47,10 @@ export class MessageFormatPipe implements PipeTransform {
         });
       } else if (value.startsWith('<') && value.endsWith('>')) {
         const link = value.slice(1, -1);
-        const [url, label] = link.split('|');
+        const [originalUrl, label] = link.split('|');
+
+        // Replace old Koyeb Slack image URL with Vercel URL
+        const url = this.replaceSlackImageUrl(originalUrl);
 
         if (label === 'prodUrl' && this.isAllowedIframeUrl(url)) {
           parts.push({
@@ -62,7 +65,7 @@ export class MessageFormatPipe implements PipeTransform {
             url,
             safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(url),
           });
-        } else if (label.toLowerCase().includes('image')) {
+        } else if (label?.toLowerCase().includes('image')) {
           parts.push({
             type: 'link',
             text: label,
@@ -110,5 +113,12 @@ export class MessageFormatPipe implements PipeTransform {
 
   private isAllowedIframeUrl(url: string): boolean {
     return url.startsWith('https://stockmarkets000.web.app/capture-target/');
+  }
+
+  private replaceSlackImageUrl(url: string): string {
+    return url.replace(
+      'https://nestjs-api.koyeb.app/slack/slack-image/',
+      'https://my-top-nest.vercel.app/slack/slack-image/'
+    );
   }
 }
