@@ -35,3 +35,29 @@ textarea,
 select {
   font: inherit;
 }
+
+
+// .message-lines {
+//   width: 100%;
+// }
+.message-lines .message-line {
+  display: block;
+  padding: 7px 10px;
+  margin: 0;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.message-lines .message-line:nth-child(odd) {
+  background: #a99797;
+  color: #111;
+}
+
+.message-lines .message-line:nth-child(even) {
+  background: #404040;
+  color: #efe8e8;
+}
+
+.message-lines .message-line + .message-line {
+  border-top: 1px solid #dcdcdc;
+}

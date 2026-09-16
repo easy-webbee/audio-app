@@ -13,14 +13,12 @@ export class RegularFormatPipe implements PipeTransform {
     let text = value;
 
     // ============================================================
-    // 1. Convert literal "\n" OR real newline into <hr>
+    // 1. Convert new lines into separate message rows
     // ============================================================
-    text = text.replace(
-      /\\n|\r\n|\r|\n/g,
-      `
-      <hr class="hr_line"></hr>
-    `
-    );
+    text = text.replace(/\\n|\r\n|\r|\n/g, '</div><div class="message-line">');
+
+    // Wrap everything in the first row
+    text = `<div class="message-line">${text}</div>`;
 
     // ============================================================
     // 2. Convert Slack-style links

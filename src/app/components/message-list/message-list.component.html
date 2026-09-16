@@ -223,7 +223,10 @@
         </span>
       </div>
       <div class="just-text">
-        <div [innerHTML]="message.text | regulartext"></div>
+        <div
+          class="message-lines"
+          [innerHTML]="message.text | regulartext"
+        ></div>
       </div>
     </div>
     }
