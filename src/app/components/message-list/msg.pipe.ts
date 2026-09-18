@@ -118,7 +118,8 @@ export class MessageFormatPipe implements PipeTransform {
   private replaceSlackImageUrl(url: string): string {
     return url.replace(
       'https://nestjs-api.koyeb.app/slack/slack-image/',
-      'https://my-top-nest.vercel.app/slack/slack-image/'
+      'http://147.224.141.72:3010/slack/slack-image/'
+      // 'https://my-top-nest.vercel.app/slack/slack-image/'
     );
   }
 }
