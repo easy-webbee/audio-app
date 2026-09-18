@@ -120,8 +120,8 @@ export class MessageFormatPipe implements PipeTransform {
       'https://nestjs-api.koyeb.app/slack/slack-image/':
       'http://147.224.141.72:3010/slack/slack-image/',
   
-      'https://old-example.com/slack/slack-image/':
-        'https://new-example.com/slack/slack-image/',
+      'http://localhost:4200/price-log/':
+        `http://147.224.141.72:4202/price-log/`,
     };
   
     for (const [oldUrl, newUrl] of Object.entries(replacements)) {
