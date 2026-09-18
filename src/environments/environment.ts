@@ -10,5 +10,5 @@ export const environment = {
     appId: "1:350321423491:web:0eb892669e74947623d7b6",
     measurementId: "G-SMQS7ZY1JR"
   },
-  url: 'https://nestjs-api.koyeb.app',
+  url: 'http://147.224.141.72:3010',
 };

@@ -11,5 +11,5 @@ export const environment = {
     measurementId: "G-SMQS7ZY1JR"
   },
   // url: 'https://nestjs-api.koyeb.app',
-  url:'http://localhost:3000',
+  url:'http://147.224.141.72:3010',
 };

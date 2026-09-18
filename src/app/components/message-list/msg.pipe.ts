@@ -116,9 +116,20 @@ export class MessageFormatPipe implements PipeTransform {
   }
 
   private replaceSlackImageUrl(url: string): string {
-    return url.replace(
-      'https://nestjs-api.koyeb.app/slack/slack-image/',
-      'http://147.224.141.72:3010/slack/slack-image/'
-    );
+    const replacements: Record<string, string> = {
+      'https://nestjs-api.koyeb.app/slack/slack-image/':
+      'http://147.224.141.72:3010/slack/slack-image/',
+  
+      'https://old-example.com/slack/slack-image/':
+        'https://new-example.com/slack/slack-image/',
+    };
+  
+    for (const [oldUrl, newUrl] of Object.entries(replacements)) {
+      if (url.startsWith(oldUrl)) {
+        return url.replace(oldUrl, newUrl);
+      }
+    }
+  
+    return url;
   }
 }
