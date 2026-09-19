@@ -9,18 +9,66 @@ export class HelperService {
   alertChannelId = signal<any[]>([]);
 
   copied = false;
+
   copyText(text: any): void {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
+    const value = String(text ?? '');
+  
+    // Modern Clipboard API (requires HTTPS or localhost)
+    if (navigator.clipboard?.writeText && window.isSecureContext) {
+      navigator.clipboard
+        .writeText(value)
+        .then(() => {
+          this.copied = true;
+  
+          setTimeout(() => {
+            this.copied = false;
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error('Clipboard API failed:', err);
+          this.copyTextFallback(value);
+        });
+  
+      return;
+    }
+  
+    // HTTP / older browser fallback
+    this.copyTextFallback(value);
+  }
+  
+  private copyTextFallback(text: string): void {
+    const textarea = document.createElement('textarea');
+  
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    textarea.style.opacity = '0';
+  
+    document.body.appendChild(textarea);
+  
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+  
+    try {
+      const success = document.execCommand('copy');
+  
+      if (success) {
         this.copied = true;
+  
         setTimeout(() => {
           this.copied = false;
-        }, 2000); // Change back after 2 seconds
-      })
-      .catch((err) => {
+        }, 2000);
+      } else {
         alert('Failed to copy: ' + text);
-      });
+      }
+    } catch (err) {
+      console.error('Copy fallback failed:', err);
+      alert('Failed to copy: ' + text);
+    } finally {
+      document.body.removeChild(textarea);
+    }
   }
 
   checktimeMinutesEST(ticker: string, date: any, time: number) {
