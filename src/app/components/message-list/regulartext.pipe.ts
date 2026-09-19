@@ -26,16 +26,20 @@ export class RegularFormatPipe implements PipeTransform {
     // ============================================================
     text = text.replace(
       /<((?:https?:\/\/)[^|>]+)\|([^>]+)>/g,
-      `
-        <a
-          href="$1"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="message-link"
-        >
-          $2
-        </a>
-      `
+      (_match, url, label) => {
+        const replacedUrl = this.replaceSlackImageUrl(url);
+
+        return `
+          <a
+            href="${replacedUrl}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="message-link"
+          >
+            ${label}
+          </a>
+        `;
+      }
     );
 
     // ============================================================
@@ -75,5 +79,23 @@ export class RegularFormatPipe implements PipeTransform {
     );
 
     return text;
+  }
+
+  private replaceSlackImageUrl(url: string): string {
+    const replacements: Record<string, string> = {
+      'https://nestjs-api.koyeb.app/slack/slack-image/':
+        'http://147.224.141.72:3010/slack/slack-image/',
+  
+      'http://localhost:4200/price-log/':
+        'http://147.224.141.72:4202/price-log/',
+    };
+  
+    for (const [oldUrl, newUrl] of Object.entries(replacements)) {
+      if (url.startsWith(oldUrl)) {
+        return url.replace(oldUrl, newUrl);
+      }
+    }
+  
+    return url;
   }
 }
