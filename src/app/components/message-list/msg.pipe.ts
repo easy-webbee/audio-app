@@ -100,9 +100,9 @@ export class MessageFormatPipe implements PipeTransform {
       .map((item) => item.text)
       .join('');
 
-    const borderClass = textall.toUpperCase().includes('BUY')
+    const borderClass = textall.toUpperCase().includes('BUY_KEY')
       ? 'buy'
-      : textall.toUpperCase().includes('SELL')
+      : textall.toUpperCase().includes('SELL_KEY')
       ? 'sell'
       : '';
     return {
